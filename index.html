@@ -61,6 +61,53 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-GO-lang的面向对象的理解" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/02/18/GO-lang的面向对象的理解/" class="article-date">
+  <time datetime="2016-02-18T02:04:51.000Z" itemprop="datePublished">2016-02-18</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/02/18/GO-lang的面向对象的理解/">GO-lang的面向对象的理解</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>###　对象的写法</p>
+<ul>
+<li>除指针外的所有类型都可以作为对象</li>
+<li>对象的方法有×则可修改对象，无×不能修改对象,实际工作中，几乎全用×<br>[^code]<br>go<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+</ul>
+<h3 id="有4个类型为引用类型，即a-amp-b"><a href="#有4个类型为引用类型，即a-amp-b" class="headerlink" title="有4个类型为引用类型，即a=&amp;b"></a>有4个类型为引用类型，即a=&amp;b</h3><ul>
+<li>slice</li>
+<li>map </li>
+<li>channel</li>
+<li>interface<br>go<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//slice</span></span><br><span class="line"><span class="keyword">type</span> slice <span class="keyword">struct</span>&#123;</span><br><span class="line">    first *T</span><br><span class="line">    <span class="built_in">len</span> <span class="typename">int</span></span><br><span class="line">    <span class="built_in">cap</span> <span class="typename">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//map</span></span><br><span class="line"><span class="keyword">type</span> Map_K_V <span class="keyword">struct</span>&#123;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">type</span> Map[K]V <span class="keyword">struct</span>&#123;</span><br><span class="line">    imp1 *Map_K_V</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//interface</span></span><br><span class="line"><span class="keyword">type</span> <span class="keyword">interface</span> <span class="keyword">struct</span>&#123;</span><br><span class="line">    data *void</span><br><span class="line">    itab *Itab</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/02/18/GO-lang的面向对象的理解/" data-id="ciktn1fup000208pdtfkkns74" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-GO-lang-的学习笔记" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/02/16/GO-lang-的学习笔记/" class="article-date">
@@ -85,7 +132,7 @@
       
         <h2 id="GO-的特性"><a href="#GO-的特性" class="headerlink" title="GO 的特性"></a>GO 的特性</h2><h3 id="并发"><a href="#并发" class="headerlink" title="并发"></a>并发</h3><p>goroutine ,比线程更小， runtime.GOMAXPROCS(n) 告知调度器同时使用多个线程</p>
 <h3 id="channel"><a href="#channel" class="headerlink" title="channel"></a>channel</h3><p>hannel接收和发送数据都是阻塞的</p>
-<h3 id="range-和close-code"><a href="#range-和close-code" class="headerlink" title="range 和close[^code]"></a>range 和close[^code]</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">func</span> Test() &#123;</span><br><span class="line">    c: =<span class="built_in">make</span>(<span class="keyword">chan</span> <span class="typename">int</span>, <span class="number">10</span>)</span><br><span class="line">    <span class="keyword">go</span> fibonacci(<span class="built_in">cap</span>(c), c)</span><br><span class="line">    <span class="keyword">for</span> i: =<span class="keyword">range</span> c &#123; <span class="comment">//使用range操作缓存类型的channel</span></span><br><span class="line">        fmt.Println(i)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">func</span> fibonacci(n <span class="typename">int</span>, c <span class="keyword">chan</span> <span class="typename">int</span>) &#123;</span><br><span class="line">    x,</span><br><span class="line">    y: =<span class="number">1</span>,</span><br><span class="line">    <span class="number">1</span></span><br><span class="line">    <span class="keyword">for</span> i: =<span class="number">0</span>;</span><br><span class="line">    i &lt; n;</span><br><span class="line">    i++&#123;</span><br><span class="line">        c &lt; -x</span><br><span class="line">        x,</span><br><span class="line">        y = y,</span><br><span class="line">        x + y</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">close</span>(c) <span class="comment">//在生产者的地方关闭channel，而不是在消费的地方去关闭它，这样容易起panic。</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">select</span></span><br><span class="line"><span class="keyword">func</span> Test() &#123;</span><br><span class="line">    c: =<span class="built_in">make</span>(<span class="keyword">chan</span> <span class="typename">int</span>)</span><br><span class="line">    quit: =<span class="built_in">make</span>(<span class="keyword">chan</span> <span class="typename">int</span>)</span><br><span class="line">    <span class="keyword">go</span> <span class="keyword">func</span>() &#123;</span><br><span class="line">        <span class="keyword">for</span> i: =<span class="number">0</span>;</span><br><span class="line">        i &lt; <span class="number">10</span>;</span><br><span class="line">        i++&#123;</span><br><span class="line">            fmt.Println( &lt; -c)</span><br><span class="line">        &#125;</span><br><span class="line">        quit &lt; -<span class="number">0</span></span><br><span class="line">    &#125; ()</span><br><span class="line">    fibonacci(c, quit)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">func</span> fibonacci(c, quit <span class="keyword">chan</span> <span class="typename">int</span>) &#123;</span><br><span class="line">    x,</span><br><span class="line">    y: =<span class="number">1</span>,</span><br><span class="line">    <span class="number">1</span></span><br><span class="line">    <span class="keyword">for</span> &#123;</span><br><span class="line">        <span class="keyword">select</span> &#123; <span class="comment">//*select 默认是阻塞的，只要当监听的channel中发送或者接收可以进行时，才会运行。</span></span><br><span class="line">        <span class="keyword">case</span> c &lt; -x: <span class="comment">//*当多个channel都准备好的时候，select是随机选择一个执行的。</span></span><br><span class="line">            x,</span><br><span class="line">            y = y,</span><br><span class="line">            x + y</span><br><span class="line">        <span class="keyword">case</span> &lt; -quit:</span><br><span class="line">            fmt.Println(<span class="string">"quit"</span>)</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            fmt.Println(<span class="string">"do some thing "</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="range-和close-code"><a href="#range-和close-code" class="headerlink" title="range 和close [^code]"></a>range 和close [^code]</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">func</span> Test() &#123;</span><br><span class="line">    c: =<span class="built_in">make</span>(<span class="keyword">chan</span> <span class="typename">int</span>, <span class="number">10</span>)</span><br><span class="line">    <span class="keyword">go</span> fibonacci(<span class="built_in">cap</span>(c), c)</span><br><span class="line">    <span class="keyword">for</span> i: =<span class="keyword">range</span> c &#123; <span class="comment">//使用range操作缓存类型的channel</span></span><br><span class="line">        fmt.Println(i)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">func</span> fibonacci(n <span class="typename">int</span>, c <span class="keyword">chan</span> <span class="typename">int</span>) &#123;</span><br><span class="line">    x,</span><br><span class="line">    y: =<span class="number">1</span>,</span><br><span class="line">    <span class="number">1</span></span><br><span class="line">    <span class="keyword">for</span> i: =<span class="number">0</span>;</span><br><span class="line">    i &lt; n;</span><br><span class="line">    i++&#123;</span><br><span class="line">        c &lt; -x</span><br><span class="line">        x,</span><br><span class="line">        y = y,</span><br><span class="line">        x + y</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">close</span>(c) <span class="comment">//在生产者的地方关闭channel，而不是在消费的地方去关闭它，这样容易起panic。</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">select</span></span><br><span class="line"><span class="keyword">func</span> Test() &#123;</span><br><span class="line">    c: =<span class="built_in">make</span>(<span class="keyword">chan</span> <span class="typename">int</span>)</span><br><span class="line">    quit: =<span class="built_in">make</span>(<span class="keyword">chan</span> <span class="typename">int</span>)</span><br><span class="line">    <span class="keyword">go</span> <span class="keyword">func</span>() &#123;</span><br><span class="line">        <span class="keyword">for</span> i: =<span class="number">0</span>;</span><br><span class="line">        i &lt; <span class="number">10</span>;</span><br><span class="line">        i++&#123;</span><br><span class="line">            fmt.Println( &lt; -c)</span><br><span class="line">        &#125;</span><br><span class="line">        quit &lt; -<span class="number">0</span></span><br><span class="line">    &#125; ()</span><br><span class="line">    fibonacci(c, quit)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">func</span> fibonacci(c, quit <span class="keyword">chan</span> <span class="typename">int</span>) &#123;</span><br><span class="line">    x,</span><br><span class="line">    y: =<span class="number">1</span>,</span><br><span class="line">    <span class="number">1</span></span><br><span class="line">    <span class="keyword">for</span> &#123;</span><br><span class="line">        <span class="keyword">select</span> &#123; <span class="comment">//*select 默认是阻塞的，只要当监听的channel中发送或者接收可以进行时，才会运行。</span></span><br><span class="line">        <span class="keyword">case</span> c &lt; -x: <span class="comment">//*当多个channel都准备好的时候，select是随机选择一个执行的。</span></span><br><span class="line">            x,</span><br><span class="line">            y = y,</span><br><span class="line">            x + y</span><br><span class="line">        <span class="keyword">case</span> &lt; -quit:</span><br><span class="line">            fmt.Println(<span class="string">"quit"</span>)</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            fmt.Println(<span class="string">"do some thing "</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <blockquote>
 <p><a href="http://studygolang.com/articles/1538" target="_blank" rel="external">原文</a></p>
 </blockquote>
@@ -93,7 +140,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/02/16/GO-lang-的学习笔记/" data-id="cikpc41pn0000mlpdk2kkfreh" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2016/02/16/GO-lang-的学习笔记/" data-id="ciktn1fu6000008pdhzm986bu" class="article-share-link">Share</a>
       
       
     </footer>
@@ -138,7 +185,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/02/16/hello-world/" data-id="cikpc41q60001mlpdaijawq8i" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2016/02/16/hello-world/" data-id="ciktn1fuo000108pd3vz3lp2k" class="article-share-link">Share</a>
       
       
     </footer>
@@ -163,7 +210,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">2</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">3</span></li></ul>
     </div>
   </div>
 
@@ -173,6 +220,10 @@
     <h3 class="widget-title">Recents</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2016/02/18/GO-lang的面向对象的理解/">GO-lang的面向对象的理解</a>
+          </li>
         
           <li>
             <a href="/2016/02/16/GO-lang-的学习笔记/">GO lang 的学习笔记</a>
