@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://yoursite.com/page/7/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hexo">
+<meta name="twitter:description">
+  
+    <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  
+
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-e5-b0-8f-e8-af-b4sql-e7-9a-84-e4-b8-80-e6-ac-a1sql-e4-bc-98-e5-8c-96" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/12/03/e5-b0-8f-e8-af-b4sql-e7-9a-84-e4-b8-80-e6-ac-a1sql-e4-bc-98-e5-8c-96/" class="article-date">
+  <time datetime="2014-12-03T09:41:29.000Z" itemprop="datePublished">2014-12-03</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/mysql/">mysql</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/12/03/e5-b0-8f-e8-af-b4sql-e7-9a-84-e4-b8-80-e6-ac-a1sql-e4-bc-98-e5-8c-96/">小说系统SQL的一次优化</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>业务背景： 将抓取站点书籍的所有来源站点全是404的书籍隐藏。</p>
+<p>内网测试流程如下：</p>
+<p>两个表：</p>
+<p>| b_book_info | CREATE TABLE <code>b_book_info</code> (<br><code>id</code> int(11) NOT NULL AUTO_INCREMENT COMMENT ‘主键’,<br><code>name</code> varchar(64) NOT NULL COMMENT ‘小说名称’,<br><code>is_free</code> tinyint(1) NOT NULL COMMENT ‘小说免费与否，请用数字表示，0：不免费，1：免费，2：部分章节免费；此处“免费”定义表示该小说无收费章节。’,<br><code>is_show</code> tinyint(1) DEFAULT ‘1’ COMMENT ‘是否显示’,<br><code>node_id</code> int(11) NOT NULL DEFAULT ‘0’,<br><code>d_type</code> tinyint(4) DEFAULT ‘0’ COMMENT ‘0为包含抓取数据，1为全抓取数据’,<br><code>has_d</code> tinyint(4) DEFAULT ‘0’,<br><code>d_id</code> int(11) DEFAULT ‘0’,<br>PRIMARY KEY (<code>id</code>),<br>UNIQUE KEY <code>unique_name_author</code> (<code>name</code>,<code>author</code>),<br>KEY <code>index_view</code> (<code>view</code>),<br>KEY <code>index_words</code> (<code>num_of_words</code>),<br>KEY <code>index_auth</code> (<code>author</code>),<br>KEY <code>index_for_cate</code> (<code>category</code>,<code>is_finished</code>,<code>is_free</code>,<code>is_show</code>,<code>order_id</code>,<code>last_modify_time</code>),<br>KEY <code>ik_b_book_info_1</code> (<code>d_id</code>),<br>KEY <code>ik_b_book_info_0</code> (<code>has_d</code>,<code>d_update_time</code>),<br>KEY <code>index_category_is_show</code> (<code>category</code>,<code>is_show</code>,<code>order_id</code>,<code>last_modify_time</code>)<br>) ENGINE=InnoDB AUTO_INCREMENT=9653254 DEFAULT CHARSET=utf8</p>
+<p>&nbsp;</p>
+<p>| b_book_d_site | CREATE TABLE <code>b_book_d_site</code> (<br><code>src</code> char(4) NOT NULL,<br><code>book_id</code> int(11) NOT NULL,<br><code>site_key</code> char(32) NOT NULL,<br><code>site_name</code> varchar(32) NOT NULL,<br><code>site_url</code> varchar(256) NOT NULL,<br><code>http_code</code> char(3) NOT NULL DEFAULT ‘’ COMMENT ‘site_url的返回HTTP状态码’,<br>PRIMARY KEY (<code>book_id</code>,<code>site_key</code>)<br>) ENGINE=InnoDB DEFAULT CHARSET=utf8 |</p>
+<p>关联关系： b_book_info.d_id = b_book_d_site.book_id</p>
+<p>下面的执行时间&gt;1min：</p>
+<p>mysql&gt; explain select count(*) from b_book_info where d_id in( select book_id from (select book_id ,sum(http_code=200) as s from b_book_d_site group by book_id ) as d_site where s=0);<br>+—-+——————–+—————+——-+—————+——————+———+——+——–+————————–+<br>| id | select_type | table | type | possible_keys | key | key_len | ref | rows | Extra |<br>+—-+——————–+—————+——-+—————+——————+———+——+——–+————————–+<br>| 1 | PRIMARY | b_book_info | index | NULL | ik_b_book_info_1 | 5 | NULL | 978201 | Using where; Using index |<br>| 2 | DEPENDENT SUBQUERY | &lt;derived3&gt; | ALL | NULL | NULL | NULL | NULL | 408345 | Using where |<br>| 3 | DERIVED | b_book_d_site | index | NULL | PRIMARY | 100 | NULL | 803251 | |<br>+—-+——————–+—————+——-+—————+——————+———+——+——–+————————–+<br>3 rows in set</p>
+<p>&nbsp;</p>
+<p>下面的可以执行时间在10s内：</p>
+<p>mysql&gt; explain select id from b_book_info as z join (select book_id ,sum(http_code=200) as s from b_book_d_site group by book_id ) as d on z.d_id=d.book_id where s=0;<br>+—-+————-+—————+——-+——————+——————+———+———–+——–+————————–+<br>| id | select_type | table | type | possible_keys | key | key_len | ref | rows | Extra |<br>+—-+————-+—————+——-+——————+——————+———+———–+——–+————————–+<br>| 1 | PRIMARY | &lt;derived2&gt; | ALL | NULL | NULL | NULL | NULL | 408345 | Using where |<br>| 1 | PRIMARY | z | ref | ik_b_book_info_1 | ik_b_book_info_1 | 5 | d.book_id | 1 | Using where; Using index |<br>| 2 | DERIVED | b_book_d_site | index | NULL | PRIMARY | 100 | NULL | 803251 | |<br>+—-+————-+—————+——-+——————+——————+———+———–+——–+————————–+<br>3 rows in set</p>
+<p>&nbsp;</p>
+<p>mysql&gt; select count(<em>) from b_book_info as z join (select book_id ,sum(http_code=200) as s from b_book_d_site group by book_id ) as d on z.d_id=d.book_id where s=0 and z.d_type=1;<br>+———-+<br>| count(</em>) |<br>+———-+<br>| 108791 |<br>+———-+<br>1 row in set</p>
+<p>&nbsp;</p>
+<p>mysql&gt; update b_book_info set is_show=0 where id in(select z.id from b_book_info as z join (select book_id ,sum(http_code=200) as s from b_book_d_site group by book_id ) as d on z.d_id=d.book_id where d.s=0 and z.d_type=1);<br>1093 - You can’t specify target table ‘b_book_info’ for update in FROM clause</p>
+<p>&nbsp;</p>
+<p>mysql&gt; update b_book_info as a inner join (select z.id from b_book_info as z join (select book_id ,sum(http_code=200) as s from b_book_d_site group by book_id ) as d on z.d_id=d.book_id where d.s=0 and z.d_type=1) as b on a.id=b.id set a.is_show=0;<br>Query OK, 6545 rows affected<br>Rows matched: 6545 Changed: 6545 Warnings: 0</p>
+<p>&nbsp;</p>
+<p>mysql&gt; explain<br>update b_book_info as a inner join (select z.id from b_book_info as z join (select book_id ,sum(http_code=200) as s from b_book_d_site group by book_id ) as d on z.d_id=d.book_id where d.s=0 and z.d_type=1) as b on a.id=b.id set a.is_show=0;<br>+—-+————-+—————+——–+——————+——————+———+———–+——–+————-+<br>| id | select_type | table | type | possible_keys | key | key_len | ref | rows | Extra |<br>+—-+————-+—————+——–+——————+——————+———+———–+——–+————-+<br>| 1 | PRIMARY | &lt;derived2&gt; | ALL | NULL | NULL | NULL | NULL | 240960 | NULL |<br>| 1 | PRIMARY | a | eq_ref | PRIMARY | PRIMARY | 4 | b.id | 1 | NULL |<br>| 2 | DERIVED | &lt;derived3&gt; | ALL | NULL | NULL | NULL | NULL | 53546 | Using where |<br>| 2 | DERIVED | z | ref | ik_b_book_info_1 | ik_b_book_info_1 | 5 | d.book_id | 6 | Using where |<br>| 3 | DERIVED | b_book_d_site | index | PRIMARY | PRIMARY | 100 | NULL | 53546 | NULL |<br>+—-+————-+—————+——–+——————+——————+———+———–+——–+————-+<br>5 rows in set</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>mysql&gt; update b_book_info as z inner join (select book_id ,sum(http_code=200) as s from b_book_d_site group by book_id ) as d on z.d_id=d.book_id set z.is_show=1 where d.s=0 and z.d_type=1 ;<br>Query OK, 6545 rows affected<br>Rows matched: 6545 Changed: 6545 Warnings: 0</p>
+<p>&nbsp;</p>
+<p>mysql&gt; explain update b_book_info as z inner join (select book_id ,sum(http_code=200) as s from b_book_d_site group by book_id ) as d on z.d_id=d.book_id set z.is_show=1 where d.s=0 and z.d_type=1 ;<br>+—-+————-+—————+——-+——————+——————+———+———–+——-+————-+<br>| id | select_type | table | type | possible_keys | key | key_len | ref | rows | Extra |<br>+—-+————-+—————+——-+——————+——————+———+———–+——-+————-+<br>| 1 | PRIMARY | &lt;derived2&gt; | ALL | NULL | NULL | NULL | NULL | 53546 | Using where |<br>| 1 | PRIMARY | z | ref | ik_b_book_info_1 | ik_b_book_info_1 | 5 | d.book_id | 6 | Using where |<br>| 2 | DERIVED | b_book_d_site | index | PRIMARY | PRIMARY | 100 | NULL | 53546 | NULL |<br>+—-+————-+—————+——-+——————+——————+———+———–+——-+————-+<br>3 rows in set</p>
+<p>&nbsp;</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2014/12/03/e5-b0-8f-e8-af-b4sql-e7-9a-84-e4-b8-80-e6-ac-a1sql-e4-bc-98-e5-8c-96/" data-id="cinslx5op0057ktpdy56q1o4g" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-e3-80-8aphp-e6-a0-b8-e5-bf-83-e6-8a-80-e6-9c-af-e4-b8-8e-e6-9c-80-e4-bd-b3-e5-ae-9e-e8-b7-b5-e3-80-8b-e7-9b-ae-e5-bd-95-e5-88-97-e8-a1-a8" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/12/02/e3-80-8aphp-e6-a0-b8-e5-bf-83-e6-8a-80-e6-9c-af-e4-b8-8e-e6-9c-80-e4-bd-b3-e5-ae-9e-e8-b7-b5-e3-80-8b-e7-9b-ae-e5-bd-95-e5-88-97-e8-a1-a8/" class="article-date">
+  <time datetime="2014-12-02T10:53:33.000Z" itemprop="datePublished">2014-12-02</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/PHP/">PHP</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/12/02/e3-80-8aphp-e6-a0-b8-e5-bf-83-e6-8a-80-e6-9c-af-e4-b8-8e-e6-9c-80-e4-bd-b3-e5-ae-9e-e8-b7-b5-e3-80-8b-e7-9b-ae-e5-bd-95-e5-88-97-e8-a1-a8/">《PHP核心技术与最佳实践》目录列表</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>《PHP核心技术与最佳实践》目录列表：</p>
+<p>第1章　面向对象思想的核心概念<br>    1.1　面向对象的“形”与“本”<br>        1.1.1　对象的“形”<br>        1.1.2　对象的“本”<br>        1.1.3　对象与数组<br>        1.1.4　对象与类<br>    1.2　魔术方法的应用<br>        1.2.1　set和get方法<br>        1.2.2　call和callStatic方法<br>        1.2.3　toString方法<br>    1.3　继承与多态<br>        1.3.1　类的组合与继承<br>        1.3.2　各种语言中的多态<br>    1.4　面向接口编程<br>        1.4.1　接口的作用<br>        1.4.2　对PHP接口的思考<br>    1.5　反射<br>        1.5.1　如何使用反射API<br>        1.5.2　反射有什么作用<br>    1.6　异常和错误处理<br>        1.6.1　如何使用异常处理机制<br>        1.6.2　怎样看PHP的异常<br>        1.6.3　PHP中的错误级别<br>        1.6.4　PHP中的错误处理机制<br>    1.7　本章小结<br>第2章　面向对象的设计原则<br>    2.1　面向对象设计的五大原则<br>        2.1.1　单一职责原则<br>        2.1.2　接口隔离原则<br>        2.1.3　开放-封闭原则<br>        2.1.4　替换原则<br>        2.1.5　依赖倒置原则<br>    2.2　一个面向对象留言本的实例<br>    2.3　面向对象的思考<br>    2.4　本章小结<br>第3章　正则表达式基础与应用<br>    3.1　认识正则表达式<br>        3.1.1　PHP中的正则函数<br>        3.1.2　正则表达式的组成<br>        3.1.3　测试工具的使用<br>    3.2　正则表达式中的元字符<br>        3.2.1　什么是元字符<br>        3.2.2　起始和结束元字符<br>        3.2.3　点号<br>        3.2.4　量词<br>    3.3　正则表达式匹配规则<br>        3.3.1　字符组<br>        3.3.2　转义<br>        3.3.3　反义<br>        3.3.4　分支<br>        3.3.5　分组<br>        3.3.6　反向引用<br>        3.3.7　环视<br>        3.3.8　贪婪懒惰匹配模式<br>    3.4　构造正则表达式<br>        3.4.1　正则表达式的逻辑关系<br>        3.4.2　运算符优先级<br>        3.4.3　正则表达式的常用模式<br>    3.5　正则在实际开发中的应用<br>        3.5.1　移动手机校验<br>        3.5.2　匹配E-mail地址<br>        3.5.3　转义在数据安全中的应用<br>        3.5.4　URL重写与搜索引擎优化<br>        3.5.5　删除文件中的空行和注释<br>    3.6　正则表达式的效率与优化<br>    3.7　本章小结<br>第4章　PHP网络技术及应用<br>    4.1　HTTP协议详解<br>        4.1.1　HTTP协议与SPDY协议<br>        4.1.2　HTTP协议如何工作<br>        4.1.3　HTTP应用：模拟灌水机器人<br>        4.1.4　垃圾信息防御措施<br>    4.2　抓包工具<br>        4.2.1　抓包工具分类<br>        4.2.2　Fiddler功能与原理<br>        4.2.3　安装Fiddler<br>        4.2.4　Fiddler基本界面<br>        4.2.5　使用Fiddler进行HTTP断点调试<br>    4.3　Socket进程通信机制及应用<br>        4.3.1　进程通信相关概念<br>        4.3.2　Socket演示：实现服务器端与客户端的交互<br>        4.3.3　Socket函数原型<br>        4.3.4　PHP中的Socket函数<br>        4.3.5　Socket交互应用：使用Socket抓取数据<br>    4.4　cURL工具及应用<br>        4.4.1　建立cURL请求的基本步骤<br>        4.4.2　检查cURL错误和获取返回信息<br>        4.4.3　在cURL中伪造头信息<br>        4.4.4　在cURL中用POST方法发送数据<br>        4.4.5　使用cURL上传文件<br>        4.4.6　cURL批处理<br>        4.4.7　cURL设置项<br>        4.4.8　网络应用：使用cURL抓取腾讯微博<br>    4.5　简单邮件传输协议SMTP<br>        4.5.1　SMTP协议如何工作<br>        4.5.2　SMTP协议常用命令<br>        4.5.3　SMTP协议应用：使用Socket发送邮件<br>    4.6　WebService的前世今生<br>        4.6.1　WebService简介<br>        4.6.2　认识PHPRPC协议<br>        4.6.3　Web服务的实现模式<br>        4.6.4　简单对象访问协议SOAP<br>        4.6.5　调试工具soapUI<br>    4.7　Cookie详解<br>        4.7.1　Cookie的基本概念及设置<br>        4.7.2　PHP和JavaScript对Cookie的操作<br>        4.7.3　Cookie存储机制及应用<br>        4.7.4　Cookie跨域与P3P协议<br>        4.7.5　本地存储localStorage<br>    4.8　Session详解<br>        4.8.1　Session的基本概念及设置<br>        4.8.2　Session的工作原理<br>        4.8.3　Session入库<br>        4.8.4　Cookie与Session问答<br>    4.9　本章小结<br>第5章　PHP与数据库基础<br>    5.1　什么是PDO<br>        5.1.1　PDO预定义类<br>        5.1.2　如何使用PDO<br>        5.1.3　PDO参数绑定与预编译<br>        5.1.4　PDO事务处理<br>        5.1.5　PDO的效率问题<br>    5.2　数据库应用优化<br>        5.2.1　基本语句优化10个原则<br>        5.2.2　索引与性能分析<br>        5.2.3　服务器和配置的优化<br>        5.2.4　MySQL瓶颈及应对措施<br>    5.3　数据库设计<br>        5.3.1　范式与反范式<br>        5.3.2　数据库分区<br>        5.3.3　分表的应用<br>    5.4　MySQL的高级应用<br>        5.4.1　MySQL自增长序列<br>        5.4.2　MySQL视图<br>        5.4.3　MySQL存储过程和事件调度<br>        5.4.4　用MySQL模拟消息队列<br>        5.4.5　SQL注入漏洞与防范<br>    5.5　本章小结<br>第6章　PHP模板引擎的原理与实践<br>    6.1　代码分层的思想<br>    6.2　实现一个简单的模板引擎骨架<br>        6.2.1　搭建模板引擎基础类骨架<br>        6.2.2　编译类骨架<br>        6.2.3　测试模板引擎<br>    6.3　模板引擎的编译<br>        6.3.1　实现变量标签<br>        6.3.2　实现foreach标签<br>        6.3.3　实现if…else标签<br>        6.3.4　对PHP原生语法的支持<br>    6.4　完善模板引擎<br>        6.4.1　模板缓存机制的实现<br>        6.4.2　调试和缓存清理<br>        6.4.3　如何使用模板<br>    6.5　常用模板引擎<br>        6.5.1　Discuz模板引擎<br>        6.5.2　Smarty模板引擎<br>        6.5.3　DedeCms模板引擎<br>        6.5.4　Blitz模板引擎<br>        6.5.5　模板引擎的一些思考<br>    6.6　本章小结<br>第7章　PHP扩展开发<br>    7.1　为什么要开发PHP扩展<br>    7.2　搭建PHP扩展框架<br>        7.2.1　PHP源代码目录<br>        7.2.2　ext_skel工具<br>        7.2.3　Windows平台环境配置<br>        7.2.4　Linux平台环境配置<br>        7.2.5　PHP的生命周期<br>    7.3　PHP内核中的变量<br>        7.3.1　PHP变量在内核中的存储方式<br>        7.3.2　PHP内核变量访问宏<br>        7.3.3　引用计数器与写时复制<br>    7.4　PHP内核中的HashTable分析<br>        7.4.1　PHP内核HashTable的数据结构<br>        7.4.2　HashTable的代码实现<br>    7.5　Zend API详解与扩展编写<br>        7.5.1　什么是Zend引擎<br>        7.5.2　Zend引擎内存管理<br>        7.5.3　PHP扩展的架构<br>        7.5.4　接收用户传递的参数<br>        7.5.5　在PHP扩展中创建变量<br>        7.5.6　在PHP扩展中为变量赋值<br>        7.5.7　错误和输出API<br>        7.5.8　运行时信息函数<br>        7.5.9　调用用户自定义函数<br>        7.5.10　PHP配置项<br>        7.5.11　创建常量的宏<br>    7.6　编写一个完整的扩展<br>        7.6.1　链表结构的实现<br>        7.6.2　创建PHP扩展框架<br>        7.6.3　编写代码<br>        7.6.4　编译安装扩展<br>        7.6.5　测试扩展<br>    7.7　本章小结<br>第8章　缓存详解<br>    8.1　认识缓存<br>        8.1.1　为什么使用缓存<br>        8.1.2　命中率<br>        8.1.3　缓存更新策略<br>        8.1.4　缓存最大数据量<br>    8.2　文件缓存<br>        8.2.1　文件缓存机制<br>        8.2.2　文件缓存开源产品Secache<br>    8.3　Opcode缓存<br>        8.3.1　eAccelerator下载及使用<br>        8.3.2　如何查看Opcode<br>    8.4　客户端缓存<br>        8.4.1　客户端缓存规则<br>        8.4.2　HTTP协议中的缓存使用<br>        8.4.3　HTTP缓存实例<br>        8.4.4　HTML 5中的Application Cache<br>    8.5　Web服务器缓存<br>        8.5.1　Apache缓存<br>        8.5.2　Nginx缓存<br>    8.6　本章小结<br>第9章　Memcached使用与实践<br>    9.1　为什么要用Memcached<br>    9.2　Memcached的安装及使用<br>        9.2.1　安装Memcached服务器<br>        9.2.2　安装Memcached客户端<br>        9.2.3　使用memcache扩展访问Memcached服务器<br>        9.2.4　使用Memcached加速Web应用<br>    9.3　深入了解Memcached<br>        9.3.1　Memcached如何支持高并发<br>        9.3.2　使用Slab分配算法保存数据<br>        9.3.3　删除过期item<br>        9.3.4　使用LRU算法淘汰数据<br>        9.3.5　Memcached多线程模型<br>    9.4　Memcached分布式布置方案<br>        9.4.1　普通Hash分布<br>        9.4.2　一致性Hash分布<br>        9.4.3　一致性Hash分布算法实例<br>    9.5　本章小结<br>第10章　Redis使用与实践<br>    10.1　Redis的安装及使用<br>        10.1.1　Redis安装步骤<br>        10.1.2　修改Redis配置文件<br>        10.1.3　运行Redis服务器<br>        10.1.4　key相关命令<br>        10.1.5　Redis支持的数据类型<br>        10.1.6　Redis排序命令详解<br>    10.2　事务处理<br>        10.2.1　事务处理原理<br>        10.2.2　事务处理实现<br>    10.3　持久化<br>        10.3.1　内存快照<br>        10.3.2　日志追加<br>    10.4　主从同步<br>        10.4.1　Redis主从同步原理<br>        10.4.2　Slave端的工作流程<br>        10.4.3　Master端的工作流程<br>    10.5　虚拟内存<br>        10.5.1　配置文件信息<br>        10.5.2　开启VM的后台操作<br>        10.5.3　Redis Object和VM Pointer<br>        10.5.4　交换过程<br>        10.5.5　阻塞式VM<br>        10.5.6　非阻塞式VM<br>    10.6　扩展库phpredis安装及使用<br>    10.7　Redis应用实践<br>        10.7.1　使用消息队列发布微博<br>        10.7.2　Redis替代文件存储Session<br>    10.8　深入了解Redis内核<br>        10.8.1　内存淘汰<br>        10.8.2　对象引用计数器<br>        10.8.3　自动关闭超时连接<br>        10.8.4　清除过期数据<br>    10.9　本章小结<br>第11章　高性能网站架构方案<br>    11.1　如何优化网站响应时间<br>        11.1.1　吞吐率<br>        11.1.2　压力测试<br>        11.1.3　持久连接<br>    11.2　MySQL响应速度提高方案：HandlerSocket<br>        11.2.1　HandlerSocket工作原理<br>        11.2.2　HandlerSocket安装和配置<br>        11.2.3　PHP-HandlerSocket性能测试<br>    11.3　MySQL稳定性提高方案：主从复制<br>        11.3.1　主从复制工作原理<br>        11.3.2　主从复制配置<br>        11.3.3　连接主从服务器<br>    11.4　Web应用加速方案：Varnish<br>        11.4.1　传统代理与反向代理<br>        11.4.2　Varnish安装和配置<br>        11.4.3　Varnish性能测试<br>        11.4.4　修改缓存规则<br>        11.4.5　监控Varnish运行状态<br>    11.5　异步计算方案：Gearman<br>        11.5.1　Gearman工作原理<br>        11.5.2　安装Gearman和PHP扩展<br>        11.5.3　使用Gearman异步发送邮件<br>    11.6　本章小结<br>第12章　代码调试和测试<br>    12.1　调试PHP代码<br>        12.1.1　PHP调试函数<br>        12.1.2　断点调试与变量跟踪工具Xdebug<br>    12.2　前端调试<br>        12.2.1　Firebug调试API<br>        12.2.2　使用Firebug调试DOM结构<br>        12.2.3　使用Firebug调试JavaScript<br>        12.2.4　使用Fiddler调试远程服务器上的文件<br>    12.3　日志管理<br>        12.3.1　PHP日志<br>        12.3.2　Apache服务器日志<br>        12.3.3　MySQL日志<br>    12.4　代码性能测试技术<br>        12.4.1　时间点测试<br>        12.4.2　文件查看工具WinCacheGrind<br>        12.4.3　性能测试注意事项<br>    12.5　单元测试<br>        12.5.1　单元测试框架PHPUnit的安装<br>        12.5.2　结合NetBeans使用PHPUnit进行单元测试<br>        12.5.3　PHPUnit中的断言函数<br>        12.5.4　PHPUnit常用方法<br>        12.5.5　PHPUnit常用注解<br>    12.6　压力测试<br>        12.6.1　使用JMeter压力测试HTTP<br>        12.6.2　压力测试MySQL<br>        12.6.3　JMeter+Badboy组合测试<br>    12.7　本章小结<br>第13章　Hash算法与数据库实现<br>    13.1　Hash函数<br>    13.2　Hash算法<br>        13.2.1　直接取余法<br>        13.2.2　乘积取整法<br>        13.2.3　经典Hash算法Times33<br>    13.3　Hash表<br>        13.3.1　Hash表结构<br>        13.3.2　使用PHP实现Hash表<br>        13.3.3　Hash表冲突<br>        13.3.4　拉链法解决冲突<br>    13.4　一个小型数据库的实现<br>        13.4.1　pack函数的用法<br>        13.4.2　unpack函数的用法<br>        13.4.3　索引文件和数据文件<br>        13.4.4　数据库接口方法<br>        13.4.5　源代码解析<br>        13.4.6　测试代码<br>    13.5　本章小结<br>第14章　PHP编码规范<br>    14.1　文件格式<br>        14.1.1　文件标记<br>        14.1.2　文件和目录命名<br>        14.1.3　文件目录结构<br>    14.2　命名规范<br>        14.2.1　变量命名<br>        14.2.2　类及接口命名<br>        14.2.3　数据库命名<br>        14.2.4　习惯与约定<br>    14.3　注释规范<br>        14.3.1　程序注释<br>        14.3.2　文件注释<br>        14.3.3　类接口注释<br>        14.3.4　方法和函数注释<br>        14.3.5　标注的使用<br>    14.4　代码风格<br>        14.4.1　缩进和空格<br>        14.4.2　语句断行<br>        14.4.3　更好的习惯<br>    14.5　本章小结</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2014/12/02/e3-80-8aphp-e6-a0-b8-e5-bf-83-e6-8a-80-e6-9c-af-e4-b8-8e-e6-9c-80-e4-bd-b3-e5-ae-9e-e8-b7-b5-e3-80-8b-e7-9b-ae-e5-bd-95-e5-88-97-e8-a1-a8/" data-id="cinslx5pa006mktpdu01uarbl" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-e9-a2-84-e5-8f-91-e5-b8-83-e6-9c-ba-e5-99-a8-e5-92-8c-e9-9b-86-e7-be-a4-e6-9c-ba-e5-99-a8-e5-85-b1-e7-94-a8memcache-e5-af-bc-e8-87-b4-e7-9a-84-e4-b8-80-e6-ac-a1-e9-97-ae-e9-a2-98" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/12/01/e9-a2-84-e5-8f-91-e5-b8-83-e6-9c-ba-e5-99-a8-e5-92-8c-e9-9b-86-e7-be-a4-e6-9c-ba-e5-99-a8-e5-85-b1-e7-94-a8memcache-e5-af-bc-e8-87-b4-e7-9a-84-e4-b8-80-e6-ac-a1-e9-97-ae-e9-a2-98/" class="article-date">
+  <time datetime="2014-12-01T10:32:24.000Z" itemprop="datePublished">2014-12-01</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/mysql/">mysql</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/12/01/e9-a2-84-e5-8f-91-e5-b8-83-e6-9c-ba-e5-99-a8-e5-92-8c-e9-9b-86-e7-be-a4-e6-9c-ba-e5-99-a8-e5-85-b1-e7-94-a8memcache-e5-af-bc-e8-87-b4-e7-9a-84-e4-b8-80-e6-ac-a1-e9-97-ae-e9-a2-98/">预发布机器和集群机器共用memcache导致的一次问题</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>今天遇到一个奇葩的问题： 做了一个需求之后上线到预发布机器测试， 清空memcache后测试部分页面都是更新的，但是过半个小时之后再看，很多页面都是没有更新过的。</p>
+<p>原有逻辑：</p>
+<p>crontab-&gt;db.table1-&gt;memcache.key1-&gt;page;</p>
+<p>现有逻辑：</p>
+<p>后台-&gt;db.table2-&gt;memcache.key2-&gt;page;</p>
+<p>花了好几个小时才得以解决： 原因是预发布机器和集群的memcache用的一个，而我对于这个运维机的大架构不熟悉，导致了现在的问题。</p>
+<p>清空memcache后，测试的部分页面是OK的原因是，取得数据库的数据；</p>
+<p>而半个小时后再看页面未更新的原由是：这些页面由用户触发，而用户触发的是集群里面的原有代码，而原有代码将table1的数据放在了memcache里面，所以，我这边测试的页面都是cache里面的。</p>
+<p>解决方案： 将所有的外层数据的memcache的key值也改掉，避免和原有的memcache的数据有任何冲突。</p>
+<p>这种问题真是不好解决，如果不能跳出思维圈了解大架构只是在代码层面去深入的话，方向有误就会浪费很多时间。</p>
+<p>根治这种问题有两种方案：①测试机和线上的该分离的服务就应该分离 ， ②对于新入职同事或者新接手业务的人，要告知他们运维架构等系列交接培训问题。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2014/12/01/e9-a2-84-e5-8f-91-e5-b8-83-e6-9c-ba-e5-99-a8-e5-92-8c-e9-9b-86-e7-be-a4-e6-9c-ba-e5-99-a8-e5-85-b1-e7-94-a8memcache-e5-af-bc-e8-87-b4-e7-9a-84-e4-b8-80-e6-ac-a1-e9-97-ae-e9-a2-98/" data-id="cinslx5o6003lktpdykbxc74n" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-ajax-e5-ae-9e-e7-8e-b0-e6-96-87-e4-bb-b6-e4-b8-8a-e4-bc-a0-jquery-e6-8f-92-e4-bb-b6-ajaxfileupload" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/11/30/ajax-e5-ae-9e-e7-8e-b0-e6-96-87-e4-bb-b6-e4-b8-8a-e4-bc-a0-jquery-e6-8f-92-e4-bb-b6-ajaxfileupload/" class="article-date">
+  <time datetime="2014-11-30T07:26:48.000Z" itemprop="datePublished">2014-11-30</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/前端/">前端</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/11/30/ajax-e5-ae-9e-e7-8e-b0-e6-96-87-e4-bb-b6-e4-b8-8a-e4-bc-a0-jquery-e6-8f-92-e4-bb-b6-ajaxfileupload/">ajax 实现文件上传 - jquery插件 ajaxFileUpload</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>前后端完全分离的架构对于某些环境下面非常适用。</p>
+<p>其中文件上传是个难点，见过之前前端同事靠iframe页面嵌入表单来实现页面的不刷新，但对于后端规范肯定是差的，今天无意中见到一个jquery 文件上传插件，有了这个，就可以完美实现前后端完全分离的架构了。</p>
+<p>jquery插件名叫：ajaxFileUpload ，下面是方维O2O系统index.php?ctl=uc_account的实现代码：</p>
+<p>function upd_file(obj,file_id,uid)</p>
+<p>{    </p>
+<pre><code>$(&quot;input[name=&apos;&quot;+file_id+&quot;&apos;]&quot;).bind(&quot;change&quot;,function(){            
+
+    $(obj).hide();
+
+    $(obj).parent().find(&quot;.fileuploading&quot;).removeClass(&quot;hide&quot;);
+
+    $(obj).parent().find(&quot;.fileuploading&quot;).removeClass(&quot;show&quot;);
+
+    $(obj).parent().find(&quot;.fileuploading&quot;).addClass(&quot;show&quot;);
+
+      $.ajaxFileUpload
+
+       (
+
+           {
+
+                url:APP_ROOT+&apos;/index.php?ctl=avatar&amp;act=upload&amp;uid=&apos;+uid,
+
+                secureuri:false,
+
+                fileElementId:file_id,
+
+                dataType: &apos;json&apos;,
+
+                success: function (data, status)
+
+                {
+
+                       $(obj).show();
+
+                       $(obj).parent().find(&quot;.fileuploading&quot;).removeClass(&quot;hide&quot;);
+
+                    $(obj).parent().find(&quot;.fileuploading&quot;).removeClass(&quot;show&quot;);
+
+                    $(obj).parent().find(&quot;.fileuploading&quot;).addClass(&quot;hide&quot;);
+
+                       if(data.status==1)
+
+                       {
+
+                           document.getElementById(&quot;avatar&quot;).src = data.middle_url+&quot;?r=&quot;+Math.random();
+
+                       }
+
+                       else
+
+                       {
+
+                           $.showErr(data.msg);
+
+                       }
+
+                },
+
+                error: function (data, status, e)
+
+                {
+
+                    $.showErr(data.responseText);;
+
+                    $(obj).show();
+
+                    $(obj).parent().find(&quot;.fileuploading&quot;).removeClass(&quot;hide&quot;);
+
+                    $(obj).parent().find(&quot;.fileuploading&quot;).removeClass(&quot;show&quot;);
+
+                    $(obj).parent().find(&quot;.fileuploading&quot;).addClass(&quot;hide&quot;);
+
+                }
+
+           }
+
+       );
+
+      $(&quot;input[name=&apos;&quot;+file_id+&quot;&apos;]&quot;).unbind(&quot;change&quot;);
+
+});    
+</code></pre><p>}</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2014/11/30/ajax-e5-ae-9e-e7-8e-b0-e6-96-87-e4-bb-b6-e4-b8-8a-e4-bc-a0-jquery-e6-8f-92-e4-bb-b6-ajaxfileupload/" data-id="cinslx5pd006tktpdshmvxh49" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-linux-e4-b8-ad-e6-96-87-e4-bb-b6-e6-9d-83-e9-99-90rwx-e4-b8-ba-e4-bd-95-e6-98-af4-2-1" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/11/24/linux-e4-b8-ad-e6-96-87-e4-bb-b6-e6-9d-83-e9-99-90rwx-e4-b8-ba-e4-bd-95-e6-98-af4-2-1/" class="article-date">
+  <time datetime="2014-11-24T04:08:14.000Z" itemprop="datePublished">2014-11-24</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/11/24/linux-e4-b8-ad-e6-96-87-e4-bb-b6-e6-9d-83-e9-99-90rwx-e4-b8-ba-e4-bd-95-e6-98-af4-2-1/">linux 中文件权限rwx为何是4 2 1</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在阅读《高性能mysql》一书中，看到这样一段：</p>
+<p>关于set集合数据类型 可以 用整型的位操作来代替。</p>
+<p>分别是SET @CAN_R = 1 &lt;&lt; 2 ，#4<br>         @CAN_W = 1 &lt;&lt; 1 , #2<br>         @CAN_X = 1 &lt;&lt; 0 ; #1</p>
+<p>发现这里的 4 2 1 和 linux文件权限里面的 4 2 1 是一样的。 </p>
+<p>那么 ， 问题来了 ， 为何linux 中文件权限rwx为何是4 2 1 呢 ？ </p>
+<p>类似位图：<br>r w x<br>0 0 1  =》1   x<br>0 1 0  =》2   w<br>0 1 1  =》3   xw<br>1 0 0  =&gt; 4   r<br>1 0 1  =&gt; 5   rx<br>1 1 0  =&gt; 6   rw<br>1 1 1  =&gt; 7   rwx   </p>
+<p>举例来说：<br>754-&gt;111 101 010 - &gt; rwx r-x r– </p>
+<p>另外 ，由于二进制的运算， 他们之间如何加法都是不会重复的结果，这样就会容易的运用</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2014/11/24/linux-e4-b8-ad-e6-96-87-e4-bb-b6-e6-9d-83-e9-99-90rwx-e4-b8-ba-e4-bd-95-e6-98-af4-2-1/" data-id="cinslx5o10036ktpdk4hsqb2f" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-zend-studio-php-e8-b0-83-e8-af-95" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/11/20/zend-studio-php-e8-b0-83-e8-af-95/" class="article-date">
+  <time datetime="2014-11-20T04:17:43.000Z" itemprop="datePublished">2014-11-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/PHP/">PHP</a>►<a class="article-category-link" href="/categories/PHP/调试/">调试</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/11/20/zend-studio-php-e8-b0-83-e8-af-95/">Zend Studio PHP 调试</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>关于PHP调试，花费额的时间算是挺多的。</p>
+<p>由于开发环境的多样性，不得不花时间去研究各种调试配置。</p>
+<p>在这里开发环境是这样的：url访问资源，nginx配置、php脚本、mysql数据库、memcache服务 均在linux服务器，好在有samba提供了远程文件管理可以使用zend studio 鼓捣一下。</p>
+<p>这种情况下，涉及数据量大，web server不能在本地windows部署，所以，不能用之前 普通的ZendDebugger来部署调试了。</p>
+<p>半年前我曾远程配置成功了，但是那台笔记本磁盘坏掉后，现在de我竟然忘记当时是怎么配出来的。</p>
+<p>现在，重新研究吧。。。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2014/11/20/zend-studio-php-e8-b0-83-e8-af-95/" data-id="cinslx5ms0003ktpda1tj32wx" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-mysql-e4-b8-adutf8mb4-e7-b1-bb-e5-9e-8b-e7-9a-84-e7-89-b9-e7-82-b9" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/11/18/mysql-e4-b8-adutf8mb4-e7-b1-bb-e5-9e-8b-e7-9a-84-e7-89-b9-e7-82-b9/" class="article-date">
+  <time datetime="2014-11-18T09:50:09.000Z" itemprop="datePublished">2014-11-18</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/mysql/">mysql</a>►<a class="article-category-link" href="/categories/mysql/PHP笔试题/">PHP笔试题</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/11/18/mysql-e4-b8-adutf8mb4-e7-b1-bb-e5-9e-8b-e7-9a-84-e7-89-b9-e7-82-b9/">mysql中utf8mb4类型的特点</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>&nbsp;</p>
+<p>UTF8存储每个字符最大使用3个字节，而utf8mb4存储每个字符 最大可以使用4个字节。有些UTF8无法存储的utf8mb4就可以。支持 emoji 表情符号</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2014/11/18/mysql-e4-b8-adutf8mb4-e7-b1-bb-e5-9e-8b-e7-9a-84-e7-89-b9-e7-82-b9/" data-id="cinslx5nw002uktpdfe8dqlg1" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-mysql-e6-89-a7-e8-a1-8c-show-processlist-e5-87-ba-e7-8e-b0-unauthenticated-user-e7-9a-84-e7-94-a8-e6-88-b7" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/11/18/mysql-e6-89-a7-e8-a1-8c-show-processlist-e5-87-ba-e7-8e-b0-unauthenticated-user-e7-9a-84-e7-94-a8-e6-88-b7/" class="article-date">
+  <time datetime="2014-11-18T09:47:22.000Z" itemprop="datePublished">2014-11-18</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/mysql/">mysql</a>►<a class="article-category-link" href="/categories/mysql/PHP笔试题/">PHP笔试题</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/11/18/mysql-e6-89-a7-e8-a1-8c-show-processlist-e5-87-ba-e7-8e-b0-unauthenticated-user-e7-9a-84-e7-94-a8-e6-88-b7/">mysql 执行 show processlist 出现 unauthenticated user 的用户</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>&nbsp;</p>
+<p>发现这算属MySQL的一个bug，不管连接是通过hosts还是ip的方式，MySQL都会对DNS做反查，IP到DNS，由于反查的接续速度过慢（不管是不是isp提供的dns服务器的问题或者其他原因），大量的查询就难以应付，线程不够用就使劲增加线程，但是却得不到释放，所以MySQL会“假死”。</p>
+<p>解决的方案很简单，结束这个反查的过程，禁止任何解析。</p>
+<p>打开mysql的配置文件（my.cnf），在[mysqld]下面增加一行：</p>
+<p>skip-name-resolve</p>
+<p>重新载入配置文件或者重启MySQL服务即可。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2014/11/18/mysql-e6-89-a7-e8-a1-8c-show-processlist-e5-87-ba-e7-8e-b0-unauthenticated-user-e7-9a-84-e7-94-a8-e6-88-b7/" data-id="cinslx5nn002dktpd090btlwz" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-e8-b7-a8-e5-9f-9f-e7-9a-84-e8-a7-a3-e5-86-b3-e6-96-b9-e6-a1-88-e3-80-81-e5-ae-9e-e7-8e-b0-e6-9c-ba-e5-88-b6" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/11/18/e8-b7-a8-e5-9f-9f-e7-9a-84-e8-a7-a3-e5-86-b3-e6-96-b9-e6-a1-88-e3-80-81-e5-ae-9e-e7-8e-b0-e6-9c-ba-e5-88-b6/" class="article-date">
+  <time datetime="2014-11-18T09:44:02.000Z" itemprop="datePublished">2014-11-18</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/PHP/">PHP</a>►<a class="article-category-link" href="/categories/PHP/PHP笔试题/">PHP笔试题</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/11/18/e8-b7-a8-e5-9f-9f-e7-9a-84-e8-a7-a3-e5-86-b3-e6-96-b9-e6-a1-88-e3-80-81-e5-ae-9e-e7-8e-b0-e6-9c-ba-e5-88-b6/">跨域的解决方案、实现机制</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>&nbsp;</p>
+<p>jsonp跨域</p>
+<p>session 跨域；</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2014/11/18/e8-b7-a8-e5-9f-9f-e7-9a-84-e8-a7-a3-e5-86-b3-e6-96-b9-e6-a1-88-e3-80-81-e5-ae-9e-e7-8e-b0-e6-9c-ba-e5-88-b6/" data-id="cinslx5o7003nktpdfkxuhid3" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-e6-95-b4-e5-9e-8b-e7-9a-84-e4-b8-80-e7-bb-b4-e6-95-b0-e7-bb-84-ef-bc-8c-e5-af-b9-e5-85-b6-e9-87-8c-e9-9d-a2-e7-9a-84-e5-80-bc-e8-bf-9b-e8-a1-8c-e5-a4-a7-e5-b0-8f-e6-8e-92-e5-ba-8f-ef-bc-8c-e8-bf-bd" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/11/18/e6-95-b4-e5-9e-8b-e7-9a-84-e4-b8-80-e7-bb-b4-e6-95-b0-e7-bb-84-ef-bc-8c-e5-af-b9-e5-85-b6-e9-87-8c-e9-9d-a2-e7-9a-84-e5-80-bc-e8-bf-9b-e8-a1-8c-e5-a4-a7-e5-b0-8f-e6-8e-92-e5-ba-8f-ef-bc-8c-e8-bf-bd/" class="article-date">
+  <time datetime="2014-11-18T09:42:42.000Z" itemprop="datePublished">2014-11-18</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/PHP/">PHP</a>►<a class="article-category-link" href="/categories/PHP/PHP笔试题/">PHP笔试题</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/11/18/e6-95-b4-e5-9e-8b-e7-9a-84-e4-b8-80-e7-bb-b4-e6-95-b0-e7-bb-84-ef-bc-8c-e5-af-b9-e5-85-b6-e9-87-8c-e9-9d-a2-e7-9a-84-e5-80-bc-e8-bf-9b-e8-a1-8c-e5-a4-a7-e5-b0-8f-e6-8e-92-e5-ba-8f-ef-bc-8c-e8-bf-bd/">整型的一维数组，对其里面的值进行大小排序，追求效率</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>&nbsp;</p>
+<p>考察排序算法。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2014/11/18/e6-95-b4-e5-9e-8b-e7-9a-84-e4-b8-80-e7-bb-b4-e6-95-b0-e7-bb-84-ef-bc-8c-e5-af-b9-e5-85-b6-e9-87-8c-e9-9d-a2-e7-9a-84-e5-80-bc-e8-bf-9b-e8-a1-8c-e5-a4-a7-e5-b0-8f-e6-8e-92-e5-ba-8f-ef-bc-8c-e8-bf-bd/" data-id="cinslx5oj004pktpd9n67l6aj" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <nav id="page-nav">
+      <a class="extend prev" rel="prev" href="/page/6/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="page-number" href="/page/6/">6</a><span class="page-number current">7</span><a class="page-number" href="/page/8/">8</a><a class="page-number" href="/page/9/">9</a><a class="extend next" rel="next" href="/page/8/">Next &raquo;</a>
+    </nav>
+  
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/HTTP/">HTTP</a><span class="category-list-count">3</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/HTTP/PHP/">PHP</a><span class="category-list-count">3</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">9</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/PHP/">PHP</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/PHP/调试/">调试</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/PHP笔试题/">PHP笔试题</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/mysql/">mysql</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/nginx/">nginx</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/nginx/PHP/">PHP</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/工具/">工具</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/PHP/">PHP</a><span class="category-list-count">22</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/PHP/PHP笔试题/">PHP笔试题</a><span class="category-list-count">13</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/PHP/PHP笔试题/数据结构与算法/">数据结构与算法</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/PHP/redis/">redis</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PHP/调试/">调试</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/PHP笔试题/">PHP笔试题</a><span class="category-list-count">10</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/PHP笔试题/数据结构与算法/">数据结构与算法</a><span class="category-list-count">4</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/mi/">mi</a><span class="category-list-count">2</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/mi/PHP/">PHP</a><span class="category-list-count">2</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/">mysql</a><span class="category-list-count">23</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/PHP/">PHP</a><span class="category-list-count">2</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/PHP/PHP笔试题/">PHP笔试题</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/PHP笔试题/">PHP笔试题</a><span class="category-list-count">5</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/PHP笔试题/redis/">redis</a><span class="category-list-count">1</span></li></ul></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/前端/">前端</a><span class="category-list-count">2</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/前端/移动/">移动</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/安全/">安全</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据结构与算法/">数据结构与算法</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/未分类/">未分类</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/脑洞/">脑洞</a><span class="category-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/凤凰网面试题/">凤凰网面试题</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/小米面试题/">小米面试题</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/滴滴打车面试题/">滴滴打车面试题</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/猎豹移动面试题/">猎豹移动面试题</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/百度面试题/">百度面试题</a><span class="tag-list-count">9</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/凤凰网面试题/" style="font-size: 17.5px;">凤凰网面试题</a> <a href="/tags/小米面试题/" style="font-size: 15px;">小米面试题</a> <a href="/tags/滴滴打车面试题/" style="font-size: 12.5px;">滴滴打车面试题</a> <a href="/tags/猎豹移动面试题/" style="font-size: 10px;">猎豹移动面试题</a> <a href="/tags/百度面试题/" style="font-size: 20px;">百度面试题</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a><span class="archive-list-count">23</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a><span class="archive-list-count">22</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">19</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2016/03/28/golang-defer的使用/">golang defer的使用</a>
+          </li>
+        
+          <li>
+            <a href="/2016/02/18/GO-lang的面向对象的理解/">GO-lang的面向对象的理解</a>
+          </li>
+        
+          <li>
+            <a href="/2016/02/16/GO-lang-的学习笔记/">GO lang 的学习笔记</a>
+          </li>
+        
+          <li>
+            <a href="/2016/02/16/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2015/12/15/php-e5-a4-9a-e4-b8-aa-e5-80-bc-e7-9b-b8-e5-8a-a0-e6-98-af-e7-bb-99-e5-ae-9a-e7-9a-84-e4-b8-80-e4-b8-aa-e6-95-b0-ef-bc-8c-e6-b1-82-e5-a4-9a-e4-b8-aa-e5-80-bc-e7-9a-84-e7-bb-84-e5-90-88/">PHP 多个值相加是给定的一个数，求多个值的组合</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+  <script src="/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+  </div>
+</body>
+</html>
