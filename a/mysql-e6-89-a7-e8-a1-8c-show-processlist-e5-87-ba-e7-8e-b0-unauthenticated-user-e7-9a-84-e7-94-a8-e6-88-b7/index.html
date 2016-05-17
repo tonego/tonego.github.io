@@ -17,7 +17,7 @@
 发现这算属MySQL的一个bug，不管连接是通过hosts还是ip的方式，MySQL都会对DNS做反查，IP到DNS，由于反查的接续速度过慢（不管是不是isp提供的dns服务器的问题或者其他原因），大量的查询就难以应付，线程不够用就使劲增加线程，但是却得不到释放，所以MySQL会“假死”。
 解决的方案很简单，结束这个反查的过程，禁止任何解析。
 打开mysql的配置文件（my.cnf）">
-<meta property="og:updated_time" content="2016-05-04T08:31:10.000Z">
+<meta property="og:updated_time" content="2016-05-17T08:32:00.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="mysql 执行 show processlist 出现 unauthenticated user 的用户">
 <meta name="twitter:description" content="&amp;nbsp;
@@ -109,7 +109,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://3wbuild.com/a/mysql-e6-89-a7-e8-a1-8c-show-processlist-e5-87-ba-e7-8e-b0-unauthenticated-user-e7-9a-84-e7-94-a8-e6-88-b7/" data-id="ciob4nhvy002d6apd9i4btlhv" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/mysql-e6-89-a7-e8-a1-8c-show-processlist-e5-87-ba-e7-8e-b0-unauthenticated-user-e7-9a-84-e7-94-a8-e6-88-b7/" data-id="ciob6pjel002dyopdrhalv3qy" class="article-share-link">Share</a>
       
       
     </footer>
@@ -173,7 +173,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a><span class="archive-list-count">23</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a><span class="archive-list-count">22</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">19</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a><span class="archive-list-count">23</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a><span class="archive-list-count">22</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">19</span></li></ul>
     </div>
   </div>
 
@@ -185,6 +185,10 @@
       <ul>
         
           <li>
+            <a href="/a/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
             <a href="/a/golang-defer的使用/">golang defer的使用</a>
           </li>
         
@@ -194,10 +198,6 @@
         
           <li>
             <a href="/a/GO-lang-的学习笔记/">GO lang 的学习笔记</a>
-          </li>
-        
-          <li>
-            <a href="/a/hello-world/">Hello World</a>
           </li>
         
           <li>
