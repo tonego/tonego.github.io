@@ -65,54 +65,6 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-mysql-sql-e6-89-a7-e8-a1-8c-e8-ae-a1-e5-88-92-e6-9f-a5-e7-9c-8b-e6-96-b9-e6-b3-95" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/a/mysql-sql-e6-89-a7-e8-a1-8c-e8-ae-a1-e5-88-92-e6-9f-a5-e7-9c-8b-e6-96-b9-e6-b3-95/" class="article-date">
-  <time datetime="2014-12-04T15:22:39.000Z" itemprop="datePublished">2014-12-04</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/mysql/">mysql</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/a/mysql-sql-e6-89-a7-e8-a1-8c-e8-ae-a1-e5-88-92-e6-9f-a5-e7-9c-8b-e6-96-b9-e6-b3-95/">mysql SQL执行计划 查看方法</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>&nbsp;</p>
-<p>mysql&gt; select sql_no_cache count(id) from wx_article limit 3;<br>+———–+<br>| count(id) |<br>+———–+<br>| 305340 |<br>+———–+<br>1 row in set (0.08 sec)</p>
-<p>mysql&gt; show status like ‘last_query_cost’;<br>+—————–+—————+<br>| Variable_name | Value |<br>+—————–+—————+<br>| Last_query_cost | 342413.799000 |<br>+—————–+—————+<br>1 row in set (0.00 sec)</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>mysql&gt; explain extended select * from wx_article limit 3;<br>+—-+————-+————+——+—————+——+———+——+——–+———-+——-+<br>| id | select_type | table | type | possible_keys | key | key_len | ref | rows | filtered | Extra |<br>+—-+————-+————+——+—————+——+———+——+——–+———-+——-+<br>| 1 | SIMPLE | wx_article | ALL | NULL | NULL | NULL | NULL | 351429 | 100.00 | |<br>+—-+————-+————+——+—————+——+———+——+——–+———-+——-+<br>1 row in set, 1 warning (0.00 sec)</p>
-<p>mysql&gt; show warnings;<br>+——-+——+——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————+<br>| Level | Code | Message |<br>+——-+——+——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————+<br>| Note | 1003 | select <code>sogouwx</code>.<code>wx_article</code>.<code>id</code> AS <code>id</code>,<code>sogouwx</code>.<code>wx_article</code>.<code>title</code> AS <code>title</code>,<code>sogouwx</code>.<code>wx_article</code>.<code>content</code> AS <code>content</code>,<code>sogouwx</code>.<code>wx_article</code>.<code>url</code> AS <code>url</code>,<code>sogouwx</code>.<code>wx_article</code>.<code>imgurl</code> AS <code>imgurl</code>,<code>sogouwx</code>.<code>wx_article</code>.<code>headimgurl</code> AS <code>headimgurl</code>,<code>sogouwx</code>.<code>wx_article</code>.<code>account</code> AS <code>account</code>,<code>sogouwx</code>.<code>wx_article</code>.<code>docid</code> AS <code>docid</code>,<code>sogouwx</code>.<code>wx_article</code>.<code>artlastmodified</code> AS <code>artlastmodified</code>,<code>sogouwx</code>.<code>wx_article</code>.<code>stamp_updated</code> AS <code>stamp_updated</code> from <code>sogouwx</code>.<code>wx_article</code> limit 3 |<br>+——-+——+——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————+<br>1 row in set (0.00 sec)</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://3wbuild.com/a/mysql-sql-e6-89-a7-e8-a1-8c-e8-ae-a1-e5-88-92-e6-9f-a5-e7-9c-8b-e6-96-b9-e6-b3-95/" data-id="ciov3ydkp001qeapdod379i5m" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
     <article id="post-e5-b0-8f-e8-af-b4sql-e7-9a-84-e4-b8-80-e6-ac-a1sql-e4-bc-98-e5-8c-96" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/a/e5-b0-8f-e8-af-b4sql-e7-9a-84-e4-b8-80-e6-ac-a1sql-e4-bc-98-e5-8c-96/" class="article-date">
@@ -169,7 +121,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://3wbuild.com/a/e5-b0-8f-e8-af-b4sql-e7-9a-84-e4-b8-80-e6-ac-a1sql-e4-bc-98-e5-8c-96/" data-id="ciov3ydm30058eapdz6jybkkk" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/e5-b0-8f-e8-af-b4sql-e7-9a-84-e4-b8-80-e6-ac-a1sql-e4-bc-98-e5-8c-96/" data-id="ciov4qzep0055l4pdpd1qcz75" class="article-share-link">Share</a>
       
       
     </footer>
@@ -211,7 +163,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://3wbuild.com/a/e3-80-8aphp-e6-a0-b8-e5-bf-83-e6-8a-80-e6-9c-af-e4-b8-8e-e6-9c-80-e4-bd-b3-e5-ae-9e-e8-b7-b5-e3-80-8b-e7-9b-ae-e5-bd-95-e5-88-97-e8-a1-a8/" data-id="ciov3ydmp006neapdawytwcbl" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/e3-80-8aphp-e6-a0-b8-e5-bf-83-e6-8a-80-e6-9c-af-e4-b8-8e-e6-9c-80-e4-bd-b3-e5-ae-9e-e8-b7-b5-e3-80-8b-e7-9b-ae-e5-bd-95-e5-88-97-e8-a1-a8/" data-id="ciov4qzfa006kl4pdihrnwtpq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -262,7 +214,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://3wbuild.com/a/e9-a2-84-e5-8f-91-e5-b8-83-e6-9c-ba-e5-99-a8-e5-92-8c-e9-9b-86-e7-be-a4-e6-9c-ba-e5-99-a8-e5-85-b1-e7-94-a8memcache-e5-af-bc-e8-87-b4-e7-9a-84-e4-b8-80-e6-ac-a1-e9-97-ae-e9-a2-98/" data-id="ciov3ydli003meapdbl90q0yy" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/e9-a2-84-e5-8f-91-e5-b8-83-e6-9c-ba-e5-99-a8-e5-92-8c-e9-9b-86-e7-be-a4-e6-9c-ba-e5-99-a8-e5-85-b1-e7-94-a8memcache-e5-af-bc-e8-87-b4-e7-9a-84-e4-b8-80-e6-ac-a1-e9-97-ae-e9-a2-98/" data-id="ciov4qze3003jl4pdto9sfhyh" class="article-share-link">Share</a>
       
       
     </footer>
@@ -385,7 +337,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://3wbuild.com/a/ajax-e5-ae-9e-e7-8e-b0-e6-96-87-e4-bb-b6-e4-b8-8a-e4-bc-a0-jquery-e6-8f-92-e4-bb-b6-ajaxfileupload/" data-id="ciov3ydmr006ueapdvues1dfw" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/ajax-e5-ae-9e-e7-8e-b0-e6-96-87-e4-bb-b6-e4-b8-8a-e4-bc-a0-jquery-e6-8f-92-e4-bb-b6-ajaxfileupload/" data-id="ciov4qzfd006rl4pdfg70y7yd" class="article-share-link">Share</a>
       
       
     </footer>
@@ -433,7 +385,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://3wbuild.com/a/linux-e4-b8-ad-e6-96-87-e4-bb-b6-e6-9d-83-e9-99-90rwx-e4-b8-ba-e4-bd-95-e6-98-af4-2-1/" data-id="ciov3ydld0037eapdnv4yngu1" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/linux-e4-b8-ad-e6-96-87-e4-bb-b6-e6-9d-83-e9-99-90rwx-e4-b8-ba-e4-bd-95-e6-98-af4-2-1/" data-id="ciov4qzdx0033l4pdkwaf02ut" class="article-share-link">Share</a>
       
       
     </footer>
@@ -479,7 +431,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://3wbuild.com/a/zend-studio-php-e8-b0-83-e8-af-95/" data-id="ciov3ydk40004eapd6ncbqf1j" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/zend-studio-php-e8-b0-83-e8-af-95/" data-id="ciov4qzca0000l4pd8dblu5fp" class="article-share-link">Share</a>
       
       
     </footer>
@@ -521,7 +473,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://3wbuild.com/a/mysql-e4-b8-adutf8mb4-e7-b1-bb-e5-9e-8b-e7-9a-84-e7-89-b9-e7-82-b9/" data-id="ciov3ydl9002veapd8khujh8p" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/mysql-e4-b8-adutf8mb4-e7-b1-bb-e5-9e-8b-e7-9a-84-e7-89-b9-e7-82-b9/" data-id="ciov4qzdt002rl4pd8d6rf7o6" class="article-share-link">Share</a>
       
       
     </footer>
@@ -567,7 +519,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://3wbuild.com/a/mysql-e6-89-a7-e8-a1-8c-show-processlist-e5-87-ba-e7-8e-b0-unauthenticated-user-e7-9a-84-e7-94-a8-e6-88-b7/" data-id="ciov3ydl0002eeapdugim58yd" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/mysql-e6-89-a7-e8-a1-8c-show-processlist-e5-87-ba-e7-8e-b0-unauthenticated-user-e7-9a-84-e7-94-a8-e6-88-b7/" data-id="ciov4qzdk002al4pdjmwj6zjk" class="article-share-link">Share</a>
       
       
     </footer>
@@ -610,7 +562,49 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://3wbuild.com/a/e8-b7-a8-e5-9f-9f-e7-9a-84-e8-a7-a3-e5-86-b3-e6-96-b9-e6-a1-88-e3-80-81-e5-ae-9e-e7-8e-b0-e6-9c-ba-e5-88-b6/" data-id="ciov3ydlk003oeapdypf2qpmw" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/e8-b7-a8-e5-9f-9f-e7-9a-84-e8-a7-a3-e5-86-b3-e6-96-b9-e6-a1-88-e3-80-81-e5-ae-9e-e7-8e-b0-e6-9c-ba-e5-88-b6/" data-id="ciov4qze4003ll4pdcq9ojt5m" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-e6-95-b4-e5-9e-8b-e7-9a-84-e4-b8-80-e7-bb-b4-e6-95-b0-e7-bb-84-ef-bc-8c-e5-af-b9-e5-85-b6-e9-87-8c-e9-9d-a2-e7-9a-84-e5-80-bc-e8-bf-9b-e8-a1-8c-e5-a4-a7-e5-b0-8f-e6-8e-92-e5-ba-8f-ef-bc-8c-e8-bf-bd" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/a/e6-95-b4-e5-9e-8b-e7-9a-84-e4-b8-80-e7-bb-b4-e6-95-b0-e7-bb-84-ef-bc-8c-e5-af-b9-e5-85-b6-e9-87-8c-e9-9d-a2-e7-9a-84-e5-80-bc-e8-bf-9b-e8-a1-8c-e5-a4-a7-e5-b0-8f-e6-8e-92-e5-ba-8f-ef-bc-8c-e8-bf-bd/" class="article-date">
+  <time datetime="2014-11-18T09:42:42.000Z" itemprop="datePublished">2014-11-18</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/PHP/">PHP</a>►<a class="article-category-link" href="/categories/PHP/PHP笔试题/">PHP笔试题</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/a/e6-95-b4-e5-9e-8b-e7-9a-84-e4-b8-80-e7-bb-b4-e6-95-b0-e7-bb-84-ef-bc-8c-e5-af-b9-e5-85-b6-e9-87-8c-e9-9d-a2-e7-9a-84-e5-80-bc-e8-bf-9b-e8-a1-8c-e5-a4-a7-e5-b0-8f-e6-8e-92-e5-ba-8f-ef-bc-8c-e8-bf-bd/">整型的一维数组，对其里面的值进行大小排序，追求效率</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>&nbsp;</p>
+<p>考察排序算法。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://3wbuild.com/a/e6-95-b4-e5-9e-8b-e7-9a-84-e4-b8-80-e7-bb-b4-e6-95-b0-e7-bb-84-ef-bc-8c-e5-af-b9-e5-85-b6-e9-87-8c-e9-9d-a2-e7-9a-84-e5-80-bc-e8-bf-9b-e8-a1-8c-e5-a4-a7-e5-b0-8f-e6-8e-92-e5-ba-8f-ef-bc-8c-e8-bf-bd/" data-id="ciov4qzej004nl4pdg954d0b9" class="article-share-link">Share</a>
       
       
     </footer>
@@ -660,7 +654,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a><span class="archive-list-count">23</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a><span class="archive-list-count">22</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">19</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a><span class="archive-list-count">23</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a><span class="archive-list-count">22</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">19</span></li></ul>
     </div>
   </div>
 
@@ -676,10 +670,6 @@
           </li>
         
           <li>
-            <a href="/a/读《图解HTTP》笔记/">读《图解HTTP》笔记</a>
-          </li>
-        
-          <li>
             <a href="/a/golang-defer的使用/">golang defer的使用</a>
           </li>
         
@@ -689,6 +679,10 @@
         
           <li>
             <a href="/a/GO-lang-的学习笔记/">GO lang 的学习笔记</a>
+          </li>
+        
+          <li>
+            <a href="/a/php-e5-a4-9a-e4-b8-aa-e5-80-bc-e7-9b-b8-e5-8a-a0-e6-98-af-e7-bb-99-e5-ae-9a-e7-9a-84-e4-b8-80-e4-b8-aa-e6-95-b0-ef-bc-8c-e6-b1-82-e5-a4-9a-e4-b8-aa-e5-80-bc-e7-9a-84-e7-bb-84-e5-90-88/">PHP 多个值相加是给定的一个数，求多个值的组合</a>
           </li>
         
       </ul>

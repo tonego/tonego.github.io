@@ -19,7 +19,7 @@
 多个单列索引，where条件是and，or，或者他们的组合，mysql优化器会自动采用 索引合并策略 index_merge
 如果某个列，集中在某个值上的数据太多，即基数太大，则会对索引的优化产生误判，会产生慢查询，对此类要修改应用程序。
 前缀索引字节数： select count(distinct left(aut">
-<meta property="og:updated_time" content="2016-05-31T07:13:32.000Z">
+<meta property="og:updated_time" content="2016-05-31T07:25:15.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="mysql创建高性能的索引">
 <meta name="twitter:description" content="mysql创建高性能的索引，一些注意事项：
@@ -113,7 +113,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://3wbuild.com/a/mysql-e5-88-9b-e5-bb-ba-e9-ab-98-e6-80-a7-e8-83-bd-e7-9a-84-e7-b4-a2-e5-bc-95/" data-id="ciov3ydl7002reapdmiqkhycg" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/mysql-e5-88-9b-e5-bb-ba-e9-ab-98-e6-80-a7-e8-83-bd-e7-9a-84-e7-b4-a2-e5-bc-95/" data-id="ciov4qzdq002nl4pdfr25ehck" class="article-share-link">Share</a>
       
       
     </footer>
@@ -177,7 +177,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a><span class="archive-list-count">23</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a><span class="archive-list-count">22</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">19</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a><span class="archive-list-count">23</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a><span class="archive-list-count">22</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">19</span></li></ul>
     </div>
   </div>
 
@@ -193,10 +193,6 @@
           </li>
         
           <li>
-            <a href="/a/读《图解HTTP》笔记/">读《图解HTTP》笔记</a>
-          </li>
-        
-          <li>
             <a href="/a/golang-defer的使用/">golang defer的使用</a>
           </li>
         
@@ -206,6 +202,10 @@
         
           <li>
             <a href="/a/GO-lang-的学习笔记/">GO lang 的学习笔记</a>
+          </li>
+        
+          <li>
+            <a href="/a/php-e5-a4-9a-e4-b8-aa-e5-80-bc-e7-9b-b8-e5-8a-a0-e6-98-af-e7-bb-99-e5-ae-9a-e7-9a-84-e4-b8-80-e4-b8-aa-e6-95-b0-ef-bc-8c-e6-b1-82-e5-a4-9a-e4-b8-aa-e5-80-bc-e7-9a-84-e7-bb-84-e5-90-88/">PHP 多个值相加是给定的一个数，求多个值的组合</a>
           </li>
         
       </ul>
