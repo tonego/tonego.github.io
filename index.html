@@ -68,7 +68,7 @@
     <article id="post-hello-world" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/a/hello-world/" class="article-date">
-  <time datetime="2016-05-17T08:32:00.000Z" itemprop="datePublished">2016-05-17</time>
+  <time datetime="2016-05-31T07:13:32.000Z" itemprop="datePublished">2016-05-31</time>
 </a>
     
   </div>
@@ -100,7 +100,150 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://3wbuild.com/a/hello-world/" data-id="ciob6pjf0003eyopdozi6bcy5" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/hello-world/" data-id="ciov3ydlf003feapdxujt731s" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-读《图解HTTP》笔记" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/a/读《图解HTTP》笔记/" class="article-date">
+  <time datetime="2016-05-23T03:38:57.000Z" itemprop="datePublished">2016-05-23</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/a/读《图解HTTP》笔记/">读《图解HTTP》笔记</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="1-2-HTTP的诞生"><a href="#1-2-HTTP的诞生" class="headerlink" title="1.2 HTTP的诞生"></a>1.2 HTTP的诞生</h3><pre><code>1996.5 HTTP1.0
+1997.1 HTTP1.1
+</code></pre><h3 id="1-3-TCP-IP"><a href="#1-3-TCP-IP" class="headerlink" title="1.3 TCP/IP"></a>1.3 TCP/IP</h3><pre><code>应用层: HTTP/DNS/FTP
+传输层: TCP/UDP +标记序号和端口号
+网络层: IP +MAC
+链路层
+</code></pre><h3 id="1-4-IP-TCP-DNS"><a href="#1-4-IP-TCP-DNS" class="headerlink" title="1.4 IP/TCP/DNS"></a>1.4 IP/TCP/DNS</h3><pre><code>ARP: IP/MAC
+TCP: synchronize/acknowledgement
+DNS: HOST/IP
+</code></pre><h2 id="2-简单的HTTP协议"><a href="#2-简单的HTTP协议" class="headerlink" title="2 简单的HTTP协议"></a>2 简单的HTTP协议</h2><h3 id="2-2-请求和响应"><a href="#2-2-请求和响应" class="headerlink" title="2.2 请求和响应"></a>2.2 请求和响应</h3><pre><code>req:
+GET /index.html HTTP/1.1
+HOST: mi.com
+resp:
+HTTP/1.1 200 OK
+Cotent-length: 353
+</code></pre><h3 id="2-5-HTTP-METHOD"><a href="#2-5-HTTP-METHOD" class="headerlink" title="2.5 HTTP METHOD"></a>2.5 HTTP METHOD</h3><pre><code>GET
+POST
+HEAD
+PUT
+DELETE
+OPTIONS
+TRACE
+CONNECT
+</code></pre><h3 id="2-7-持久连接节省通信量"><a href="#2-7-持久连接节省通信量" class="headerlink" title="2.7 持久连接节省通信量"></a>2.7 持久连接节省通信量</h3><pre><code>HTTP/1.1 所有连接默认持久连接
+管线化
+</code></pre><h3 id="2-8-使用COOKIE的状态管理"><a href="#2-8-使用COOKIE的状态管理" class="headerlink" title="2.8 使用COOKIE的状态管理"></a>2.8 使用COOKIE的状态管理</h3><pre><code>* req:
+    GET /index.php HTTP/1.1
+    HOST: mi.com
+* resp:
+    HTTP/1.1 200 OK
+    Set-Cookie: sid=1006440989; path=/; domain=mi.com; expires:Wed, 10-Oct-12 07:12:20 GMT
+* req:
+    GET /cart.php HTTP/1.1
+    Cookie: sid=1006440989
+</code></pre><h3 id="3-4-发送多种数据的多部分对象集合"><a href="#3-4-发送多种数据的多部分对象集合" class="headerlink" title="3.4 发送多种数据的多部分对象集合"></a>3.4 发送多种数据的多部分对象集合</h3><pre><code>req:
+    Content-Type: multipart/form-data; boundary=1006440989
+
+    --1006440989
+    Content-Disposition: form-data; name=&quot;field1&quot;
+
+    wangtongphp
+    --1006440998
+    Content-Disposition: form-data; name=&quot;pics&quot;; file_name=&quot;file1.txt&quot;
+    Content-Type: text/plain
+
+    Hello World
+    --1006440989--
+
+resp:
+    HTTP/1.1 206 Partial Content
+    Content-Type:multipart/byteranges; boundary=THIS_STRING_SEPARATES
+
+
+    --THIS_STRING_SEPARATES
+    Content-Type: application/pdf
+    Content-Range: bytes 500-999/8000
+
+    --THIS_STRING_SEPARATES--
+</code></pre><h3 id="3-5-获取部分内容的范围请求"><a href="#3-5-获取部分内容的范围请求" class="headerlink" title="3.5 获取部分内容的范围请求"></a>3.5 获取部分内容的范围请求</h3><pre><code>req:
+    Range: bytes=-3000, 5000-8000
+    Range: bytes=5001-
+
+resp:
+    HTTP/1.1 206 Partial Content
+    Content-Type: mulitpart/byteranges
+</code></pre><h2 id="4-返回结果的HTTP状态码"><a href="#4-返回结果的HTTP状态码" class="headerlink" title="4 返回结果的HTTP状态码"></a>4 返回结果的HTTP状态码</h2><h3 id="4-2-2XX成功"><a href="#4-2-2XX成功" class="headerlink" title="4.2 2XX成功"></a>4.2 2XX成功</h3><pre><code>200 OK / 204 No Content / 206 Partial Content 
+</code></pre><h3 id="4-3-3XX重定向"><a href="#4-3-3XX重定向" class="headerlink" title="4.3 3XX重定向"></a>4.3 3XX重定向</h3><pre><code>301 Moved Permanently / 302 Found / 303 See Other / 304 Not Modified / 307 Temporary Redirect 
+</code></pre><h3 id="4-4-4XX客户端错误"><a href="#4-4-4XX客户端错误" class="headerlink" title="4.4 4XX客户端错误"></a>4.4 4XX客户端错误</h3><pre><code>400 Bad Request / 401 Unauthorized / 403 Forbidden / 404 Not Found
+</code></pre><h3 id="4-5-5XX服务器错误"><a href="#4-5-5XX服务器错误" class="headerlink" title="4.5 5XX服务器错误"></a>4.5 5XX服务器错误</h3><pre><code>500 Internal Server Error / 503 Service Unavailable / 504 Gateway Timeout
+</code></pre><h3 id="5-2-通信数据转发程序-代理、网关、隧道"><a href="#5-2-通信数据转发程序-代理、网关、隧道" class="headerlink" title="5.2 通信数据转发程序:代理、网关、隧道"></a>5.2 通信数据转发程序:代理、网关、隧道</h3><h2 id="6-HTTP-首部"><a href="#6-HTTP-首部" class="headerlink" title="6 HTTP 首部"></a>6 HTTP 首部</h2><h3 id="6-2-HTTP首部字段"><a href="#6-2-HTTP首部字段" class="headerlink" title="6.2 HTTP首部字段"></a>6.2 HTTP首部字段</h3><pre><code>通用／请求／响应／实体　首部字段
+RFC2616定义了47种首部字段，除此外还有Cookie / Set-Cookie / Content-Disposition 
+Hop-by-hop Header: Connnection / Keep-Alive / Proxy-Authenticate / Proxy-Authorization / Trailer / TE / Transfer-Encoding / Upgrade 外都是End-to-end Header
+</code></pre><h3 id="6-3-通用首部字段"><a href="#6-3-通用首部字段" class="headerlink" title="6.3 通用首部字段"></a>6.3 通用首部字段</h3><pre><code>Cache-Control: no-cache, no-store, max-age=3600, no-transform, cache-extentsion,
+    缓存请求指令：max-stale, min-fresh, only-if-cached, 
+    缓存响应指令：public, private, must-revalidate, proxy-revalidate, s-maxage,  
+Connection / Date / Pargma / Trailer / Transfer-Encoding / Upgrade / Via / Warning
+</code></pre><h3 id="6-4-请求首部字段"><a href="#6-4-请求首部字段" class="headerlink" title="6.4 请求首部字段"></a>6.4 请求首部字段</h3><pre><code>Accept / Accept-Charset / Accept-Encoding / Accept-Language / Authorization / Expect / From / Host/ If-Match / If-Modified-Since / If-None-Match / If-Range / If-Unmodified-Since / Max-Forwards / Proxy-Authorization / Range / Referer / TE / User-Agent / 
+</code></pre><h3 id="6-4-响应首部字段"><a href="#6-4-响应首部字段" class="headerlink" title="6.4 响应首部字段"></a>6.4 响应首部字段</h3><pre><code>Accept-Ranges / Age / ETag / Location / Proxy-Authenticate / Retry-After / Server / Vary / WWW-Authenticate 
+</code></pre><h3 id="6-5-实体首部字段"><a href="#6-5-实体首部字段" class="headerlink" title="6.5 实体首部字段"></a>6.5 实体首部字段</h3><pre><code>Allow / Content-Encoding / Content-Length / Content-Language / Content-Location / Content-MD5 / Content-Range / Content-Type / Expires / Last-Modified 
+</code></pre><h3 id="6-8-其他首部字段"><a href="#6-8-其他首部字段" class="headerlink" title="6.8 其他首部字段"></a>6.8 其他首部字段</h3><pre><code>X-Frame-Options / X-XSS-Protection / DNT / P3P
+</code></pre><h2 id="7-确保WEB安全的HTTPS"><a href="#7-确保WEB安全的HTTPS" class="headerlink" title="7 确保WEB安全的HTTPS"></a>7 确保WEB安全的HTTPS</h2><h3 id="7-2-HTTPS-HTTP-加密-认证-完整性保护"><a href="#7-2-HTTPS-HTTP-加密-认证-完整性保护" class="headerlink" title="7.2 HTTPS = HTTP + 加密 + 认证 + 完整性保护"></a>7.2 HTTPS = HTTP + 加密 + 认证 + 完整性保护</h3><pre><code>HTTPS是身披SSL外壳的HTTP
+证书用来证明公开密钥的正确性，关键在于浏览器内置了证书认证机构的公钥
+
+* 客户端发送Client Hello 报文开始SSL通信, 报文中包含客户端支持的SSL的指定版本／加密组件列表加密算法密钥长度
+* 服务器以Server Hello作为应答，报文中包含SSL和筛选后的加密组件
+* 服务器发送Certificate报文，公开密钥证书
+* 服务器发送Server Hello Done 报文，最初阶段SSL握手协商部分结束
+* 客户端以Client Key Exchange 作回应。报文中包含用公钥加密的Pre-master secret的随机密码串
+* 客户端发送 Change Cipher Spec 报文，告诉服务器，之后通信用Pre-master secret 密钥加密
+* 客户端发送 Finished　报文，包含连接至今全部报文的校验值，这次握手协商是否成功就看服务器能否正确解密此报文
+* 服务器发送 Change Cipher Spec 报文。
+* 服务器发送 Finished　报文.
+* 客户端发起HTTP请求。此处SSL连接建立完成，通信收到SSL的保护，从此处开始应用层HTTP协议的通信。包含MAC报文摘要
+* 服务器返回HTTP响应。
+* 客户端断开连接，发送close_notify报文，发送TCP FIN报文关闭与TCP的通信.
+
+SSL　通信慢消耗CPU和内存资源。
+购买证书一年要几千到一万元
+</code></pre><h2 id="8-认证"><a href="#8-认证" class="headerlink" title="8 认证"></a>8 认证</h2><h3 id="8-1-何为认证"><a href="#8-1-何为认证" class="headerlink" title="8.1 何为认证"></a>8.1 何为认证</h3><pre><code>密码登录
+动态令牌
+数字证书
+指纹虹膜等生物认证
+IC卡
+HTTP/1.1认证：BASIC / DIGEST / SSL / FormBase
+</code></pre><h2 id="9-基于HTTP的功能追加协议"><a href="#9-基于HTTP的功能追加协议" class="headerlink" title="9 基于HTTP的功能追加协议"></a>9 基于HTTP的功能追加协议</h2><h3 id="9-2-SPDY"><a href="#9-2-SPDY" class="headerlink" title="9.2 SPDY"></a>9.2 SPDY</h3><pre><code>Ajax 和 Comet技术
+SPDY : 多路复用流/请求优先级／压缩HTTP首部／推送功能／服务器提示功能
+</code></pre><h3 id="9-3-使用浏览器进行全双工的WebSocket"><a href="#9-3-使用浏览器进行全双工的WebSocket" class="headerlink" title="9.3 使用浏览器进行全双工的WebSocket"></a>9.3 使用浏览器进行全双工的WebSocket</h3><h3 id="9-4-HTTP-2-0"><a href="#9-4-HTTP-2-0" class="headerlink" title="9.4 HTTP/2.0"></a>9.4 HTTP/2.0</h3><pre><code>SPDY的多路复用和流量控制、HTTP Speed+Mobility的TLS义务化／协商／客户端拉拽／服务器推送／WebSocket
+</code></pre><h3 id="9-5-Web服务器管理文件的WebDAV"><a href="#9-5-Web服务器管理文件的WebDAV" class="headerlink" title="9.5 Web服务器管理文件的WebDAV"></a>9.5 Web服务器管理文件的WebDAV</h3>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://3wbuild.com/a/读《图解HTTP》笔记/" data-id="ciov3ydk30003eapd81is4i8m" class="article-share-link">Share</a>
       
       
     </footer>
@@ -136,7 +279,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://3wbuild.com/a/golang-defer的使用/" data-id="ciob6pjf2003hyopdv0yy9v8n" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/golang-defer的使用/" data-id="ciov3ydlh003ieapdharvwvx6" class="article-share-link">Share</a>
       
       
     </footer>
@@ -183,7 +326,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://3wbuild.com/a/GO-lang的面向对象的理解/" data-id="ciob6pjgf006vyopdo0jsb0lw" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/GO-lang的面向对象的理解/" data-id="ciov3ydms006weapdi0j0iqit" class="article-share-link">Share</a>
       
       
     </footer>
@@ -225,7 +368,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://3wbuild.com/a/GO-lang-的学习笔记/" data-id="ciob6pjgg006wyopdwtsvzknh" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/GO-lang-的学习笔记/" data-id="ciov3ydmt006xeapdtzu3xzrs" class="article-share-link">Share</a>
       
       
     </footer>
@@ -274,7 +417,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://3wbuild.com/a/php-e5-a4-9a-e4-b8-aa-e5-80-bc-e7-9b-b8-e5-8a-a0-e6-98-af-e7-bb-99-e5-ae-9a-e7-9a-84-e4-b8-80-e4-b8-aa-e6-95-b0-ef-bc-8c-e6-b1-82-e5-a4-9a-e4-b8-aa-e5-80-bc-e7-9a-84-e7-bb-84-e5-90-88/" data-id="ciob6pje7001byopd4hii88b6" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/php-e5-a4-9a-e4-b8-aa-e5-80-bc-e7-9b-b8-e5-8a-a0-e6-98-af-e7-bb-99-e5-ae-9a-e7-9a-84-e4-b8-80-e4-b8-aa-e6-95-b0-ef-bc-8c-e6-b1-82-e5-a4-9a-e4-b8-aa-e5-80-bc-e7-9a-84-e7-bb-84-e5-90-88/" data-id="ciov3ydkm001ceapdyus77blg" class="article-share-link">Share</a>
       
       
     </footer>
@@ -335,7 +478,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://3wbuild.com/a/e6-8e-a5-e5-8f-a3-e5-af-b9-e6-8e-a5-e9-aa-8c-e7-ad-be-e9-9c-80-e8-a6-81-e6-b3-a8-e6-84-8f-e7-9a-84-e9-97-ae-e9-a2-98/" data-id="ciob6pjfm004zyopdahq0e4m7" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/e6-8e-a5-e5-8f-a3-e5-af-b9-e6-8e-a5-e9-aa-8c-e7-ad-be-e9-9c-80-e8-a6-81-e6-b3-a8-e6-84-8f-e7-9a-84-e9-97-ae-e9-a2-98/" data-id="ciov3ydm00050eapd5bqy2hov" class="article-share-link">Share</a>
       
       
     </footer>
@@ -435,7 +578,7 @@ Apache**httpd** 提供的文件保存在称为 Apache 文档根目录的目录�
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://3wbuild.com/a/e5-9c-a8linux-e4-b8-8a-e9-9d-a2-e5-ae-89-e8-a3-85-lamp-web-e6-9c-8d-e5-8a-a1-e5-99-a8/" data-id="ciob6pjg0005syopd4kf6nrnj" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/e5-9c-a8linux-e4-b8-8a-e9-9d-a2-e5-ae-89-e8-a3-85-lamp-web-e6-9c-8d-e5-8a-a1-e5-99-a8/" data-id="ciov3ydmc005teapdxin28ka9" class="article-share-link">Share</a>
       
       
     </footer>
@@ -538,7 +681,7 @@ Apache**httpd** 提供的文件保存在称为 Apache 文档根目录的目录�
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://3wbuild.com/a/e7-bd-91-e7-ab-99-e5-ae-89-e5-85-a8-e4-b9-8b-ef-bd-98-ef-bd-93-ef-bd-93-ef-bc-8f-ef-bd-83-ef-bd-92-ef-bd-93-ef-bd-86/" data-id="ciob6pjf8003tyopdomjehetp" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/e7-bd-91-e7-ab-99-e5-ae-89-e5-85-a8-e4-b9-8b-ef-bd-98-ef-bd-93-ef-bd-93-ef-bc-8f-ef-bd-83-ef-bd-92-ef-bd-93-ef-bd-86/" data-id="ciov3ydlm003ueapdylvd2gdb" class="article-share-link">Share</a>
       
       
     </footer>
@@ -584,54 +727,7 @@ Apache**httpd** 提供的文件保存在称为 Apache 文档根目录的目录�
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://3wbuild.com/a/e5-ae-9e-e7-8e-b0-php5-4-e4-b8-ad-json-encodestr-json-unescaped-unicode/" data-id="ciob6pjfw005gyopdkjs5dd57" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-zend-studio-12-e7-a0-b4-e8-a7-a3-e6-b0-b8-e4-b9-85-e4-bd-bf-e7-94-a8-e7-9a-84-e6-96-b9-e6-b3-95" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/a/zend-studio-12-e7-a0-b4-e8-a7-a3-e6-b0-b8-e4-b9-85-e4-bd-bf-e7-94-a8-e7-9a-84-e6-96-b9-e6-b3-95/" class="article-date">
-  <time datetime="2015-06-08T01:44:27.000Z" itemprop="datePublished">2015-06-08</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>►<a class="article-category-link" href="/categories/Linux/工具/">工具</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/a/zend-studio-12-e7-a0-b4-e8-a7-a3-e6-b0-b8-e4-b9-85-e4-bd-bf-e7-94-a8-e7-9a-84-e6-96-b9-e6-b3-95/">zend studio 12 破解/永久使用的方法</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>&nbsp;</p>
-<p>zend studio 12 破解/永久使用的方法</p>
-<p>&nbsp;</p>
-<p>linux:</p>
-<p>1、进入下述路径：c/users/用户名，如果你的用户名是123，那就是在下述目录：C:\Users\123<br>2、删除一个文件和两个目录：.zs（文件），.ZendStudio（目录）、.zend（目录）<br>这样大功告成，当我们再次打开后，就又恢复到30天了。</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://3wbuild.com/a/zend-studio-12-e7-a0-b4-e8-a7-a3-e6-b0-b8-e4-b9-85-e4-bd-bf-e7-94-a8-e7-9a-84-e6-96-b9-e6-b3-95/" data-id="ciob6pjdr0008yopdznk4rdow" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/e5-ae-9e-e7-8e-b0-php5-4-e4-b8-ad-json-encodestr-json-unescaped-unicode/" data-id="ciov3ydm8005heapd4bp4xnoc" class="article-share-link">Share</a>
       
       
     </footer>
@@ -681,7 +777,7 @@ Apache**httpd** 提供的文件保存在称为 Apache 文档根目录的目录�
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a><span class="archive-list-count">23</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a><span class="archive-list-count">22</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">19</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a><span class="archive-list-count">23</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a><span class="archive-list-count">22</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">19</span></li></ul>
     </div>
   </div>
 
@@ -697,6 +793,10 @@ Apache**httpd** 提供的文件保存在称为 Apache 文档根目录的目录�
           </li>
         
           <li>
+            <a href="/a/读《图解HTTP》笔记/">读《图解HTTP》笔记</a>
+          </li>
+        
+          <li>
             <a href="/a/golang-defer的使用/">golang defer的使用</a>
           </li>
         
@@ -706,10 +806,6 @@ Apache**httpd** 提供的文件保存在称为 Apache 文档根目录的目录�
         
           <li>
             <a href="/a/GO-lang-的学习笔记/">GO lang 的学习笔记</a>
-          </li>
-        
-          <li>
-            <a href="/a/php-e5-a4-9a-e4-b8-aa-e5-80-bc-e7-9b-b8-e5-8a-a0-e6-98-af-e7-bb-99-e5-ae-9a-e7-9a-84-e4-b8-80-e4-b8-aa-e6-95-b0-ef-bc-8c-e6-b1-82-e5-a4-9a-e4-b8-aa-e5-80-bc-e7-9a-84-e7-bb-84-e5-90-88/">PHP 多个值相加是给定的一个数，求多个值的组合</a>
           </li>
         
       </ul>
