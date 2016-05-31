@@ -65,6 +65,51 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-mysql-e6-9f-a5-e8-af-a2-e7-bc-93-e5-ad-98-e5-8f-98-e9-87-8f-e5-92-8c-e7-8a-b6-e6-80-81-e7-9a-84-e5-80-bc" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/a/mysql-e6-9f-a5-e8-af-a2-e7-bc-93-e5-ad-98-e5-8f-98-e9-87-8f-e5-92-8c-e7-8a-b6-e6-80-81-e7-9a-84-e5-80-bc/" class="article-date">
+  <time datetime="2015-01-20T11:35:02.000Z" itemprop="datePublished">2015-01-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/mysql/">mysql</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/a/mysql-e6-9f-a5-e8-af-a2-e7-bc-93-e5-ad-98-e5-8f-98-e9-87-8f-e5-92-8c-e7-8a-b6-e6-80-81-e7-9a-84-e5-80-bc/">mysql 查询缓存变量和状态的值</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>&nbsp;</p>
+<p>我这里现有的mysql查询缓存相关变量和状态如下：</p>
+<p>mysql&gt; show status like ‘Qcache%’;<br>+————————-+———–+<br>| Variable_name | Value |<br>+————————-+———–+<br>| Qcache_free_blocks | 3977 |<br>| Qcache_free_memory | 18250096 |<br>| Qcache_hits | 283961322 |<br>| Qcache_inserts | 18428082 |<br>| Qcache_lowmem_prunes | 4356073 |<br>| Qcache_not_cached | 5546877 |<br>| Qcache_queries_in_cache | 7952 |<br>| Qcache_total_blocks | 21891 |<br>+————————-+———–+<br>8 rows in set (0.00 sec)</p>
+<p>mysql&gt; show status like ‘Qcache%’;<br>+————————-+———–+<br>| Variable_name | Value |<br>+————————-+———–+<br>| Qcache_free_blocks | 4084 |<br>| Qcache_free_memory | 18467768 |<br>| Qcache_hits | 283964884 |<br>| Qcache_inserts | 18428200 |<br>| Qcache_lowmem_prunes | 4356073 |<br>| Qcache_not_cached | 5546880 |<br>| Qcache_queries_in_cache | 7840 |<br>| Qcache_total_blocks | 21775 |<br>+————————-+———–+<br>8 rows in set (0.00 sec)</p>
+<p>mysql&gt; show variables like ‘query_cache%’;<br>+——————————+———-+<br>| Variable_name | Value |<br>+——————————+———-+<br>| query_cache_limit | 1048576 |<br>| query_cache_min_res_unit | 4096 |<br>| query_cache_size | 67108864 |<br>| query_cache_type | ON |<br>| query_cache_wlock_invalidate | OFF |<br>+——————————+———-+<br>5 rows in set (0.06 sec)</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://3wbuild.com/a/mysql-e6-9f-a5-e8-af-a2-e7-bc-93-e5-ad-98-e5-8f-98-e9-87-8f-e5-92-8c-e7-8a-b6-e6-80-81-e7-9a-84-e5-80-bc/" data-id="ciov67xxz00270wpd9n1vd1i1" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-e7-a7-bb-e5-8a-a8-e5-89-8d-e7-ab-af-e5-bc-80-e5-8f-91-e6-a1-86-e6-9e-b6-e9-80-89-e6-8b-a9" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/a/e7-a7-bb-e5-8a-a8-e5-89-8d-e7-ab-af-e5-bc-80-e5-8f-91-e6-a1-86-e6-9e-b6-e9-80-89-e6-8b-a9/" class="article-date">
@@ -107,7 +152,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://3wbuild.com/a/e7-a7-bb-e5-8a-a8-e5-89-8d-e7-ab-af-e5-bc-80-e5-8f-91-e6-a1-86-e6-9e-b6-e9-80-89-e6-8b-a9/" data-id="ciov4qze9003wl4pduso0woov" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/e7-a7-bb-e5-8a-a8-e5-89-8d-e7-ab-af-e5-bc-80-e5-8f-91-e6-a1-86-e6-9e-b6-e9-80-89-e6-8b-a9/" data-id="ciov67xyq003x0wpdpd6ev1uf" class="article-share-link">Share</a>
       
       
     </footer>
@@ -150,7 +195,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://3wbuild.com/a/linux-e7-bb-9f-e8-ae-a1-e6-9f-90-e4-b8-aa-e6-96-87-e4-bb-b6-e5-86-85-e5-ae-b9-e7-9a-84-e6-af-8f-e4-b8-aa-e5-80-bc-e5-87-ba-e7-8e-b0-e7-9a-84-e6-ac-a1-e6-95-b0/" data-id="ciov4qzdw002yl4pdnpqmseje" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/linux-e7-bb-9f-e8-ae-a1-e6-9f-90-e4-b8-aa-e6-96-87-e4-bb-b6-e5-86-85-e5-ae-b9-e7-9a-84-e6-af-8f-e4-b8-aa-e5-80-bc-e5-87-ba-e7-8e-b0-e7-9a-84-e6-ac-a1-e6-95-b0/" data-id="ciov67xyd002z0wpdd9y05rrv" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/小米面试题/">小米面试题</a></li></ul>
@@ -200,7 +245,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://3wbuild.com/a/e5-b0-8f-e7-b1-b3-e8-b7-af-e7-94-b1-e5-99-a8-e6-8f-92-e4-bb-b6-e5-8e-9f-e7-90-86/" data-id="ciov4qzer0059l4pd6peinp6a" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/e5-b0-8f-e7-b1-b3-e8-b7-af-e7-94-b1-e5-99-a8-e6-8f-92-e4-bb-b6-e5-8e-9f-e7-90-86/" data-id="ciov67xz8005a0wpdre0z1tt7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -248,7 +293,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://3wbuild.com/a/e6-8e-92-e5-ba-8f-e7-ae-97-e6-b3-95/" data-id="ciov4qzeo0050l4pd8v31mjz9" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/e6-8e-92-e5-ba-8f-e7-ae-97-e6-b3-95/" data-id="ciov67xz200510wpdiqcwmluk" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/小米面试题/">小米面试题</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/百度面试题/">百度面试题</a></li></ul>
@@ -298,7 +343,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://3wbuild.com/a/e4-b8-8d-e5-90-8clinux-e6-9c-8d-e5-8a-a1-e5-99-a8-e4-b9-8b-e5-89-8d-e4-bc-a0-e8-be-93-e6-96-87-e4-bb-b6-e7-9a-84-e5-91-bd-e4-bb-a4/" data-id="ciov4qzf8006cl4pd4gq06ijz" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/e4-b8-8d-e5-90-8clinux-e6-9c-8d-e5-8a-a1-e5-99-a8-e4-b9-8b-e5-89-8d-e4-bc-a0-e8-be-93-e6-96-87-e4-bb-b6-e7-9a-84-e5-91-bd-e4-bb-a4/" data-id="ciov67xzn006d0wpdnjg3vwyv" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/凤凰网面试题/">凤凰网面试题</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/百度面试题/">百度面试题</a></li></ul>
@@ -343,7 +388,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://3wbuild.com/a/mysql-fetch-row-e4-b8-8e-mysql-fetch-array-e7-9a-84-e5-8c-ba-e5-88-ab/" data-id="ciov4qzdc001rl4pdfmnwjbuk" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/mysql-fetch-row-e4-b8-8e-mysql-fetch-array-e7-9a-84-e5-8c-ba-e5-88-ab/" data-id="ciov67xxt001s0wpd0ozdfvyk" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/凤凰网面试题/">凤凰网面试题</a></li></ul>
@@ -387,7 +432,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://3wbuild.com/a/php-e4-b8-ad-e4-bc-a0-e5-80-bc-e4-b8-8e-e4-bc-a0-e5-bc-95-e7-94-a8-e7-9a-84-e5-8c-ba-e5-88-ab/" data-id="ciov4qzd9001il4pdiy09u1mw" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/php-e4-b8-ad-e4-bc-a0-e5-80-bc-e4-b8-8e-e4-bc-a0-e5-bc-95-e7-94-a8-e7-9a-84-e5-8c-ba-e5-88-ab/" data-id="ciov67xxq001j0wpdo55l2slh" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/凤凰网面试题/">凤凰网面试题</a></li></ul>
@@ -431,7 +476,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://3wbuild.com/a/echo-print-print-r-e5-8c-ba-e5-88-ab/" data-id="ciov4qze2003gl4pdl530zw2g" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/echo-print-print-r-e5-8c-ba-e5-88-ab/" data-id="ciov67xyj003h0wpd92bli3yr" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/凤凰网面试题/">凤凰网面试题</a></li></ul>
@@ -475,63 +520,10 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://3wbuild.com/a/php-e5-a6-82-e4-bd-95-e5-ae-9e-e7-8e-b0-e5-ad-97-e7-ac-a6-e4-b8-b2-e7-bf-bb-e8-bd-ac/" data-id="ciov4qzd30014l4pdby7t38d6" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/php-e5-a6-82-e4-bd-95-e5-ae-9e-e7-8e-b0-e5-ad-97-e7-ac-a6-e4-b8-b2-e7-bf-bb-e8-bd-ac/" data-id="ciov67xxk00150wpdl5hr2eij" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/凤凰网面试题/">凤凰网面试题</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-e5-95-86-e5-93-81-e6-af-8f-e5-88-86-e9-92-9f-e7-9a-84-e5-ba-93-e5-ad-98-e5-8f-98-e5-8c-96-e6-8a-a5-e8-a1-a8-e7-9a-84-e5-ae-9e-e7-8e-b0" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/a/e5-95-86-e5-93-81-e6-af-8f-e5-88-86-e9-92-9f-e7-9a-84-e5-ba-93-e5-ad-98-e5-8f-98-e5-8c-96-e6-8a-a5-e8-a1-a8-e7-9a-84-e5-ae-9e-e7-8e-b0/" class="article-date">
-  <time datetime="2015-01-03T03:50:35.000Z" itemprop="datePublished">2015-01-03</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/PHP笔试题/">PHP笔试题</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/a/e5-95-86-e5-93-81-e6-af-8f-e5-88-86-e9-92-9f-e7-9a-84-e5-ba-93-e5-ad-98-e5-8f-98-e5-8c-96-e6-8a-a5-e8-a1-a8-e7-9a-84-e5-ae-9e-e7-8e-b0/">商品每分钟的库存变化报表的实现</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>原题如下：</p>
-<p>5000个商品goods_id，库存stock，在redis里面 。</p>
-<p>要做两个事情：</p>
-<p>①每分钟快照一次；</p>
-<p>②做报表，每个商品每分钟的库存变化折线图。</p>
-<p>注意的地方：</p>
-<p>存的时候注意数据量，要能存的下来；</p>
-<p>取的时候要足够快速，直接查db可能会存在问题；</p>
-<p>db的表结构或者其他存储的设计</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://3wbuild.com/a/e5-95-86-e5-93-81-e6-af-8f-e5-88-86-e9-92-9f-e7-9a-84-e5-ba-93-e5-ad-98-e5-8f-98-e5-8c-96-e6-8a-a5-e8-a1-a8-e7-9a-84-e5-ae-9e-e7-8e-b0/" data-id="ciov4qzf1005sl4pdk8wbm6wd" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/小米面试题/">小米面试题</a></li></ul>
 
     </footer>
   </div>
@@ -580,7 +572,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a><span class="archive-list-count">23</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a><span class="archive-list-count">22</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">19</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a><span class="archive-list-count">23</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a><span class="archive-list-count">22</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">19</span></li></ul>
     </div>
   </div>
 
@@ -590,6 +582,10 @@
     <h3 class="widget-title">Recents</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/a/读《图解HTTP》/">读《图解HTTP》</a>
+          </li>
         
           <li>
             <a href="/a/hello-world/">Hello World</a>
@@ -605,10 +601,6 @@
         
           <li>
             <a href="/a/GO-lang-的学习笔记/">GO lang 的学习笔记</a>
-          </li>
-        
-          <li>
-            <a href="/a/php-e5-a4-9a-e4-b8-aa-e5-80-bc-e7-9b-b8-e5-8a-a0-e6-98-af-e7-bb-99-e5-ae-9a-e7-9a-84-e4-b8-80-e4-b8-aa-e6-95-b0-ef-bc-8c-e6-b1-82-e5-a4-9a-e4-b8-aa-e5-80-bc-e7-9a-84-e7-bb-84-e5-90-88/">PHP 多个值相加是给定的一个数，求多个值的组合</a>
           </li>
         
       </ul>
