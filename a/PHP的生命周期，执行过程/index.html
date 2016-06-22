@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>PHP的生命周期，执行过程 | 王桐的技术博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="&amp;nbsp;
+PHP的生命周期，执行过程
+&amp;nbsp;
+大体上是MINIT、 RINIT、RSHUTDOWN、MSHUTDOWN
+更细一些：
+MINIT
+初始化全局变量(zuf)、
+初始化常量(PHP_VERSION)、
+初始化Zend引擎和核心组件(始化若干HashTable（比如函数表，常量表等等）, 注册内置函数（如strlen、define等），注册标准常量（如E_ALL、TRUE、NUL">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PHP的生命周期，执行过程">
+<meta property="og:url" content="http://3wbuild.com/a/PHP的生命周期，执行过程/index.html">
+<meta property="og:site_name" content="王桐的技术博客">
+<meta property="og:description" content="&amp;nbsp;
+PHP的生命周期，执行过程
+&amp;nbsp;
+大体上是MINIT、 RINIT、RSHUTDOWN、MSHUTDOWN
+更细一些：
+MINIT
+初始化全局变量(zuf)、
+初始化常量(PHP_VERSION)、
+初始化Zend引擎和核心组件(始化若干HashTable（比如函数表，常量表等等）, 注册内置函数（如strlen、define等），注册标准常量（如E_ALL、TRUE、NUL">
+<meta property="og:updated_time" content="2016-05-31T07:25:15.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PHP的生命周期，执行过程">
+<meta name="twitter:description" content="&amp;nbsp;
+PHP的生命周期，执行过程
+&amp;nbsp;
+大体上是MINIT、 RINIT、RSHUTDOWN、MSHUTDOWN
+更细一些：
+MINIT
+初始化全局变量(zuf)、
+初始化常量(PHP_VERSION)、
+初始化Zend引擎和核心组件(始化若干HashTable（比如函数表，常量表等等）, 注册内置函数（如strlen、define等），注册标准常量（如E_ALL、TRUE、NUL">
+  
+    <link rel="alternative" href="/atom.xml" title="王桐的技术博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  
+
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">王桐的技术博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">技术博客，PHP, Go, Mysql, Linux, Redis</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://3wbuild.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-PHP的生命周期，执行过程" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/a/PHP的生命周期，执行过程/" class="article-date">
+  <time datetime="2014-12-15T10:47:56.000Z" itemprop="datePublished">2014-12-15</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/PHP/">PHP</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      PHP的生命周期，执行过程
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>&nbsp;</p>
+<p>PHP的生命周期，执行过程</p>
+<p>&nbsp;</p>
+<p>大体上是MINIT、 RINIT、RSHUTDOWN、MSHUTDOWN</p>
+<p>更细一些：</p>
+<p><strong>MINIT</strong></p>
+<p>初始化全局变量(zuf)、</p>
+<p>初始化常量(PHP_VERSION)、</p>
+<p>初始化Zend引擎和核心组件(始化若干HashTable（比如函数表，常量表等等）, 注册内置函数（如strlen、define等），注册标准常量（如E_ALL、TRUE、NULL等）、注册GLOBALS全局变量)；</p>
+<p>解析PHP.INI ；</p>
+<p>$_GET、$_POST、$_FILES等的全局操作函数的初始化；</p>
+<p>初始化标准扩展模块和加载函数（依次遍历每个模块，调用每个模块的模块初始化函数， 也就是在本小节前面所说的用宏PHP_MINIT_FUNCTION包含的内容。）；</p>
+<p>禁用函数和类（调用zend_disable_function函数将指定的函数名从CG(function_table)函数表中删除）；</p>
+<p><strong>RINIT(ACTIVATION)</strong></p>
+<p>激活zend引擎（gc_reset函数用来重置垃圾收集机制;init_compiler函数用来初始化编译器，比如将编译过程中在放opcode的数组清空，准备编译时用来的数据结构;init_executor函数用来初始化中间代码执行过程。）</p>
+<p>激活SAPI ，（比如当请求方法为HEAD时，设置SG(request_info).headers_only=1）；</p>
+<p>环境初始化,(以$_COOKIE为例，php_default_treat_data函数会对依据分隔符，将所有的cookie拆分并赋值给对应的变量。)</p>
+<p>模块请求初始化（遍历注册在module_registry变量中的所有模块，调用其RINIT方法实现模块的请求初始化操作）；</p>
+<p><strong>运行</strong></p>
+<p>RSHUTDOWN</p>
+<p>MSHUTDOWN</p>
+<p>&nbsp;</p>
+<p>PHP关闭请求的过程是一个若干个关闭操作的集合，这个集合存在于php_request_shutdown函数中。 这个集合包括如下内容：</p>
+<ol>
+<li>调用所有通过register_shutdown_function()注册的函数。这些在关闭时调用的函数是在用户空间添加进来的。 一个简单的例子，我们可以在脚本出错时调用一个统一的函数，给用户一个友好一些的页面，这个有点类似于网页中的404页面。</li>
+<li>执行所有可用的__destruct函数。 这里的析构函数包括在对象池（EG(objects_store）中的所有对象的析构函数以及EG(symbol_table)中各个元素的析构方法。</li>
+<li>将所有的输出刷出去。</li>
+<li>发送HTTP应答头。这也是一个输出字符串的过程，只是这个字符串可能符合某些规范。</li>
+<li>遍历每个模块的关闭请求方法，执行模块的请求关闭操作，这就是我们在图中看到的Call each extension’s RSHUTDOWN。</li>
+<li>销毁全局变量表（PG(http_globals)）的变量。</li>
+<li>通过zend_deactivate函数，关闭词法分析器、语法分析器和中间代码执行器。</li>
+<li>调用每个扩展的post-RSHUTDOWN函数。只是基本每个扩展的post_deactivate_func函数指针都是NULL。</li>
+<li>关闭SAPI，通过sapi_deactivate销毁SG(sapi_headers)、SG(request_info)等的内容。</li>
+<li>关闭流的包装器、关闭流的过滤器。</li>
+<li>关闭内存管理。</li>
+<li>重新设置最大执行时间<br>&nbsp;</li>
+</ol>
+<p>&nbsp;</p>
+<p>摘自： <a href="http://www.php-internals.com/book/?p=chapt02/02-01-php-life-cycle-and-zend-engine" target="_blank" rel="external">http://www.php-internals.com/book/?p=chapt02/02-01-php-life-cycle-and-zend-engine</a></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://3wbuild.com/a/PHP的生命周期，执行过程/" data-id="cipqlt2e7005zhypdoyo7baa3" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/a/PHP网络技术大纲/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          PHP网络技术大纲
+        
+      </div>
+    </a>
+  
+  
+    <a href="/a/PHP_数组在内核中的实现，PHP内核中hashtable的实现/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">PHP 数组在内核中的实现，PHP内核中hashtable的实现</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/HTTP/">HTTP</a><span class="category-list-count">3</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/HTTP/PHP/">PHP</a><span class="category-list-count">3</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">9</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/PHP/">PHP</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/PHP/调试/">调试</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/PHP笔试题/">PHP笔试题</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/mysql/">mysql</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/nginx/">nginx</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/nginx/PHP/">PHP</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/工具/">工具</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/PHP/">PHP</a><span class="category-list-count">22</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/PHP/PHP笔试题/">PHP笔试题</a><span class="category-list-count">13</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/PHP/PHP笔试题/数据结构与算法/">数据结构与算法</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/PHP/redis/">redis</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PHP/调试/">调试</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/PHP笔试题/">PHP笔试题</a><span class="category-list-count">10</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/PHP笔试题/数据结构与算法/">数据结构与算法</a><span class="category-list-count">4</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/mi/">mi</a><span class="category-list-count">2</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/mi/PHP/">PHP</a><span class="category-list-count">2</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/">mysql</a><span class="category-list-count">23</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/PHP/">PHP</a><span class="category-list-count">2</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/PHP/PHP笔试题/">PHP笔试题</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/PHP笔试题/">PHP笔试题</a><span class="category-list-count">5</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/PHP笔试题/redis/">redis</a><span class="category-list-count">1</span></li></ul></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/前端/">前端</a><span class="category-list-count">2</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/前端/移动/">移动</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/安全/">安全</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据结构与算法/">数据结构与算法</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/未分类/">未分类</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/脑洞/">脑洞</a><span class="category-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/凤凰网面试题/">凤凰网面试题</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/小米面试题/">小米面试题</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/滴滴打车面试题/">滴滴打车面试题</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/猎豹移动面试题/">猎豹移动面试题</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/百度面试题/">百度面试题</a><span class="tag-list-count">9</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/凤凰网面试题/" style="font-size: 17.5px;">凤凰网面试题</a> <a href="/tags/小米面试题/" style="font-size: 15px;">小米面试题</a> <a href="/tags/滴滴打车面试题/" style="font-size: 12.5px;">滴滴打车面试题</a> <a href="/tags/猎豹移动面试题/" style="font-size: 10px;">猎豹移动面试题</a> <a href="/tags/百度面试题/" style="font-size: 20px;">百度面试题</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a><span class="archive-list-count">23</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a><span class="archive-list-count">22</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">19</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/a/Hello_World/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/a/读《Web前端黑客技术揭秘》思考/">读《Web前端黑客技术揭秘》思考</a>
+          </li>
+        
+          <li>
+            <a href="/a/听《Web安全分享》/">听《Web安全分享》</a>
+          </li>
+        
+          <li>
+            <a href="/a/读《图解HTTP》/">读《图解HTTP》</a>
+          </li>
+        
+          <li>
+            <a href="/a/golag_defer的使用/">golang defer的使用</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 王桐<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+  <script src="/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+  </div>
+</body>
+</html>
