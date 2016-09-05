@@ -3,19 +3,19 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Hexo</title>
+  <title>王桐的技术博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description">
+  <meta name="description" content="王桐的技术博客，Web开发领域">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
-<meta property="og:url" content="http://yoursite.com/page/9/index.html">
-<meta property="og:site_name" content="Hexo">
-<meta property="og:description">
+<meta property="og:title" content="王桐的技术博客">
+<meta property="og:url" content="http://3wbuild.com/page/9/index.html">
+<meta property="og:site_name" content="王桐的技术博客">
+<meta property="og:description" content="王桐的技术博客，Web开发领域">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hexo">
-<meta name="twitter:description">
+<meta name="twitter:title" content="王桐的技术博客">
+<meta name="twitter:description" content="王桐的技术博客，Web开发领域">
   
-    <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
+    <link rel="alternative" href="/atom.xml" title="王桐的技术博客" type="application/atom+xml">
   
   
     <link rel="icon" href="/favicon.png">
@@ -33,8 +33,12 @@
   <div id="header-outer" class="outer">
     <div id="header-title" class="inner">
       <h1 id="logo-wrap">
-        <a href="/" id="logo">Hexo</a>
+        <a href="/" id="logo">王桐的技术博客</a>
       </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">技术博客，PHP, Go, Mysql, Linux, Redis</a>
+        </h2>
       
     </div>
     <div id="header-inner" class="inner">
@@ -53,7 +57,7 @@
         <a id="nav-search-btn" class="nav-icon" title="Search"></a>
       </nav>
       <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://3wbuild.com"></form>
       </div>
     </div>
   </div>
@@ -61,9 +65,164 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-include-e3-80-81require-e3-80-81require-once-e7-9a-84-e8-81-94-e7-b3-bb-e5-92-8c-e5-8c-ba-e5-88-ab-ef-bc-9f" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-用_shell_curl_遍历_mysql中的_url数据，排除无效链接" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2014/11/03/include-e3-80-81require-e3-80-81require-once-e7-9a-84-e8-81-94-e7-b3-bb-e5-92-8c-e5-8c-ba-e5-88-ab-ef-bc-9f/" class="article-date">
+    <a href="/a/用_shell_curl_遍历_mysql中的_url数据，排除无效链接/" class="article-date">
+  <time datetime="2014-11-06T10:28:01.000Z" itemprop="datePublished">2014-11-06</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>►<a class="article-category-link" href="/categories/Linux/mysql/">mysql</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/a/用_shell_curl_遍历_mysql中的_url数据，排除无效链接/">用 shell curl 遍历 mysql中的 url数据，排除无效链接</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>背景：小说导航网站 ，需要对各个小说站点书的url和章节的url进行检查，去除无效URL；chapters 有255个分表，每个表大约40w数据；site表大约有80w个数据；总计URL过亿； 解决方案： 用 shell 遍历 mysql中的 url数据，排除无效链接；</p>
+<p>&nbsp;</p>
+<p>#!/bin/bash</p>
+<p>mysql -h114.112.xx.xx -Pxxxx -uwaxxxng -pxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx -D xxxx_book -e “select site_url from b_book_d_site” &gt; ~/table.tmp<br>for i in <code>cat ~/table.tmp</code><br>do<br>HTTP_CODE=<code>curl -o /dev/null -s -w %{http_code} $i</code><br>if [ “$HTTP_CODE” -ne “200” ]; then<br>echo -e “$i:\t$HTTP_CODE” &gt;&gt; ~/res.txt<br>fi<br>done</p>
+<p>结果发现速度极慢，夜里8点挂上，明早8点起来查了一下，才跑了1.6w的数据，所以此种方案排除。考虑到用curl_multi 系列函数来实现。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://3wbuild.com/a/用_shell_curl_遍历_mysql中的_url数据，排除无效链接/" data-id="cipqlt2bz000nhypdqj5dqzeu" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-PHP打印上个月第一天和上个月最后一天的日期" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/a/PHP打印上个月第一天和上个月最后一天的日期/" class="article-date">
+  <time datetime="2014-11-03T12:51:03.000Z" itemprop="datePublished">2014-11-03</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/PHP笔试题/">PHP笔试题</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/a/PHP打印上个月第一天和上个月最后一天的日期/">PHP打印上个月第一天和上个月最后一天的日期</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>PHP打印上个月第一天和上个月最后一天的日期：</p>
+<p>&nbsp;</p>
+<p>echo date(‘Y-m-d’, strtotime(‘last month first day’));<br>echo date(‘Y-m-d’, strtotime(‘last month last day’));</p>
+<p>&nbsp;</p>
+<p>echo date(‘Y-m-01’, strtotime(‘-1 month’));<br>echo date(‘Y-m-t’, strtotime(‘-1 month’));</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://3wbuild.com/a/PHP打印上个月第一天和上个月最后一天的日期/" data-id="cipqlt2ea0066hypdh5v628wh" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-判断一个变量为空有哪些方式，判断一个数组为空有哪些方式" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/a/判断一个变量为空有哪些方式，判断一个数组为空有哪些方式/" class="article-date">
+  <time datetime="2014-11-03T12:49:18.000Z" itemprop="datePublished">2014-11-03</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/PHP笔试题/">PHP笔试题</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/a/判断一个变量为空有哪些方式，判断一个数组为空有哪些方式/">判断一个变量为空有哪些方式，判断一个数组为空有哪些方式</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong>1. isset功能：判断变量是否被初始化</strong></p>
+<p>说明：它并不会判断变量是否为空，并且可以用来判断数组中元素是否被定义过<br>注意：当使用isset来判断数组元素是否被初始化过时，它的效率比array_key_exists高4倍左右</p>
+<p>复制代码 代码如下:</p>
+<p>$a = ‘’;<br>$a[‘c’] = ‘’;<br>if (!isset($a)) echo ‘$a 未被初始化’ . “”;<br>if (!isset($b)) echo ‘$b 未被初始化’ . “”;<br>if (isset($a[‘c’])) echo ‘$a 已经被初始化’ . “”;<br>// 显示结果为<br>// $b 未被初始化<br>// $a 已经被初始化</p>
+<p>&nbsp;</p>
+<p><strong>2. empty功能：检测变量是否为”空”</strong></p>
+<p>说明：任何一个未初始化的变量、值为 0 或 false 或 空字符串”” 或 null的变量、空数组、没有任何属性的对象，都将判断为empty==true<br>注意1：未初始化的变量也能被empty检测为”空”<br>注意2：empty只能检测变量，而不能检测语句</p>
+<p>复制代码 代码如下:</p>
+<p>$a = 0;<br>$b = ‘’;<br>$c = array();<br>if (empty($a)) echo ‘$a 为空’ . “”;<br>if (empty($b)) echo ‘$b 为空’ . “”;<br>if (empty($c)) echo ‘$c 为空’ . “”;<br>if (empty($d)) echo ‘$d 为空’ . “”;</p>
+<p>&nbsp;</p>
+<p><strong>3. var == null功能：判断变量是否为”空”</strong></p>
+<p>说明：值为 0 或 false 或 空字符串”” 或 null的变量、空数组、都将判断为 null<br>注意：与empty的显著不同就是：变量未初始化时 var == null 将会报错。</p>
+<p>复制代码 代码如下:</p>
+<p>$a = 0;<br>$b = array();<br>if ($a == null) echo ‘$a 为空’ . “”;<br>if ($b == null) echo ‘$b 为空’ . “”;<br>if ($c == null) echo ‘$b 为空’ . “”;<br>// 显示结果为<br>// $a 为空<br>// $b 为空<br>// Undefined variable: c</p>
+<p>&nbsp;</p>
+<p><strong>4. is_null功能：检测变量是否为”null”</strong></p>
+<p>说明：当变量被赋值为”null”时，检测结果为true<br>注意1：null不区分大小写：$a = null; $a = NULL 没有任何区别<br>注意2：仅在变量的值为”null”时，检测结果才为true，0、空字符串、false、空数组都检测为false<br>注意3：变量未初始化时，程序将会报错</p>
+<p>复制代码 代码如下:</p>
+<p>$a = null;<br>$b = false;<br>if (is_null($a)) echo ‘$a 为NULL’ . “”;<br>if (is_null($b)) echo ‘$b 为NULL’ . “”;<br>if (is_null($c)) echo ‘$c 为NULL’ . “”;<br>// 显示结果为<br>// $a 为NULL<br>// Undefined variable: c</p>
+<p>&nbsp;</p>
+<p><strong>5. var === null功能：检测变量是否为”null”，同时变量的类型也必须是”null”</strong></p>
+<p>说明：当变量被赋值为”null”时，同时变量的类型也是”null”时，<a href="http://cpro.baidu.com/cpro/ui/uijs.php?rs=1&amp;u=http%3A%2F%2Fwww%2Eeducity%2Ecn%2Fdevelop%2F680748%2Ehtml&amp;p=baidu&amp;c=news&amp;n=10&amp;t=tpclicked3_hc&amp;q=67051059_cpr&amp;k=%BC%EC%B2%E2&amp;k0=%BC%EC%B2%E2&amp;kdi0=8&amp;k1=php&amp;kdi1=8&amp;sid=95c3a5281f8951a3&amp;ch=0&amp;tu=u1740074&amp;jk=c6dedb9c0c9fadfe&amp;cf=29&amp;fv=15&amp;stid=9&amp;urlid=0&amp;luki=1&amp;seller_id=1&amp;di=128" target="_blank" rel="external">检测</a>结果为true<br>注意1：在判断为”null”上，全等于和is_null的作用相同<br>注意2：变量未初始化时，程序将会报错</p>
+<p><strong>总结PHP中，”NULL” 和 “空” 是2个概念。</strong></p>
+<p>isset  主要用来判断变量是否被初始化过<br>empty  可以将值为 “假”、”空”、”0”、”NULL”、”未初始化” 的变量都判断为TRUE<br>is_null  仅把值为 “NULL” 的变量判断为TRUE<br>var == null  把值为 “假”、”空”、”0”、”NULL” 的变量都判断为TRUE<br>var === null  仅把值为 “NULL” 的变量判断为TRUE</p>
+<p>所以我们在判断一个变量是否真正为”NULL”时，大多使用 is_null，从而避免”false”、”0”等值的干扰。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://3wbuild.com/a/判断一个变量为空有哪些方式，判断一个数组为空有哪些方式/" data-id="cipqlt2cw002yhypdadkrxevl" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-iclude、require、require_oce_的联系和区别？" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/a/iclude、require、require_oce_的联系和区别？/" class="article-date">
   <time datetime="2014-11-03T12:46:47.000Z" itemprop="datePublished">2014-11-03</time>
 </a>
     
@@ -79,7 +238,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2014/11/03/include-e3-80-81require-e3-80-81require-once-e7-9a-84-e8-81-94-e7-b3-bb-e5-92-8c-e5-8c-ba-e5-88-ab-ef-bc-9f/">include、require、require_once 的联系和区别？</a>
+      <a class="article-title" href="/a/iclude、require、require_oce_的联系和区别？/">include、require、require_once 的联系和区别？</a>
     </h1>
   
 
@@ -92,7 +251,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/11/03/include-e3-80-81require-e3-80-81require-once-e7-9a-84-e8-81-94-e7-b3-bb-e5-92-8c-e5-8c-ba-e5-88-ab-ef-bc-9f/" data-id="cinsnz8pg0038ocpdkubinyd5" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/iclude、require、require_oce_的联系和区别？/" data-id="cipqlt2e0005ghypd3fx2bhrp" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/凤凰网面试题/">凤凰网面试题</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/猎豹移动面试题/">猎豹移动面试题</a></li></ul>
@@ -104,9 +263,9 @@
 
 
   
-    <article id="post-hello-world-1" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-关于_wagtogphp" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2014/11/03/hello-world-1/" class="article-date">
+    <a href="/a/关于_wagtogphp/" class="article-date">
   <time datetime="2014-11-03T03:35:13.000Z" itemprop="datePublished">2014-11-03</time>
 </a>
     
@@ -122,7 +281,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2014/11/03/hello-world-1/">关于 wangtongphp</a>
+      <a class="article-title" href="/a/关于_wagtogphp/">关于 wangtongphp</a>
     </h1>
   
 
@@ -142,7 +301,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/11/03/hello-world-1/" data-id="cinsnz8pi003focpdz3a5ycwv" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/关于_wagtogphp/" data-id="cipqlt2cz0033hypd8zkrfmib" class="article-share-link">Share</a>
       
       
     </footer>
@@ -192,7 +351,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a><span class="archive-list-count">23</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a><span class="archive-list-count">22</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">19</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a><span class="archive-list-count">23</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a><span class="archive-list-count">22</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">19</span></li></ul>
     </div>
   </div>
 
@@ -204,23 +363,23 @@
       <ul>
         
           <li>
-            <a href="/2016/03/28/golang-defer的使用/">golang defer的使用</a>
+            <a href="/a/Hello_World/">Hello World</a>
           </li>
         
           <li>
-            <a href="/2016/02/18/GO-lang的面向对象的理解/">GO-lang的面向对象的理解</a>
+            <a href="/a/读《Web前端黑客技术揭秘》思考/">读《Web前端黑客技术揭秘》思考</a>
           </li>
         
           <li>
-            <a href="/2016/02/16/GO-lang-的学习笔记/">GO lang 的学习笔记</a>
+            <a href="/a/听《Web安全分享》/">听《Web安全分享》</a>
           </li>
         
           <li>
-            <a href="/2016/02/16/hello-world/">Hello World</a>
+            <a href="/a/读《图解HTTP》/">读《图解HTTP》</a>
           </li>
         
           <li>
-            <a href="/2015/12/15/php-e5-a4-9a-e4-b8-aa-e5-80-bc-e7-9b-b8-e5-8a-a0-e6-98-af-e7-bb-99-e5-ae-9a-e7-9a-84-e4-b8-80-e4-b8-aa-e6-95-b0-ef-bc-8c-e6-b1-82-e5-a4-9a-e4-b8-aa-e5-80-bc-e7-9a-84-e7-bb-84-e5-90-88/">PHP 多个值相加是给定的一个数，求多个值的组合</a>
+            <a href="/a/golag_defer的使用/">golang defer的使用</a>
           </li>
         
       </ul>
@@ -235,7 +394,7 @@
   
   <div class="outer">
     <div id="footer-info" class="inner">
-      &copy; 2016 John Doe<br>
+      &copy; 2016 王桐<br>
       Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
