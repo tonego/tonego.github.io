@@ -3,19 +3,19 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Hexo</title>
+  <title>王桐的技术博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description">
+  <meta name="description" content="王桐的技术博客，Web开发领域">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
-<meta property="og:url" content="http://yoursite.com/page/6/index.html">
-<meta property="og:site_name" content="Hexo">
-<meta property="og:description">
+<meta property="og:title" content="王桐的技术博客">
+<meta property="og:url" content="http://3wbuild.com/page/6/index.html">
+<meta property="og:site_name" content="王桐的技术博客">
+<meta property="og:description" content="王桐的技术博客，Web开发领域">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hexo">
-<meta name="twitter:description">
+<meta name="twitter:title" content="王桐的技术博客">
+<meta name="twitter:description" content="王桐的技术博客，Web开发领域">
   
-    <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
+    <link rel="alternative" href="/atom.xml" title="王桐的技术博客" type="application/atom+xml">
   
   
     <link rel="icon" href="/favicon.png">
@@ -33,8 +33,12 @@
   <div id="header-outer" class="outer">
     <div id="header-title" class="inner">
       <h1 id="logo-wrap">
-        <a href="/" id="logo">Hexo</a>
+        <a href="/" id="logo">王桐的技术博客</a>
       </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">技术博客，PHP, Go, Mysql, Linux, Redis</a>
+        </h2>
       
     </div>
     <div id="header-inner" class="inner">
@@ -53,7 +57,7 @@
         <a id="nav-search-btn" class="nav-icon" title="Search"></a>
       </nav>
       <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://3wbuild.com"></form>
       </div>
     </div>
   </div>
@@ -61,9 +65,129 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-e6-95-b0-e6-8d-ae-e5-ba-93-e5-9f-ba-e7-a1-80-e5-a4-a7-e7-ba-b2" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-CetOS下开启mysql远程连接，远程管理数据库" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2014/12/23/e6-95-b0-e6-8d-ae-e5-ba-93-e5-9f-ba-e7-a1-80-e5-a4-a7-e7-ba-b2/" class="article-date">
+    <a href="/a/CetOS下开启mysql远程连接，远程管理数据库/" class="article-date">
+  <time datetime="2014-12-23T03:29:46.000Z" itemprop="datePublished">2014-12-23</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/mysql/">mysql</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/a/CetOS下开启mysql远程连接，远程管理数据库/">CentOS下开启mysql远程连接，远程管理数据库</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="CentOS下开启mysql远程连接，远程管理数据库"><a href="#CentOS下开启mysql远程连接，远程管理数据库" class="headerlink" title="CentOS下开启mysql远程连接，远程管理数据库"></a>CentOS下开启mysql远程连接，远程管理数据库</h1><div><br><br>当服务器没有运行php、没装phpmyadmin的时候，远程管理<a href="http://www.fantxi.com/blog/tag/mysql/" title="mysql" target="_blank" rel="external">mysql</a>就显得有必要了。因为在CentOS下设置的，所以标题加上了<a href="http://www.fantxi.com/blog/tag/CentOS/" title="CentOS" target="_blank" rel="external">CentOS</a>，以下的命令在debian等系统下应该也OK。<br><br>1.  mysql -u root -p mysql # 第1个mysql是执行命令，第2个mysql是系统数据名称<br>在mysql控制台执行:<br><br>1.  grant all privileges on <em>.</em> to ‘root’@’%’ identified by ‘123456’ with grant option;<br>2.  # root是用户名，%代表任意主机，’123456’指定的登录密码（这个和本地的root密码可以设置不同的，互不影响）<br>3.  flush privileges; # 重载系统权限<br>4.  exit;<br>允许3306端口<br><br>1.  iptables -I INPUT -p tcp -m state –state NEW -m tcp –dport 3306 -j ACCEPT<br>2.  # 查看规则是否生效<br>3.  iptables -L -n # 或者: service iptables status<br>4.5.  # 此时生产环境是不安全的，远程管理之后应该关闭端口，删除之前添加的规则<br>6.  iptables -D INPUT -p tcp -m state –state NEW -m tcp –dport 3306 -j ACCEPT<br>PS，上面iptables添加/删除规则都是临时的，如果需要重启后也生效，需要保存修改:<br>service iptables save # 或者: /etc/init.d/iptables save<br>另外，<br>vi /etc/sysconfig/iptables # 加上下面这行规则也是可以的<br>-A INPUT -p tcp -m state –state NEW -m tcp –dport 3306 -j ACCEPT<br><br>远程管理数据库的软件，win系统下可以使用SQLyog，用了几种远程软件，感觉这个用起来蛮不错的。<br><br></div>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://3wbuild.com/a/CetOS下开启mysql远程连接，远程管理数据库/" data-id="cipqlt2el006whypdprti0v9x" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-Mysql_函数分类整理" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/a/Mysql_函数分类整理/" class="article-date">
+  <time datetime="2014-12-23T03:28:29.000Z" itemprop="datePublished">2014-12-23</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/mysql/">mysql</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/a/Mysql_函数分类整理/">Mysql 函数分类整理</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <div></div><br><div>MySQL字符串函数、数学函数、时间函数 分类总结：</div><br><div></div><br><div></div><br><div><br><div>MySQL函数，来源于手册：</div><br></div><br><div>        比较函数：coalesce、greatest、least、interval、</div><br><div>        流程控制：case、when、then、if、else、infnull、nullif</div><br><div></div><br><div></div><br><div><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>*</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></div><br><div></div><br><div>MySQL字符串函数，分类总结：</div><br><div>        charset(str)</div><br><div>        char(ascii(‘a’),ascii(‘b’)) = char(97,98) = ‘ab’ ;</div><br><div>        ord(S) = ascii(S) ;</div><br><div>        export_set(bits,1,0,’’,N)  =  conv(N,10,2)  =  bin(N) ;</div><br><div>        oct(N) = conv(N,10,8) ;</div><br><div>        hex    :    hex(N) = conv(N,10,16)     hex(‘abc’) = hex(0x616263) = 616263     unhex;</div><br><div>        compress    uncompress    uncompress_length ;</div><br>length    octet_length    char_length    character_length    bit_length ;<br><div>        concat    concat_ws ;</div><br><div>        coalesce    greatest    least    interval    make_set ;</div><br>elt、field、find_in_set    instr    locate    position    substring_index    substring    mid    format    ;<br><div>        reverse    replace    repeat    quote    space    insert</div><br><div><br><div>        lpad    rpad ;</div><br><div>        upper    lower    ucase    lcase ;</div><br><div>        left    right ;</div><br><div>        ltrim    rtrim    trim ;</div><br><div>        regexp    not regexp    like    not like    rlike    strcmp    soundex    sounds like    ;</div><br><div></div><br><div><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>*</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></div><br><div></div><br><div>MySQL数学函数，分类总结：</div><br><div>        acos    sin    asin    atan    atan2    cos    cot    degrees    radians    exp    ln    log    log2    long10    pi</div><br><div>        abs    ceiling    ceil    round    floor    format    mod    div    pow    sqrt     rand    sign    truncate    crc32</div><br><div></div><br><div><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>*</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></div><br><div></div><br><div>MySQL时间函数，分类总结：</div><br><div>        now() = current_timestamp = current_timestamp() = localtimestamp = localtimestamp() = localtime = localtime() = sysdate() = utc_timestamp ;</div><br><div>        curdate() = current_date = current_date() = utc_date() ;</div><br><div>        curtime() = current_time = current_time() = utc_time() ;</div><br><div>        date()    time()    year()    quarter()    mouth()    week()    day()    hour()    minute()    second()    microsecond()    extract()    dayname()    monthname()</div><br><div>        dayofyear()    dayofmonth()    dayofweek()    weekday()    weekofyear(now()) = week(now(),3)        yearweek(now()) = year(now()) + week(now())</div><br><div>        last_day() : day(last_day(now()))     convert_tz() ;</div><br><div>        date_add()    adddate()    addtime()    date_sub()     subdate()    subtime()    period_add()    period_diff()    datediff()    timediff()</div><br><div>        time_to_sec()    sec_to_time()    to_days()    from_days()    str_to_date()    date_format()    time_format()    get_format()    makedate()    maketime()</div><br><div>        unix_timestamp()    from_unixtime()    timestamp()    timestampadd()    timestampdiff()</div><br><div></div><br><div>        date_add(now(),interval -8 hour) = date_sub(now(),interval 8 hour) = timestampadd(hour, -8, now()) ;</div><br><div></div><br><div><br><div><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong><strong>*</strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></strong></div><br><div></div><br><div></div><br><div></div><br><div></div><br><div></div><br></div><br></div>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://3wbuild.com/a/Mysql_函数分类整理/" data-id="cipqlt2eh006rhypdwyxja2a5" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-正则表达式大纲" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/a/正则表达式大纲/" class="article-date">
+  <time datetime="2014-12-23T03:25:53.000Z" itemprop="datePublished">2014-12-23</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/PHP/">PHP</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/a/正则表达式大纲/">正则表达式大纲</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <div>POSIX 、PCRE</div><br><div></div><br><div>分隔符(# / <em> ~)、表达式、修饰符(i m u U s D)</em></div><br><div></div><br><div>元字符：. \w \s \d \b ^ $ - []  + ?</div><br><div></div><br><div>匹配规则：字符组、转义、反义、分支、分组、反向引用、环视、贪婪/懒惰</div><br><div></div><br><div>应用： URL重写、文本编辑工具(VIM、zend studio、editplus、word、execl)、模板引擎、字符串处理、UBB、采集（火车头、ET）</div><br><div></div><br><div>优化：字符串组&gt;分支、非贪婪、非捕获型括号、描点、环视、函数替代。</div><br><div></div>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://3wbuild.com/a/正则表达式大纲/" data-id="cipqlt2c6001chypdt4wamz36" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-数据库基础大纲" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/a/数据库基础大纲/" class="article-date">
   <time datetime="2014-12-23T03:22:45.000Z" itemprop="datePublished">2014-12-23</time>
 </a>
     
@@ -79,7 +203,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2014/12/23/e6-95-b0-e6-8d-ae-e5-ba-93-e5-9f-ba-e7-a1-80-e5-a4-a7-e7-ba-b2/">数据库基础大纲</a>
+      <a class="article-title" href="/a/数据库基础大纲/">数据库基础大纲</a>
     </h1>
   
 
@@ -91,7 +215,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/12/23/e6-95-b0-e6-8d-ae-e5-ba-93-e5-9f-ba-e7-a1-80-e5-a4-a7-e7-ba-b2/" data-id="cinsnz8q0004wocpdp13slo1m" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/数据库基础大纲/" data-id="cipqlt2cc001nhypd9pkp054x" class="article-share-link">Share</a>
       
       
     </footer>
@@ -101,9 +225,9 @@
 
 
   
-    <article id="post-scrapy-e5-ae-89-e8-a3-85" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-scrapy_安装" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2014/12/23/scrapy-e5-ae-89-e8-a3-85/" class="article-date">
+    <a href="/a/scrapy_安装/" class="article-date">
   <time datetime="2014-12-23T03:22:05.000Z" itemprop="datePublished">2014-12-23</time>
 </a>
     
@@ -119,7 +243,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2014/12/23/scrapy-e5-ae-89-e8-a3-85/">scrapy 安装</a>
+      <a class="article-title" href="/a/scrapy_安装/">scrapy 安装</a>
     </h1>
   
 
@@ -145,7 +269,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/12/23/scrapy-e5-ae-89-e8-a3-85/" data-id="cinsnz8o4000docpdzh9frgde" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/scrapy_安装/" data-id="cipqlt2d9003xhypd4zbn62jj" class="article-share-link">Share</a>
       
       
     </footer>
@@ -155,9 +279,9 @@
 
 
   
-    <article id="post-php-e7-bd-91-e7-bb-9c-e6-8a-80-e6-9c-af" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-PHP网络技术大纲" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2014/12/23/php-e7-bd-91-e7-bb-9c-e6-8a-80-e6-9c-af/" class="article-date">
+    <a href="/a/PHP网络技术大纲/" class="article-date">
   <time datetime="2014-12-23T03:19:55.000Z" itemprop="datePublished">2014-12-23</time>
 </a>
     
@@ -173,7 +297,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2014/12/23/php-e7-bd-91-e7-bb-9c-e6-8a-80-e6-9c-af/">PHP网络技术大纲</a>
+      <a class="article-title" href="/a/PHP网络技术大纲/">PHP网络技术大纲</a>
     </h1>
   
 
@@ -186,7 +310,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/12/23/php-e7-bd-91-e7-bb-9c-e6-8a-80-e6-9c-af/" data-id="cinsnz8o6000gocpd49txwabv" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/PHP网络技术大纲/" data-id="cipqlt2e5005whypd5rex38ex" class="article-share-link">Share</a>
       
       
     </footer>
@@ -196,9 +320,9 @@
 
 
   
-    <article id="post-php-e7-9a-84-e7-94-9f-e5-91-bd-e5-91-a8-e6-9c-9f-ef-bc-8c-e6-89-a7-e8-a1-8c-e8-bf-87-e7-a8-8b" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-PHP的生命周期，执行过程" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2014/12/15/php-e7-9a-84-e7-94-9f-e5-91-bd-e5-91-a8-e6-9c-9f-ef-bc-8c-e6-89-a7-e8-a1-8c-e8-bf-87-e7-a8-8b/" class="article-date">
+    <a href="/a/PHP的生命周期，执行过程/" class="article-date">
   <time datetime="2014-12-15T10:47:56.000Z" itemprop="datePublished">2014-12-15</time>
 </a>
     
@@ -214,7 +338,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2014/12/15/php-e7-9a-84-e7-94-9f-e5-91-bd-e5-91-a8-e6-9c-9f-ef-bc-8c-e6-89-a7-e8-a1-8c-e8-bf-87-e7-a8-8b/">PHP的生命周期，执行过程</a>
+      <a class="article-title" href="/a/PHP的生命周期，执行过程/">PHP的生命周期，执行过程</a>
     </h1>
   
 
@@ -267,7 +391,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/12/15/php-e7-9a-84-e7-94-9f-e5-91-bd-e5-91-a8-e6-9c-9f-ef-bc-8c-e6-89-a7-e8-a1-8c-e8-bf-87-e7-a8-8b/" data-id="cinsnz8o7000locpd65sg260n" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/PHP的生命周期，执行过程/" data-id="cipqlt2e7005zhypdoyo7baa3" class="article-share-link">Share</a>
       
       
     </footer>
@@ -277,9 +401,9 @@
 
 
   
-    <article id="post-php-e6-95-b0-e7-bb-84-e5-9c-a8-e5-86-85-e6-a0-b8-e4-b8-ad-e7-9a-84-e5-ae-9e-e7-8e-b0-ef-bc-8cphp-e5-86-85-e6-a0-b8-e4-b8-adhashtable-e7-9a-84-e5-ae-9e-e7-8e-b0" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-PHP_数组在内核中的实现，PHP内核中hashtable的实现" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2014/12/15/php-e6-95-b0-e7-bb-84-e5-9c-a8-e5-86-85-e6-a0-b8-e4-b8-ad-e7-9a-84-e5-ae-9e-e7-8e-b0-ef-bc-8cphp-e5-86-85-e6-a0-b8-e4-b8-adhashtable-e7-9a-84-e5-ae-9e-e7-8e-b0/" class="article-date">
+    <a href="/a/PHP_数组在内核中的实现，PHP内核中hashtable的实现/" class="article-date">
   <time datetime="2014-12-15T02:17:17.000Z" itemprop="datePublished">2014-12-15</time>
 </a>
     
@@ -295,7 +419,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2014/12/15/php-e6-95-b0-e7-bb-84-e5-9c-a8-e5-86-85-e6-a0-b8-e4-b8-ad-e7-9a-84-e5-ae-9e-e7-8e-b0-ef-bc-8cphp-e5-86-85-e6-a0-b8-e4-b8-adhashtable-e7-9a-84-e5-ae-9e-e7-8e-b0/">PHP 数组在内核中的实现，PHP内核中hashtable的实现</a>
+      <a class="article-title" href="/a/PHP_数组在内核中的实现，PHP内核中hashtable的实现/">PHP 数组在内核中的实现，PHP内核中hashtable的实现</a>
     </h1>
   
 
@@ -334,7 +458,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/12/15/php-e6-95-b0-e7-bb-84-e5-9c-a8-e5-86-85-e6-a0-b8-e4-b8-ad-e7-9a-84-e5-ae-9e-e7-8e-b0-ef-bc-8cphp-e5-86-85-e6-a0-b8-e4-b8-adhashtable-e7-9a-84-e5-ae-9e-e7-8e-b0/" data-id="cinsnz8ob000tocpdqeptpz2s" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/PHP_数组在内核中的实现，PHP内核中hashtable的实现/" data-id="cipqlt2ed006fhypdwdmohkhp" class="article-share-link">Share</a>
       
       
     </footer>
@@ -344,9 +468,9 @@
 
 
   
-    <article id="post-e7-94-a8curl-multi-e7-9a-84-e4-b8-80-e6-ac-a1-e5-ae-9e-e4-be-8b" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-用CURL_MULTI的一次实例" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2014/12/10/e7-94-a8curl-multi-e7-9a-84-e4-b8-80-e6-ac-a1-e5-ae-9e-e4-be-8b/" class="article-date">
+    <a href="/a/用CURL_MULTI的一次实例/" class="article-date">
   <time datetime="2014-12-10T08:56:34.000Z" itemprop="datePublished">2014-12-10</time>
 </a>
     
@@ -362,7 +486,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2014/12/10/e7-94-a8curl-multi-e7-9a-84-e4-b8-80-e6-ac-a1-e5-ae-9e-e4-be-8b/">用CURL_MULTI的一次实例</a>
+      <a class="article-title" href="/a/用CURL_MULTI的一次实例/">用CURL_MULTI的一次实例</a>
     </h1>
   
 
@@ -392,7 +516,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/12/10/e7-94-a8curl-multi-e7-9a-84-e4-b8-80-e6-ac-a1-e5-ae-9e-e4-be-8b/" data-id="cinsnz8pu004eocpdgdc6foo6" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/用CURL_MULTI的一次实例/" data-id="cipqlt2c40017hypdcmquanrl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -402,9 +526,9 @@
 
 
   
-    <article id="post-e5-8f-aa-e6-9c-89select-e6-9d-83-e9-99-90-e4-b8-8b-e9-9d-a2-e7-9a-84mysql-e6-95-b0-e6-8d-ae-e5-af-bc-e5-87-ba-e7-9a-84shell-e8-84-9a-e6-9c-ac" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-只有select权限下面的mysql数据导出的SHELL脚本" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2014/12/10/e5-8f-aa-e6-9c-89select-e6-9d-83-e9-99-90-e4-b8-8b-e9-9d-a2-e7-9a-84mysql-e6-95-b0-e6-8d-ae-e5-af-bc-e5-87-ba-e7-9a-84shell-e8-84-9a-e6-9c-ac/" class="article-date">
+    <a href="/a/只有select权限下面的mysql数据导出的SHELL脚本/" class="article-date">
   <time datetime="2014-12-10T08:53:22.000Z" itemprop="datePublished">2014-12-10</time>
 </a>
     
@@ -420,7 +544,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2014/12/10/e5-8f-aa-e6-9c-89select-e6-9d-83-e9-99-90-e4-b8-8b-e9-9d-a2-e7-9a-84mysql-e6-95-b0-e6-8d-ae-e5-af-bc-e5-87-ba-e7-9a-84shell-e8-84-9a-e6-9c-ac/">只有select权限下面的mysql数据导出的SHELL脚本</a>
+      <a class="article-title" href="/a/只有select权限下面的mysql数据导出的SHELL脚本/">只有select权限下面的mysql数据导出的SHELL脚本</a>
     </h1>
   
 
@@ -451,148 +575,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/12/10/e5-8f-aa-e6-9c-89select-e6-9d-83-e9-99-90-e4-b8-8b-e9-9d-a2-e7-9a-84mysql-e6-95-b0-e6-8d-ae-e5-af-bc-e5-87-ba-e7-9a-84shell-e8-84-9a-e6-9c-ac/" data-id="cinsnz8qf005xocpd3qzzh4no" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-e8-b4-a7-e8-bd-a6-e7-9a-84-e7-a9-ba-e8-bd-a6-e8-bf-94-e7-a8-8b-ef-bc-8c-e7-a4-be-e4-bc-9a-e8-b5-84-e6-ba-90-e7-9a-84-e6-b5-aa-e8-b4-b9-e3-80-82" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2014/12/05/e8-b4-a7-e8-bd-a6-e7-9a-84-e7-a9-ba-e8-bd-a6-e8-bf-94-e7-a8-8b-ef-bc-8c-e7-a4-be-e4-bc-9a-e8-b5-84-e6-ba-90-e7-9a-84-e6-b5-aa-e8-b4-b9-e3-80-82/" class="article-date">
-  <time datetime="2014-12-05T06:56:24.000Z" itemprop="datePublished">2014-12-05</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/脑洞/">脑洞</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2014/12/05/e8-b4-a7-e8-bd-a6-e7-9a-84-e7-a9-ba-e8-bd-a6-e8-bf-94-e7-a8-8b-ef-bc-8c-e7-a4-be-e4-bc-9a-e8-b5-84-e6-ba-90-e7-9a-84-e6-b5-aa-e8-b4-b9-e3-80-82/">货车的空车返程，社会资源的浪费。</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>&nbsp;</p>
-<p>我爸和我叔都是货车司机，都是跑单程，返程空车，这对于社会资源就是很大浪费。</p>
-<p>然后就想到了通过移动互联网调配资源来实现。</p>
-<p>&nbsp;</p>
-<p>而后了解后，这类产品已经众众多： ‘运满满’ 、 ‘快召货车’，‘骡迹物流’ ， 将货主和货车司机联系起来了。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/12/05/e8-b4-a7-e8-bd-a6-e7-9a-84-e7-a9-ba-e8-bd-a6-e8-bf-94-e7-a8-8b-ef-bc-8c-e7-a4-be-e4-bc-9a-e8-b5-84-e6-ba-90-e7-9a-84-e6-b5-aa-e8-b4-b9-e3-80-82/" data-id="cinsnz8pn003qocpd6xkvwew7" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-e6-9c-89-e6-95-88-e5-88-a9-e7-94-a8-e7-a4-be-e4-bc-9a-e9-97-b2-e7-bd-ae-e8-bd-a6-e4-bd-8d-e8-b5-84-e6-ba-90" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2014/12/05/e6-9c-89-e6-95-88-e5-88-a9-e7-94-a8-e7-a4-be-e4-bc-9a-e9-97-b2-e7-bd-ae-e8-bd-a6-e4-bd-8d-e8-b5-84-e6-ba-90/" class="article-date">
-  <time datetime="2014-12-05T06:52:26.000Z" itemprop="datePublished">2014-12-05</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/脑洞/">脑洞</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2014/12/05/e6-9c-89-e6-95-88-e5-88-a9-e7-94-a8-e7-a4-be-e4-bc-9a-e9-97-b2-e7-bd-ae-e8-bd-a6-e4-bd-8d-e8-b5-84-e6-ba-90/">有效利用社会闲置车位资源</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>&nbsp;</p>
-<p>今天看到个新闻： 西城区某些政府单位停车位放开了。</p>
-<p>工作之余休息一下眼睛，望着窗外，看到小区里面空闲的停车位，而附近朝阳医院的停车场总是排队很长，把道路也堵了。</p>
-<p>突然就想到：这些车位资源就很浪费，可以通过移动互联网把这类信息聚合起来。</p>
-<p>&nbsp;</p>
-<p>然后网上搜索此类产品是否已经存在：</p>
-<p><a href="http://www.zhihu.com/question/19613994" target="_blank" rel="external">http://www.zhihu.com/question/19613994</a></p>
-<p>同款产品： 无忧停车网、找车位、</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/12/05/e6-9c-89-e6-95-88-e5-88-a9-e7-94-a8-e7-a4-be-e4-bc-9a-e9-97-b2-e7-bd-ae-e8-bd-a6-e4-bd-8d-e8-b5-84-e6-ba-90/" data-id="cinsnz8pw004nocpdr08il3xf" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-mysql-sql-e6-89-a7-e8-a1-8c-e8-ae-a1-e5-88-92-e6-9f-a5-e7-9c-8b-e6-96-b9-e6-b3-95" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2014/12/04/mysql-sql-e6-89-a7-e8-a1-8c-e8-ae-a1-e5-88-92-e6-9f-a5-e7-9c-8b-e6-96-b9-e6-b3-95/" class="article-date">
-  <time datetime="2014-12-04T15:22:39.000Z" itemprop="datePublished">2014-12-04</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/mysql/">mysql</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2014/12/04/mysql-sql-e6-89-a7-e8-a1-8c-e8-ae-a1-e5-88-92-e6-9f-a5-e7-9c-8b-e6-96-b9-e6-b3-95/">mysql SQL执行计划 查看方法</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>&nbsp;</p>
-<p>mysql&gt; select sql_no_cache count(id) from wx_article limit 3;<br>+———–+<br>| count(id) |<br>+———–+<br>| 305340 |<br>+———–+<br>1 row in set (0.08 sec)</p>
-<p>mysql&gt; show status like ‘last_query_cost’;<br>+—————–+—————+<br>| Variable_name | Value |<br>+—————–+—————+<br>| Last_query_cost | 342413.799000 |<br>+—————–+—————+<br>1 row in set (0.00 sec)</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-<p>mysql&gt; explain extended select * from wx_article limit 3;<br>+—-+————-+————+——+—————+——+———+——+——–+———-+——-+<br>| id | select_type | table | type | possible_keys | key | key_len | ref | rows | filtered | Extra |<br>+—-+————-+————+——+—————+——+———+——+——–+———-+——-+<br>| 1 | SIMPLE | wx_article | ALL | NULL | NULL | NULL | NULL | 351429 | 100.00 | |<br>+—-+————-+————+——+—————+——+———+——+——–+———-+——-+<br>1 row in set, 1 warning (0.00 sec)</p>
-<p>mysql&gt; show warnings;<br>+——-+——+——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————+<br>| Level | Code | Message |<br>+——-+——+——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————+<br>| Note | 1003 | select <code>sogouwx</code>.<code>wx_article</code>.<code>id</code> AS <code>id</code>,<code>sogouwx</code>.<code>wx_article</code>.<code>title</code> AS <code>title</code>,<code>sogouwx</code>.<code>wx_article</code>.<code>content</code> AS <code>content</code>,<code>sogouwx</code>.<code>wx_article</code>.<code>url</code> AS <code>url</code>,<code>sogouwx</code>.<code>wx_article</code>.<code>imgurl</code> AS <code>imgurl</code>,<code>sogouwx</code>.<code>wx_article</code>.<code>headimgurl</code> AS <code>headimgurl</code>,<code>sogouwx</code>.<code>wx_article</code>.<code>account</code> AS <code>account</code>,<code>sogouwx</code>.<code>wx_article</code>.<code>docid</code> AS <code>docid</code>,<code>sogouwx</code>.<code>wx_article</code>.<code>artlastmodified</code> AS <code>artlastmodified</code>,<code>sogouwx</code>.<code>wx_article</code>.<code>stamp_updated</code> AS <code>stamp_updated</code> from <code>sogouwx</code>.<code>wx_article</code> limit 3 |<br>+——-+——+——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————+<br>1 row in set (0.00 sec)</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/12/04/mysql-sql-e6-89-a7-e8-a1-8c-e8-ae-a1-e5-88-92-e6-9f-a5-e7-9c-8b-e6-96-b9-e6-b3-95/" data-id="cinsnz8on001pocpdkobs2lk5" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/只有select权限下面的mysql数据导出的SHELL脚本/" data-id="cipqlt2cs002shypdk6tge1ei" class="article-share-link">Share</a>
       
       
     </footer>
@@ -642,7 +625,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a><span class="archive-list-count">23</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a><span class="archive-list-count">22</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">19</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a><span class="archive-list-count">23</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a><span class="archive-list-count">22</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">19</span></li></ul>
     </div>
   </div>
 
@@ -654,23 +637,23 @@
       <ul>
         
           <li>
-            <a href="/2016/03/28/golang-defer的使用/">golang defer的使用</a>
+            <a href="/a/Hello_World/">Hello World</a>
           </li>
         
           <li>
-            <a href="/2016/02/18/GO-lang的面向对象的理解/">GO-lang的面向对象的理解</a>
+            <a href="/a/读《Web前端黑客技术揭秘》思考/">读《Web前端黑客技术揭秘》思考</a>
           </li>
         
           <li>
-            <a href="/2016/02/16/GO-lang-的学习笔记/">GO lang 的学习笔记</a>
+            <a href="/a/听《Web安全分享》/">听《Web安全分享》</a>
           </li>
         
           <li>
-            <a href="/2016/02/16/hello-world/">Hello World</a>
+            <a href="/a/读《图解HTTP》/">读《图解HTTP》</a>
           </li>
         
           <li>
-            <a href="/2015/12/15/php-e5-a4-9a-e4-b8-aa-e5-80-bc-e7-9b-b8-e5-8a-a0-e6-98-af-e7-bb-99-e5-ae-9a-e7-9a-84-e4-b8-80-e4-b8-aa-e6-95-b0-ef-bc-8c-e6-b1-82-e5-a4-9a-e4-b8-aa-e5-80-bc-e7-9a-84-e7-bb-84-e5-90-88/">PHP 多个值相加是给定的一个数，求多个值的组合</a>
+            <a href="/a/golag_defer的使用/">golang defer的使用</a>
           </li>
         
       </ul>
@@ -685,7 +668,7 @@
   
   <div class="outer">
     <div id="footer-info" class="inner">
-      &copy; 2016 John Doe<br>
+      &copy; 2016 王桐<br>
       Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>

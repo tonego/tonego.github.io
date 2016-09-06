@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>在LINUX上面安装 LAMP Web 服务器 | 王桐的技术博客</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="# 教程：安装 LAMP Web 服务器（在 Amazon Linux 上）通过以下步骤，您可以将支持 PHP 和 MySQL 的 Apache Web 服务器（有时称为 LAMP Web 服务器或 LAMP 堆栈）安装到您 Amazon Linux 实例上。您可以使用此服务器来托管静态网站或部署能对数据库中的信息执行读写操作的动态 PHP 应用程序。先决条件本教程假定您已经启动具有可从 Inte">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在LINUX上面安装 LAMP Web 服务器">
+<meta property="og:url" content="http://3wbuild.com/a/在LINUX上面安装_LAMP_Web_服务器/index.html">
+<meta property="og:site_name" content="王桐的技术博客">
+<meta property="og:description" content="# 教程：安装 LAMP Web 服务器（在 Amazon Linux 上）通过以下步骤，您可以将支持 PHP 和 MySQL 的 Apache Web 服务器（有时称为 LAMP Web 服务器或 LAMP 堆栈）安装到您 Amazon Linux 实例上。您可以使用此服务器来托管静态网站或部署能对数据库中的信息执行读写操作的动态 PHP 应用程序。先决条件本教程假定您已经启动具有可从 Inte">
+<meta property="og:image" content="https://docs.aws.amazon.com/zh_cn/AWSEC2/latest/UserGuide/images/phpinfo5.6.6.png">
+<meta property="og:image" content="https://docs.aws.amazon.com/zh_cn/AWSEC2/latest/UserGuide/images/phpmyadmin_login.png">
+<meta property="og:updated_time" content="2016-05-31T07:25:15.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="在LINUX上面安装 LAMP Web 服务器">
+<meta name="twitter:description" content="# 教程：安装 LAMP Web 服务器（在 Amazon Linux 上）通过以下步骤，您可以将支持 PHP 和 MySQL 的 Apache Web 服务器（有时称为 LAMP Web 服务器或 LAMP 堆栈）安装到您 Amazon Linux 实例上。您可以使用此服务器来托管静态网站或部署能对数据库中的信息执行读写操作的动态 PHP 应用程序。先决条件本教程假定您已经启动具有可从 Inte">
+  
+    <link rel="alternative" href="/atom.xml" title="王桐的技术博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+  
+
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">王桐的技术博客</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">技术博客，PHP, Go, Mysql, Linux, Redis</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://3wbuild.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-在LINUX上面安装_LAMP_Web_服务器" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/a/在LINUX上面安装_LAMP_Web_服务器/" class="article-date">
+  <time datetime="2015-12-07T11:17:09.000Z" itemprop="datePublished">2015-12-07</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Linux/">Linux</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      在LINUX上面安装 LAMP Web 服务器
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <div><br><br># 教程：安装 LAMP Web 服务器（在 Amazon Linux 上）<br><br></div><br>通过以下步骤，您可以将支持 PHP 和 MySQL 的 Apache Web 服务器（有时称为 LAMP Web 服务器或 LAMP 堆栈）安装到您 Amazon Linux 实例上。您可以使用此服务器来托管静态网站或部署能对数据库中的信息执行读写操作的动态 PHP 应用程序。<br><br>先决条件<br><br>本教程假定您已经启动具有可从 Internet 访问的公有 DNS 名称的实例。有关更多信息，请参阅<a href="https://docs.aws.amazon.com/zh_cn/AWSEC2/latest/UserGuide/ec2-launch-instance_linux.html" title="启动 Amazon EC2 实例" target="_blank" rel="external">启动 Amazon EC2 实例</a>。还必须将安全组配置为允许 <code>SSH</code>（端口 22）、<code>HTTP</code>（端口 80）和<code>HTTPS</code>（端口 443）连接。有关这些先决条件的更多信息，请参阅 <a href="https://docs.aws.amazon.com/zh_cn/AWSEC2/latest/UserGuide/get-set-up-for-amazon-ec2.html" title="Amazon EC2 的设置" target="_blank" rel="external">Amazon EC2 的设置</a>。<br><div><br><br>Important<br><br>这些过程适用于 Amazon Linux。有关其他发布版本的更多信息，请参阅其具体文档。<strong>如果您尝试在 Ubuntu 实例上设置 LAMP Web 服务器，则本教程不适合您。</strong>有关 Ubuntu 上的 LAMP Web 服务器的信息，请转到 Ubuntu 社区文档<a href="https://help.ubuntu.com/community/ApacheMySQLPHP" target="_blank" rel="external">ApacheMySQLPHP</a> 主题。<br><br></div><br><div><a name="d0e4372"></a><strong>安装和启动 LAMP Web 服务器（在 Amazon Linux 上）</strong><br><br>1.  <a href="https://docs.aws.amazon.com/zh_cn/AWSEC2/latest/UserGuide/ec2-connect-to-instance-linux.html" title="连接到您的实例" target="_blank" rel="external">连接到您的实例</a>。<br>2.  为确保您的所有软件包都处于最新状态，请对您的实例执行快速软件更新。此过程可能需要几分钟的时间，但必须确保您拥有最新的安全更新和缺陷修复。<br><div><br><br>Note<br><br><code>-y</code> 选项安装更新时不提示确认。如果您希望在安装前检查更新，则可以忽略此选项。<br><br></div><br><pre><code>[ec2-user ~]$ **&lt;code&gt;sudo yum update -y</code><strong></strong></pre><br><br>3.  您的实例处于最新状态后，便可以安装 Apache Web 服务器、MySQL 和 PHP 软件包。使用yum install<strong> 命令可同时安装多个软件包和所有相关依赖项。<br><pre>`[ec2-user ~]$ </pre></strong><code>sudo yum install -y httpd24 php56 mysql55-server php56-mysqlnd<code>**&lt;/code&gt;&lt;/pre&gt;
+
+4.  启动 Apache Web 服务器。
+&lt;pre&gt;</code>[ec2-user ~]$ <strong><code>sudo service httpd start`</code></strong> Starting httpd: [ OK ]</code><br><br>5.  使用 <strong>chkconfig</strong> 命令将 Apache Web 服务器配置为在每次系统启动时启动。<br><pre><code>[ec2-user ~]$ **&lt;code&gt;sudo chkconfig httpd on</code><strong></strong></pre><br><div><br><br>Tip<br><br>当您成功启用服务时，chkconfig<strong> 命令不提供任何确认消息。您可以通过运行以下命令验证 </strong>httpd<strong> 是否已启用。<br><br></strong></div><br><pre>`[ec2-user ~]$ <code>chkconfig –list httpd<code>** httpd 0:off 1:off 2:on 3:on 4:on 5:on 6:off&lt;/code&gt;&lt;/pre&gt;
+在运行级别 2、3、4 和 5 下，**httpd** 为</code>on<code>（您希望看到的状态）。
+6.  测试您的 Web 服务器。在 Web 浏览器中，输入您实例的公有 DNS 地址（或公有 IP 地址），您应该可以看到 Apache 测试页面。您可以使用 Amazon EC2 控制台获取实例的公有 DNS（勾选 Public DNS (公有 DNS) 列；如果此列处于隐藏状态，请单击 Show/Hide (显示/隐藏) 图标并选择 Public DNS (公有 DNS)）。
+&lt;div&gt;
+
+Tip
+
+如果您未能看到 Apache 测试页面，请检查您使用的安全组是否包含允许</code>HTTP<code>（端口 80）流量的规则。有关将</code>HTTP<code>规则添加到您安全组的信息，请参阅 [向安全组添加规则](https://docs.aws.amazon.com/zh_cn/AWSEC2/latest/UserGuide/using-network-security.html#adding-security-group-rule &quot;向安全组添加规则&quot;)。
+
+&lt;/div&gt;
+&lt;div&gt;
+
+Important
+
+如果您使用的不是 Amazon Linux，则还可能需要在实例上配置防火墙才能允许这些连接。有关如何配置防火墙的更多信息，请参阅适用于特定分配的文档。
+
+&lt;/div&gt;
+&lt;div&gt;![](https://docs.aws.amazon.com/zh_cn/AWSEC2/latest/UserGuide/images/apache_test_page2.4.png)&lt;/div&gt;
+&lt;div&gt;
+
+Note
+
+该测试页面仅在</code>/var/www/html<code>无内容时显示。将内容添加到文档根目录后，您的内容将显示在您实例的公有 DNS 地址中，而不显示在本测试页面。
+
+&lt;/div&gt;
+&lt;/div&gt;
+Apache**httpd** 提供的文件保存在称为 Apache 文档根目录的目录中。Amazon Linux Apache 文档根目录是</code>/var/www/html<code>，默认情况下归</code>root<code>所有。
+&lt;pre&gt;</code>[ec2-user ~]$ <strong><code>ls -l /var/www`</code></strong> total 16 drwxr-xr-x 2 root root 4096 Jul 12 01:00 cgi-bin drwxr-xr-x 3 root root 4096 Aug 7 00:02 error drwxr-xr-x 2 root root 4096 Jan 6 2012 html drwxr-xr-x 3 root root 4096 Aug 7 00:02 icons </code></pre><br>要允许 <code>ec2-user</code> 操作此目录中的文件，您需修改其所有权和权限。有多种方法可以完成此任务；在本教程中，您可以将 <code>www</code> 组添加到您的实例，然后赋予该组 <code>/var/www</code> 目录的所有权并为该组添加写入权限。随后，该组的所有成员都将能够为 Web 服务器添加、删除和修改文件。<br><div><a name="SettingFilePermissions"></a><strong>设置文件权限</strong><br><br>1.  将 <code>www</code> 组添加到您的实例。<br><pre><code>[ec2-user ~]$ **&lt;code&gt;sudo groupadd www</code><strong></strong></pre><br><br>2.  将您的用户（这里指 <code>ec2-user</code>）添加到 <code>www</code>。<br><pre>`[ec2-user ~]$ <code>sudo usermod -a -G www <em><code>ec2-user`</code></em></code><strong></strong></pre><br><div><br><br>Important<br><br>您必须先退出，再重新登录，然后才能接受新组。您可以使用 exit<strong> 命令，也可以关闭终端窗口。<br><br></strong></div><br>3.  先退出，再重新登录，然后验证您是否为 <code>www</code> 组的成员。<br><br>    1.  退出。<br><pre>`[ec2-user ~]$ <code>exit<code>**&lt;/code&gt;&lt;/pre&gt;
+
+        2.  重新连接到实例，然后运行以下命令，以验证您是否为</code>www<code>组的成员。
+&lt;pre&gt;</code>[ec2-user ~]$ <strong><code>groups`</code></strong> ec2-user wheel www</code></pre><br><br>4.  将 <code>/var/</code> 及其内容的组所有权更改到 <code>www</code>www 组。<br><pre><code>[ec2-user ~]$ **&lt;code&gt;sudo chown -R root:www /var/www</code><strong></strong></pre><br><br>5.  更改 <code>/var/www</code> 及其子目录的目录权限，以添加组写入权限和设置未来子目录上的组 ID。<br><pre>`[ec2-user ~]$ <code>sudo chmod 2775 /var/www<code>** [ec2-user ~]$ **</code>find /var/www -type d -exec sudo chmod 2775 {} +<code>**&lt;/code&gt;&lt;/pre&gt;
+
+6.  递归更改</code>/var/www<code>及其子目录的文件权限，以添加组写入权限。
+&lt;pre&gt;</code>[ec2-user ~]$ <strong><code>find /var/www -type f -exec sudo chmod 0664 {} +`</code></strong></code></pre><br></div><br>现在，<code>ec2_user</code>（以及 <code>www</code> 组的任何未来成员）可以在 Apache 根目录中添加、删除和编辑文件。现在您已准备好添加内容，例如静态网站或 PHP 应用程序。<br><div><a name="d0e4605"></a><strong>测试您的 LAMP Web 服务器</strong><br><br>如果您的服务器已安装并运行，且文件权限设置正确，则您的 <code>ec2-user</code> 账户应该能够在<code>/var/www/html</code> 目录（可从 Internet 访问）中创建一个简单的 PHP 文件。<br><br>1.  在 Apache 文档根目录中创建一个简单的 PHP 文件。<br><pre><code>[ec2-user ~]$ **&lt;code&gt;echo &quot;&amp;lt;?php phpinfo(); ?&amp;gt;&quot; &amp;gt; /var/www/html/phpinfo.php</code><strong></strong></pre><br><div><br><br>Tip<br><br>尝试运行此命令时，如果出现“<code>Permission denied</code>”错误，请尝试先退出，再重新登录，以接受您在 <a href="https://docs.aws.amazon.com/zh_cn/AWSEC2/latest/UserGuide/install-LAMP.html#SettingFilePermissions" title="设置文件权限" target="_blank" rel="external">设置文件权限</a> 中配置的适当组权限。<br><br></div><br>2.  在 Web 浏览器中，输入您刚刚创建的文件的 URL。此 URL 是实例的公用 DNS 地址，后接正斜杠和文件名。例如：<br><pre><code>http://_&lt;code&gt;my.public.dns.amazonaws.com</code>_/phpinfo.php</pre><br>您应该可以看到 PHP 信息页面。<br><div><img src="https://docs.aws.amazon.com/zh_cn/AWSEC2/latest/UserGuide/images/phpinfo5.6.6.png" alt=""></div><br><div><br><br>Note<br><br>如果您未看到此页面，请验证上一步中是否已正确创建<code>/var/www/html/phpinfo.php</code> 文件。您也可以使用以下命令验证是否安装了所有必需的程序包（第二列中的程序包版本不需要与此示例输出匹配）：<br><pre>`[ec2-user ~]$ <code>sudo yum list installed httpd24 php56 mysql55-server php56-mysqlnd<code>** Loaded plugins: priorities, update-motd, upgrade-helper 959 packages excluded due to repository priority protections Installed Packages httpd24.x86_64 2.4.16-1.62.amzn1 @amzn-main mysql55-server.x86_64 5.5.45-1.9.amzn1 @amzn-main php56.x86_64 5.6.13-1.118.amzn1 @amzn-main php56-mysqlnd.x86_64 5.6.13-1.118.amzn1 @amzn-main&lt;/code&gt;&lt;/pre&gt;
+如果输出中未列出任何必需的程序包，请使用 **sudo yum install _</code>package<code>_** 命令安装它们。
+
+&lt;/div&gt;
+3.  删除</code>phpinfo.php<code>文件。尽管此信息可能对您很有用，但出于安全考虑，不应将其传播到 Internet。
+&lt;pre&gt;</code>[ec2-user ~]$ <strong><code>rm /var/www/html/phpinfo.php`</code></strong></code></pre><br></div><br><div><a name="SecuringMySQLProcedure"></a><strong>保障 MySQL 服务器的安全</strong><br><br>MySQL 服务器的默认安装提供有多种功能，这些功能对于测试和开发都很有帮助，但对于产品服务器，应禁用或删除这些功能。<strong>mysql_secure_installation</strong> 命令可引导您设置根密码并删除安装中的不安全功能。即使您不打算使用 MySQL 服务器，执行此步骤也是一个不错的建议。<br><br>1.  启动 MySQL 服务器，以便运行 <strong>mysql_secure_installation</strong>。<br><pre><code>[ec2-user ~]$ **&lt;code&gt;sudo service mysqld start</code><strong> Initializing MySQL database: Installing MySQL system tables… OK Filling help tables… OK To start mysqld at boot time you have to copy support-files/mysql.server to the right place for your system PLEASE REMEMBER TO SET A PASSWORD FOR THE MySQL root USER ! … Starting mysqld: [ OK ] </strong></pre><br>。<br>2.  运行 mysql_secure_installation<strong>。<br><pre>`[ec2-user ~]$ </pre></strong><code>sudo mysql_secure<em>installation<code>**&lt;/code&gt;&lt;/pre&gt;
+
+    1.  在系统提示时，输入</code>root<code>账户的密码。
+
+            1.  输入当前</code>root<code>密码。默认情况下，</code>root<code>账户没有设置密码，因此按 **Enter**。
+        2.  键入 **Y** 设置密码，然后输入两次安全密码。有关创建安全密码的更多信息，请转至 [http://www.pctools.com/guides/password/](http://www.pctools.com/guides/password/)。确保将此密码存储在安全位置。
+
+        2.  键入 **Y** 删除匿名用户账户。
+    3.  键入 **Y** 禁用远程</code>root<code>登录。
+    4.  键入 **Y** 删除测试数据库。
+    5.  键入 **Y** 重新加载权限表并保存您的更改。
+
+3.  （可选）如果不打算立即使用 MySQL 服务器，请停止。您可以在需要时再次重新启动该服务器。
+&lt;pre&gt;</code>[ec2-user ~]$ <strong><code>sudo service mysqld stop`</code></strong> Stopping mysqld: [ OK ]</em></code><br><br>4.  （可选）如果您希望每次启动时 MySQL 服务器都启动，请输入以下命令。<br><pre><code>[ec2-user ~]$ **&lt;code&gt;sudo chkconfig mysqld on</code><strong></strong></pre><br></div><br>现在，您应该有了一个功能完善的 LAMP Web 服务器。如果您将内容添加到位于<code>/var/www/html</code> 的 Apache 文档根目录，您应该能够在实例的公有 DNS 地址处看到这些内容。<br><div><a name="d0e4777"></a>（可选）安装 phpMyAdmin<strong><br><br><a href="https://www.phpmyadmin.net/" target="_blank" rel="external">phpMyAdmin</a> 是一种基于 Web 的数据库管理工具，可用于在 EC2 实例上查看和编辑 MySQL 数据库。按照以下步骤操作可在您的 Amazon Linux 实例上安装和配置 phpMyAdmin。<br><br>1.  在您的实例上从 Fedora 项目启用 Extra Packages for Enterprise Linux (EPEL) 存储库。<br><pre>`[ec2-user ~]$ </pre></strong><code>sudo yum-config-manager –enable <code>epel<code>_&lt;/code&gt;**&lt;/code&gt;&lt;/pre&gt;
+
+2.  安装</code>phpMyAdmin<code>软件包。
+&lt;pre&gt;</code>[ec2-user ~]$ <strong><code>sudo yum install -y phpMyAdmin`</code></strong></code><br><div><br><br>Note<br><br>在系统提示时，回答 <code>y</code> 以导入 EPEL 存储库的 GPG 密钥。<br><br></div><br>3.  将您的 <code>phpMyAdmin</code> 安装配置为允许从本地计算机进行访问。默认情况下，<code>phpMyAdmin</code>仅允许从其运行于的服务器进行访问，这不是很有用，因为 Amazon Linux 不包括 Web 浏览器。<br><br>    1.  通过访问服务（例如 <a href="https://www.whatismyip.com/" target="_blank" rel="external">whatismyip.com</a>）查找您的本地 IP 地址。<br>    2.  <a name="step-phpMyAdmin.conf"></a>编辑 <code>/etc/httpd/conf.d/phpMyAdmin.conf</code> 文件并使用以下命令将服务器 IP 地址 (127.0.0.1) 替换为您的本地 IP 地址，并将 _<code>your_ip_address</code><em> 替换为您在上一步中标识的本地 IP 地址。<br><pre>`[ec2-user ~]$ **<code>sudo sed -i -e ‘s/127.0.0.1/</code></pre></em><code>your_ip<em>address`</em>/g’ /etc/httpd/conf.d/phpMyAdmin.conf</code><strong></strong></code><br><br>4.  <a name="step-phpMyAdmin-restart-httpd"></a>重启 Apache Web 服务器，让新配置生效。<br><pre>`[ec2-user ~]$ <code>sudo service httpd restart<code>** Stopping httpd: [ OK ] Starting httpd: [ OK ]&lt;/code&gt;&lt;/pre&gt;
+
+5.  在 Web 浏览器中，输入</code>phpMyAdmin<code>安装的 URL。此 URL 是实例的公用 DNS 地址，后接正斜杠和 phpmyadmin。例如：
+&lt;pre&gt;</code>http://<em><code>my.public.dns.amazonaws.com`</code></em>/phpmyadmin</code></pre><br>您应该可以看到 phpMyAdmin 登录页面。<br><div><img src="https://docs.aws.amazon.com/zh_cn/AWSEC2/latest/UserGuide/images/phpmyadmin_login.png" alt=""></div><br><div><br><br>Note<br><br>如果您收到 <code>403 Forbidden</code> 错误，请验证您是否在<code>/etc/httpd/conf.d/phpMyAdmin.conf</code> 文件中设置了正确的 IP 地址。您可以使用以下命令查看 Apache 访问日志，以了解 Apache 服务器实际从哪个 IP 地址获取请求：<br><pre><code>[ec2-user ~]$ **&lt;code&gt;sudo tail -n 1 /var/log/httpd/access_log | awk &#39;{ print $1 }&#39;</code>** <em><code>205.251.233.48</code></em></pre><br>使用此处返回的 IP 地址重复<a href="https://docs.aws.amazon.com/zh_cn/AWSEC2/latest/UserGuide/install-LAMP.html#step-phpMyAdmin.conf" title="Step 3.b" target="_blank" rel="external">Step 3.b</a> 并通过<a href="https://docs.aws.amazon.com/zh_cn/AWSEC2/latest/UserGuide/install-LAMP.html#step-phpMyAdmin-restart-httpd" title="Step 4" target="_blank" rel="external">Step 4</a> 重启 <code>httpd</code> 服务。<br><br></div><br>6.  使用您先前创建的 <code>root</code> 用户名和 MySQL 根密码登录到 <code>phpMyAdmin</code> 安装。有关使用<code>phpMyAdmin</code> 的更多信息和帮助，请参阅 <a href="http://docs.phpmyadmin.net/en/latest/user.html" target="_blank" rel="external"><code>phpMyAdmin</code> 用户指南</a>。<br></div></div></div>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://3wbuild.com/a/在LINUX上面安装_LAMP_Web_服务器/" data-id="cipqlt2co002mhypd1c99dbih" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/a/接口对接验签需要注意的问题/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          接口对接验签需要注意的问题
+        
+      </div>
+    </a>
+  
+  
+    <a href="/a/网站安全之ｘｓｓ／ｃｒｓｆ/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">网站安全之ｘｓｓ／ｃｒｓｆ</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/HTTP/">HTTP</a><span class="category-list-count">3</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/HTTP/PHP/">PHP</a><span class="category-list-count">3</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/">Linux</a><span class="category-list-count">9</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/PHP/">PHP</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/PHP/调试/">调试</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/PHP笔试题/">PHP笔试题</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/mysql/">mysql</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/nginx/">nginx</a><span class="category-list-count">1</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/nginx/PHP/">PHP</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/Linux/工具/">工具</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/PHP/">PHP</a><span class="category-list-count">22</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/PHP/PHP笔试题/">PHP笔试题</a><span class="category-list-count">13</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/PHP/PHP笔试题/数据结构与算法/">数据结构与算法</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/PHP/redis/">redis</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/PHP/调试/">调试</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/PHP笔试题/">PHP笔试题</a><span class="category-list-count">10</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/PHP笔试题/数据结构与算法/">数据结构与算法</a><span class="category-list-count">4</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/mi/">mi</a><span class="category-list-count">2</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/mi/PHP/">PHP</a><span class="category-list-count">2</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/">mysql</a><span class="category-list-count">23</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/PHP/">PHP</a><span class="category-list-count">2</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/PHP/PHP笔试题/">PHP笔试题</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/PHP笔试题/">PHP笔试题</a><span class="category-list-count">5</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/mysql/PHP笔试题/redis/">redis</a><span class="category-list-count">1</span></li></ul></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/python/">python</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/前端/">前端</a><span class="category-list-count">2</span><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/categories/前端/移动/">移动</a><span class="category-list-count">1</span></li></ul></li><li class="category-list-item"><a class="category-list-link" href="/categories/安全/">安全</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据结构与算法/">数据结构与算法</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/未分类/">未分类</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/脑洞/">脑洞</a><span class="category-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/凤凰网面试题/">凤凰网面试题</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/小米面试题/">小米面试题</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/滴滴打车面试题/">滴滴打车面试题</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/猎豹移动面试题/">猎豹移动面试题</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/百度面试题/">百度面试题</a><span class="tag-list-count">9</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/凤凰网面试题/" style="font-size: 17.5px;">凤凰网面试题</a> <a href="/tags/小米面试题/" style="font-size: 15px;">小米面试题</a> <a href="/tags/滴滴打车面试题/" style="font-size: 12.5px;">滴滴打车面试题</a> <a href="/tags/猎豹移动面试题/" style="font-size: 10px;">猎豹移动面试题</a> <a href="/tags/百度面试题/" style="font-size: 20px;">百度面试题</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a><span class="archive-list-count">23</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a><span class="archive-list-count">22</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">19</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/a/Hello_World/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/a/读《Web前端黑客技术揭秘》思考/">读《Web前端黑客技术揭秘》思考</a>
+          </li>
+        
+          <li>
+            <a href="/a/听《Web安全分享》/">听《Web安全分享》</a>
+          </li>
+        
+          <li>
+            <a href="/a/读《图解HTTP》/">读《图解HTTP》</a>
+          </li>
+        
+          <li>
+            <a href="/a/golag_defer的使用/">golang defer的使用</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 王桐<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css" type="text/css">
+  <script src="/fancybox/jquery.fancybox.pack.js" type="text/javascript"></script>
+
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+  </div>
+</body>
+</html>

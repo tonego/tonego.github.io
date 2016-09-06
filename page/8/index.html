@@ -3,19 +3,19 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Hexo</title>
+  <title>王桐的技术博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description">
+  <meta name="description" content="王桐的技术博客，Web开发领域">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
-<meta property="og:url" content="http://yoursite.com/page/8/index.html">
-<meta property="og:site_name" content="Hexo">
-<meta property="og:description">
+<meta property="og:title" content="王桐的技术博客">
+<meta property="og:url" content="http://3wbuild.com/page/8/index.html">
+<meta property="og:site_name" content="王桐的技术博客">
+<meta property="og:description" content="王桐的技术博客，Web开发领域">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hexo">
-<meta name="twitter:description">
+<meta name="twitter:title" content="王桐的技术博客">
+<meta name="twitter:description" content="王桐的技术博客，Web开发领域">
   
-    <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
+    <link rel="alternative" href="/atom.xml" title="王桐的技术博客" type="application/atom+xml">
   
   
     <link rel="icon" href="/favicon.png">
@@ -33,8 +33,12 @@
   <div id="header-outer" class="outer">
     <div id="header-title" class="inner">
       <h1 id="logo-wrap">
-        <a href="/" id="logo">Hexo</a>
+        <a href="/" id="logo">王桐的技术博客</a>
       </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">技术博客，PHP, Go, Mysql, Linux, Redis</a>
+        </h2>
       
     </div>
     <div id="header-inner" class="inner">
@@ -53,7 +57,7 @@
         <a id="nav-search-btn" class="nav-icon" title="Search"></a>
       </nav>
       <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://3wbuild.com"></form>
       </div>
     </div>
   </div>
@@ -61,9 +65,140 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-php-e7-94-a8-e6-96-87-e4-bb-b6-e6-9d-a5-e5-81-9a-e8-ae-a1-e6-95-b0-e5-99-a8-ef-bc-8c-e6-8f-90-e9-86-92-e7-a1-ae-e4-bf-9d-e5-a4-9a-e4-b8-aa-e8-bf-9b-e7-a8-8b-e5-90-8c-e6-97-b6-e5-86-99-e5-85-a5" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-mysql_执行_show_processlist_出现_uautheticated_user_的用户" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2014/11/18/php-e7-94-a8-e6-96-87-e4-bb-b6-e6-9d-a5-e5-81-9a-e8-ae-a1-e6-95-b0-e5-99-a8-ef-bc-8c-e6-8f-90-e9-86-92-e7-a1-ae-e4-bf-9d-e5-a4-9a-e4-b8-aa-e8-bf-9b-e7-a8-8b-e5-90-8c-e6-97-b6-e5-86-99-e5-85-a5/" class="article-date">
+    <a href="/a/mysql_执行_show_processlist_出现_uautheticated_user_的用户/" class="article-date">
+  <time datetime="2014-11-18T09:47:22.000Z" itemprop="datePublished">2014-11-18</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/mysql/">mysql</a>►<a class="article-category-link" href="/categories/mysql/PHP笔试题/">PHP笔试题</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/a/mysql_执行_show_processlist_出现_uautheticated_user_的用户/">mysql 执行 show processlist 出现 unauthenticated user 的用户</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>&nbsp;</p>
+<p>发现这算属MySQL的一个bug，不管连接是通过hosts还是ip的方式，MySQL都会对DNS做反查，IP到DNS，由于反查的接续速度过慢（不管是不是isp提供的dns服务器的问题或者其他原因），大量的查询就难以应付，线程不够用就使劲增加线程，但是却得不到释放，所以MySQL会“假死”。</p>
+<p>解决的方案很简单，结束这个反查的过程，禁止任何解析。</p>
+<p>打开mysql的配置文件（my.cnf），在[mysqld]下面增加一行：</p>
+<p>skip-name-resolve</p>
+<p>重新载入配置文件或者重启MySQL服务即可。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://3wbuild.com/a/mysql_执行_show_processlist_出现_uautheticated_user_的用户/" data-id="cipqlt2dl004lhypdqintu4o5" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-跨域的解决方案、实现机制" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/a/跨域的解决方案、实现机制/" class="article-date">
+  <time datetime="2014-11-18T09:44:02.000Z" itemprop="datePublished">2014-11-18</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/PHP/">PHP</a>►<a class="article-category-link" href="/categories/PHP/PHP笔试题/">PHP笔试题</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/a/跨域的解决方案、实现机制/">跨域的解决方案、实现机制</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>&nbsp;</p>
+<p>jsonp跨域</p>
+<p>session 跨域；</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://3wbuild.com/a/跨域的解决方案、实现机制/" data-id="cipqlt2bp0003hypdg7ycuzoa" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-整型的一维数组，对其里面的值进行大小排序，追求效率" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/a/整型的一维数组，对其里面的值进行大小排序，追求效率/" class="article-date">
+  <time datetime="2014-11-18T09:42:42.000Z" itemprop="datePublished">2014-11-18</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/PHP/">PHP</a>►<a class="article-category-link" href="/categories/PHP/PHP笔试题/">PHP笔试题</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/a/整型的一维数组，对其里面的值进行大小排序，追求效率/">整型的一维数组，对其里面的值进行大小排序，追求效率</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>&nbsp;</p>
+<p>考察排序算法。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://3wbuild.com/a/整型的一维数组，对其里面的值进行大小排序，追求效率/" data-id="cipqlt2ca001ghypdbmeynene" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-PHP用文件来做计数器，提醒确保多个进程同时写入一个文件成功" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/a/PHP用文件来做计数器，提醒确保多个进程同时写入一个文件成功/" class="article-date">
   <time datetime="2014-11-18T09:41:18.000Z" itemprop="datePublished">2014-11-18</time>
 </a>
     
@@ -79,7 +214,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2014/11/18/php-e7-94-a8-e6-96-87-e4-bb-b6-e6-9d-a5-e5-81-9a-e8-ae-a1-e6-95-b0-e5-99-a8-ef-bc-8c-e6-8f-90-e9-86-92-e7-a1-ae-e4-bf-9d-e5-a4-9a-e4-b8-aa-e8-bf-9b-e7-a8-8b-e5-90-8c-e6-97-b6-e5-86-99-e5-85-a5/">PHP用文件来做计数器，提醒确保多个进程同时写入一个文件成功</a>
+      <a class="article-title" href="/a/PHP用文件来做计数器，提醒确保多个进程同时写入一个文件成功/">PHP用文件来做计数器，提醒确保多个进程同时写入一个文件成功</a>
     </h1>
   
 
@@ -95,7 +230,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/11/18/php-e7-94-a8-e6-96-87-e4-bb-b6-e6-9d-a5-e5-81-9a-e8-ae-a1-e6-95-b0-e5-99-a8-ef-bc-8c-e6-8f-90-e9-86-92-e7-a1-ae-e4-bf-9d-e5-a4-9a-e4-b8-aa-e8-bf-9b-e7-a8-8b-e5-90-8c-e6-97-b6-e5-86-99-e5-85-a5/" data-id="cinsnz8oa000pocpdvmh43lfl" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/PHP用文件来做计数器，提醒确保多个进程同时写入一个文件成功/" data-id="cipqlt2e90063hypd0pcfco16" class="article-share-link">Share</a>
       
       
     </footer>
@@ -105,9 +240,9 @@
 
 
   
-    <article id="post-e5-8f-98-e9-87-8f-e5-a6-82-e4-bd-95-e8-b5-8b-e5-80-bc-e8-bf-9b-e6-95-b0-e7-bb-84-e7-9a-84-e4-b8-80-e9-81-93-e9-a2-98" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-变量如何赋值进数组的一道题" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2014/11/18/e5-8f-98-e9-87-8f-e5-a6-82-e4-bd-95-e8-b5-8b-e5-80-bc-e8-bf-9b-e6-95-b0-e7-bb-84-e7-9a-84-e4-b8-80-e9-81-93-e9-a2-98/" class="article-date">
+    <a href="/a/变量如何赋值进数组的一道题/" class="article-date">
   <time datetime="2014-11-18T09:38:57.000Z" itemprop="datePublished">2014-11-18</time>
 </a>
     
@@ -123,7 +258,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2014/11/18/e5-8f-98-e9-87-8f-e5-a6-82-e4-bd-95-e8-b5-8b-e5-80-bc-e8-bf-9b-e6-95-b0-e7-bb-84-e7-9a-84-e4-b8-80-e9-81-93-e9-a2-98/">变量如何赋值进数组的一道题</a>
+      <a class="article-title" href="/a/变量如何赋值进数组的一道题/">变量如何赋值进数组的一道题</a>
     </h1>
   
 
@@ -145,7 +280,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/11/18/e5-8f-98-e9-87-8f-e5-a6-82-e4-bd-95-e8-b5-8b-e5-80-bc-e8-bf-9b-e6-95-b0-e7-bb-84-e7-9a-84-e4-b8-80-e9-81-93-e9-a2-98/" data-id="cinsnz8qf0060ocpdgp8tdar8" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/变量如何赋值进数组的一道题/" data-id="cipqlt2cv002vhypdn1pzmwno" class="article-share-link">Share</a>
       
       
     </footer>
@@ -155,9 +290,9 @@
 
 
   
-    <article id="post-e5-85-b3-e4-ba-8econtinue-e5-86-99-e5-9c-a8-e5-87-bd-e6-95-b0-e4-b8-ad-e7-9a-84-e9-a2-98-e7-9b-ae" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-关于cotiue写在函数中的题目" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2014/11/18/e5-85-b3-e4-ba-8econtinue-e5-86-99-e5-9c-a8-e5-87-bd-e6-95-b0-e4-b8-ad-e7-9a-84-e9-a2-98-e7-9b-ae/" class="article-date">
+    <a href="/a/关于cotiue写在函数中的题目/" class="article-date">
   <time datetime="2014-11-18T09:24:21.000Z" itemprop="datePublished">2014-11-18</time>
 </a>
     
@@ -173,7 +308,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2014/11/18/e5-85-b3-e4-ba-8econtinue-e5-86-99-e5-9c-a8-e5-87-bd-e6-95-b0-e4-b8-ad-e7-9a-84-e9-a2-98-e7-9b-ae/">关于continue写在函数中的题目</a>
+      <a class="article-title" href="/a/关于cotiue写在函数中的题目/">关于continue写在函数中的题目</a>
     </h1>
   
 
@@ -191,7 +326,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/11/18/e5-85-b3-e4-ba-8econtinue-e5-86-99-e5-9c-a8-e5-87-bd-e6-95-b0-e4-b8-ad-e7-9a-84-e9-a2-98-e7-9b-ae/" data-id="cinsnz8qh0065ocpdsmdahgvg" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/关于cotiue写在函数中的题目/" data-id="cipqlt2cx0030hypdxr6yahye" class="article-share-link">Share</a>
       
       
     </footer>
@@ -201,9 +336,9 @@
 
 
   
-    <article id="post-e5-85-b3-e4-ba-8e-floor0-10-7107-e7-9a-84-e9-97-ae-e9-a2-98" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-关于_floor((0.1+0.7)*10)=7_的问题" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2014/11/18/e5-85-b3-e4-ba-8e-floor0-10-7107-e7-9a-84-e9-97-ae-e9-a2-98/" class="article-date">
+    <a href="/a/关于_floor((0.1+0.7)*10)=7_的问题/" class="article-date">
   <time datetime="2014-11-18T09:12:59.000Z" itemprop="datePublished">2014-11-18</time>
 </a>
     
@@ -219,7 +354,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2014/11/18/e5-85-b3-e4-ba-8e-floor0-10-7107-e7-9a-84-e9-97-ae-e9-a2-98/">关于 floor((0.1+0.7)*10)=7 的问题</a>
+      <a class="article-title" href="/a/关于_floor((0.1+0.7)*10)=7_的问题/">关于 floor((0.1+0.7)*10)=7 的问题</a>
     </h1>
   
 
@@ -238,7 +373,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/11/18/e5-85-b3-e4-ba-8e-floor0-10-7107-e7-9a-84-e9-97-ae-e9-a2-98/" data-id="cinsnz8qi0068ocpd2kyj6mz5" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/关于_floor((0.1+0.7)*10)=7_的问题/" data-id="cipqlt2d00035hypdl1mozn5t" class="article-share-link">Share</a>
       
       
     </footer>
@@ -248,9 +383,9 @@
 
 
   
-    <article id="post-e5-85-b3-e4-ba-8e-e5-92-8c-e7-9a-84-e4-b8-80-e9-81-93-e9-a2-98" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-关于==_和_===_的一道题" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2014/11/18/e5-85-b3-e4-ba-8e-e5-92-8c-e7-9a-84-e4-b8-80-e9-81-93-e9-a2-98/" class="article-date">
+    <a href="/a/关于==_和_===_的一道题/" class="article-date">
   <time datetime="2014-11-18T09:08:09.000Z" itemprop="datePublished">2014-11-18</time>
 </a>
     
@@ -266,7 +401,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2014/11/18/e5-85-b3-e4-ba-8e-e5-92-8c-e7-9a-84-e4-b8-80-e9-81-93-e9-a2-98/">关于== 和 === 的一道题</a>
+      <a class="article-title" href="/a/关于==_和_===_的一道题/">关于== 和 === 的一道题</a>
     </h1>
   
 
@@ -283,7 +418,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/11/18/e5-85-b3-e4-ba-8e-e5-92-8c-e7-9a-84-e4-b8-80-e9-81-93-e9-a2-98/" data-id="cinsnz8qj006bocpd83z1u4t6" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/关于==_和_===_的一道题/" data-id="cipqlt2d10038hypdt197yl0b" class="article-share-link">Share</a>
       
       
     </footer>
@@ -293,9 +428,9 @@
 
 
   
-    <article id="post-e5-af-b9-e4-ba-8e-requesta-e6-8a-a5-e9-94-99-e7-9a-84-e6-8f-90-e7-a4-ba-ef-bc-8c-e5-a6-82-e4-bd-95-e5-a4-84-e7-90-86" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-&quot;对于$_REQUEST[a]_报错的提示，应该如何处理&quot;" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2014/11/18/e5-af-b9-e4-ba-8e-requesta-e6-8a-a5-e9-94-99-e7-9a-84-e6-8f-90-e7-a4-ba-ef-bc-8c-e5-a6-82-e4-bd-95-e5-a4-84-e7-90-86/" class="article-date">
+    <a href="/a/"对于$_REQUEST[a]_报错的提示，应该如何处理"/" class="article-date">
   <time datetime="2014-11-18T08:23:29.000Z" itemprop="datePublished">2014-11-18</time>
 </a>
     
@@ -311,7 +446,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2014/11/18/e5-af-b9-e4-ba-8e-requesta-e6-8a-a5-e9-94-99-e7-9a-84-e6-8f-90-e7-a4-ba-ef-bc-8c-e5-a6-82-e4-bd-95-e5-a4-84-e7-90-86/">对于$_REQUEST[&#39;a&#39;] 报错的提示，应该如何处理</a>
+      <a class="article-title" href="/a/"对于$_REQUEST[a]_报错的提示，应该如何处理"/">对于$_REQUEST[&#39;a&#39;] 报错的提示，应该如何处理</a>
     </h1>
   
 
@@ -337,7 +472,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/11/18/e5-af-b9-e4-ba-8e-requesta-e6-8a-a5-e9-94-99-e7-9a-84-e6-8f-90-e7-a4-ba-ef-bc-8c-e5-a6-82-e4-bd-95-e5-a4-84-e7-90-86/" data-id="cinsnz8q7005docpdy1k4os2l" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/"对于$_REQUEST[a]_报错的提示，应该如何处理"/" data-id="cipqlt2eq007bhypd1jktv8zz" class="article-share-link">Share</a>
       
       
     </footer>
@@ -347,9 +482,9 @@
 
 
   
-    <article id="post-curl-multi-e6-a3-80-e6-b5-8burl-e6-9c-89-e6-95-88-e6-80-a7-ef-bc-8c-e8-bf-94-e5-9b-9ehttp-e7-8a-b6-e6-80-81-e7-a0-81" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-CURL_MULTI_检测URL有效性，返回HTTP状态码" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2014/11/08/curl-multi-e6-a3-80-e6-b5-8burl-e6-9c-89-e6-95-88-e6-80-a7-ef-bc-8c-e8-bf-94-e5-9b-9ehttp-e7-8a-b6-e6-80-81-e7-a0-81/" class="article-date">
+    <a href="/a/CURL_MULTI_检测URL有效性，返回HTTP状态码/" class="article-date">
   <time datetime="2014-11-08T01:13:24.000Z" itemprop="datePublished">2014-11-08</time>
 </a>
     
@@ -365,7 +500,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2014/11/08/curl-multi-e6-a3-80-e6-b5-8burl-e6-9c-89-e6-95-88-e6-80-a7-ef-bc-8c-e8-bf-94-e5-9b-9ehttp-e7-8a-b6-e6-80-81-e7-a0-81/">CURL_MULTI 检测URL有效性，返回HTTP状态码</a>
+      <a class="article-title" href="/a/CURL_MULTI_检测URL有效性，返回HTTP状态码/">CURL_MULTI 检测URL有效性，返回HTTP状态码</a>
     </h1>
   
 
@@ -389,162 +524,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/11/08/curl-multi-e6-a3-80-e6-b5-8burl-e6-9c-89-e6-95-88-e6-80-a7-ef-bc-8c-e8-bf-94-e5-9b-9ehttp-e7-8a-b6-e6-80-81-e7-a0-81/" data-id="cinsnz8qo006oocpdv20r2i92" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-e7-94-a8-shell-e9-81-8d-e5-8e-86-mysql-e4-b8-ad-e7-9a-84-url-e6-95-b0-e6-8d-ae-ef-bc-8c-e6-8e-92-e9-99-a4-e6-97-a0-e6-95-88-e9-93-be-e6-8e-a5" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2014/11/06/e7-94-a8-shell-e9-81-8d-e5-8e-86-mysql-e4-b8-ad-e7-9a-84-url-e6-95-b0-e6-8d-ae-ef-bc-8c-e6-8e-92-e9-99-a4-e6-97-a0-e6-95-88-e9-93-be-e6-8e-a5/" class="article-date">
-  <time datetime="2014-11-06T10:28:01.000Z" itemprop="datePublished">2014-11-06</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/Linux/">Linux</a>►<a class="article-category-link" href="/categories/Linux/mysql/">mysql</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2014/11/06/e7-94-a8-shell-e9-81-8d-e5-8e-86-mysql-e4-b8-ad-e7-9a-84-url-e6-95-b0-e6-8d-ae-ef-bc-8c-e6-8e-92-e9-99-a4-e6-97-a0-e6-95-88-e9-93-be-e6-8e-a5/">用 shell curl 遍历 mysql中的 url数据，排除无效链接</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>背景：小说导航网站 ，需要对各个小说站点书的url和章节的url进行检查，去除无效URL；chapters 有255个分表，每个表大约40w数据；site表大约有80w个数据；总计URL过亿； 解决方案： 用 shell 遍历 mysql中的 url数据，排除无效链接；</p>
-<p>&nbsp;</p>
-<p>#!/bin/bash</p>
-<p>mysql -h114.112.xx.xx -Pxxxx -uwaxxxng -pxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx -D xxxx_book -e “select site_url from b_book_d_site” &gt; ~/table.tmp<br>for i in <code>cat ~/table.tmp</code><br>do<br>HTTP_CODE=<code>curl -o /dev/null -s -w %{http_code} $i</code><br>if [ “$HTTP_CODE” -ne “200” ]; then<br>echo -e “$i:\t$HTTP_CODE” &gt;&gt; ~/res.txt<br>fi<br>done</p>
-<p>结果发现速度极慢，夜里8点挂上，明早8点起来查了一下，才跑了1.6w的数据，所以此种方案排除。考虑到用curl_multi 系列函数来实现。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/11/06/e7-94-a8-shell-e9-81-8d-e5-8e-86-mysql-e4-b8-ad-e7-9a-84-url-e6-95-b0-e6-8d-ae-ef-bc-8c-e6-8e-92-e9-99-a4-e6-97-a0-e6-95-88-e9-93-be-e6-8e-a5/" data-id="cinsnz8pu004hocpd8dl0a6u1" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-php-e6-89-93-e5-8d-b0-e4-b8-8a-e4-b8-aa-e6-9c-88-e7-ac-ac-e4-b8-80-e5-a4-a9-e5-92-8c-e4-b8-8a-e4-b8-aa-e6-9c-88-e6-9c-80-e5-90-8e-e4-b8-80-e5-a4-a9-e7-9a-84-e6-97-a5-e6-9c-9f" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2014/11/03/php-e6-89-93-e5-8d-b0-e4-b8-8a-e4-b8-aa-e6-9c-88-e7-ac-ac-e4-b8-80-e5-a4-a9-e5-92-8c-e4-b8-8a-e4-b8-aa-e6-9c-88-e6-9c-80-e5-90-8e-e4-b8-80-e5-a4-a9-e7-9a-84-e6-97-a5-e6-9c-9f/" class="article-date">
-  <time datetime="2014-11-03T12:51:03.000Z" itemprop="datePublished">2014-11-03</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/PHP笔试题/">PHP笔试题</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2014/11/03/php-e6-89-93-e5-8d-b0-e4-b8-8a-e4-b8-aa-e6-9c-88-e7-ac-ac-e4-b8-80-e5-a4-a9-e5-92-8c-e4-b8-8a-e4-b8-aa-e6-9c-88-e6-9c-80-e5-90-8e-e4-b8-80-e5-a4-a9-e7-9a-84-e6-97-a5-e6-9c-9f/">PHP打印上个月第一天和上个月最后一天的日期</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>PHP打印上个月第一天和上个月最后一天的日期：</p>
-<p>&nbsp;</p>
-<p>echo date(‘Y-m-d’, strtotime(‘last month first day’));<br>echo date(‘Y-m-d’, strtotime(‘last month last day’));</p>
-<p>&nbsp;</p>
-<p>echo date(‘Y-m-01’, strtotime(‘-1 month’));<br>echo date(‘Y-m-t’, strtotime(‘-1 month’));</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/11/03/php-e6-89-93-e5-8d-b0-e4-b8-8a-e4-b8-aa-e6-9c-88-e7-ac-ac-e4-b8-80-e5-a4-a9-e5-92-8c-e4-b8-8a-e4-b8-aa-e6-9c-88-e6-9c-80-e5-90-8e-e4-b8-80-e5-a4-a9-e7-9a-84-e6-97-a5-e6-9c-9f/" data-id="cinsnz8od000yocpdvpe8ev28" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-e5-88-a4-e6-96-ad-e4-b8-80-e4-b8-aa-e5-8f-98-e9-87-8f-e4-b8-ba-e7-a9-ba-e6-9c-89-e5-93-aa-e4-ba-9b-e6-96-b9-e5-bc-8f-ef-bc-8c-e5-88-a4-e6-96-ad-e4-b8-80-e4-b8-aa-e6-95-b0-e7-bb-84-e4-b8-ba-e7-a9-ba" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2014/11/03/e5-88-a4-e6-96-ad-e4-b8-80-e4-b8-aa-e5-8f-98-e9-87-8f-e4-b8-ba-e7-a9-ba-e6-9c-89-e5-93-aa-e4-ba-9b-e6-96-b9-e5-bc-8f-ef-bc-8c-e5-88-a4-e6-96-ad-e4-b8-80-e4-b8-aa-e6-95-b0-e7-bb-84-e4-b8-ba-e7-a9-ba/" class="article-date">
-  <time datetime="2014-11-03T12:49:18.000Z" itemprop="datePublished">2014-11-03</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/PHP笔试题/">PHP笔试题</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2014/11/03/e5-88-a4-e6-96-ad-e4-b8-80-e4-b8-aa-e5-8f-98-e9-87-8f-e4-b8-ba-e7-a9-ba-e6-9c-89-e5-93-aa-e4-ba-9b-e6-96-b9-e5-bc-8f-ef-bc-8c-e5-88-a4-e6-96-ad-e4-b8-80-e4-b8-aa-e6-95-b0-e7-bb-84-e4-b8-ba-e7-a9-ba/">判断一个变量为空有哪些方式，判断一个数组为空有哪些方式</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><strong>1. isset功能：判断变量是否被初始化</strong></p>
-<p>说明：它并不会判断变量是否为空，并且可以用来判断数组中元素是否被定义过<br>注意：当使用isset来判断数组元素是否被初始化过时，它的效率比array_key_exists高4倍左右</p>
-<p>复制代码 代码如下:</p>
-<p>$a = ‘’;<br>$a[‘c’] = ‘’;<br>if (!isset($a)) echo ‘$a 未被初始化’ . “”;<br>if (!isset($b)) echo ‘$b 未被初始化’ . “”;<br>if (isset($a[‘c’])) echo ‘$a 已经被初始化’ . “”;<br>// 显示结果为<br>// $b 未被初始化<br>// $a 已经被初始化</p>
-<p>&nbsp;</p>
-<p><strong>2. empty功能：检测变量是否为”空”</strong></p>
-<p>说明：任何一个未初始化的变量、值为 0 或 false 或 空字符串”” 或 null的变量、空数组、没有任何属性的对象，都将判断为empty==true<br>注意1：未初始化的变量也能被empty检测为”空”<br>注意2：empty只能检测变量，而不能检测语句</p>
-<p>复制代码 代码如下:</p>
-<p>$a = 0;<br>$b = ‘’;<br>$c = array();<br>if (empty($a)) echo ‘$a 为空’ . “”;<br>if (empty($b)) echo ‘$b 为空’ . “”;<br>if (empty($c)) echo ‘$c 为空’ . “”;<br>if (empty($d)) echo ‘$d 为空’ . “”;</p>
-<p>&nbsp;</p>
-<p><strong>3. var == null功能：判断变量是否为”空”</strong></p>
-<p>说明：值为 0 或 false 或 空字符串”” 或 null的变量、空数组、都将判断为 null<br>注意：与empty的显著不同就是：变量未初始化时 var == null 将会报错。</p>
-<p>复制代码 代码如下:</p>
-<p>$a = 0;<br>$b = array();<br>if ($a == null) echo ‘$a 为空’ . “”;<br>if ($b == null) echo ‘$b 为空’ . “”;<br>if ($c == null) echo ‘$b 为空’ . “”;<br>// 显示结果为<br>// $a 为空<br>// $b 为空<br>// Undefined variable: c</p>
-<p>&nbsp;</p>
-<p><strong>4. is_null功能：检测变量是否为”null”</strong></p>
-<p>说明：当变量被赋值为”null”时，检测结果为true<br>注意1：null不区分大小写：$a = null; $a = NULL 没有任何区别<br>注意2：仅在变量的值为”null”时，检测结果才为true，0、空字符串、false、空数组都检测为false<br>注意3：变量未初始化时，程序将会报错</p>
-<p>复制代码 代码如下:</p>
-<p>$a = null;<br>$b = false;<br>if (is_null($a)) echo ‘$a 为NULL’ . “”;<br>if (is_null($b)) echo ‘$b 为NULL’ . “”;<br>if (is_null($c)) echo ‘$c 为NULL’ . “”;<br>// 显示结果为<br>// $a 为NULL<br>// Undefined variable: c</p>
-<p>&nbsp;</p>
-<p><strong>5. var === null功能：检测变量是否为”null”，同时变量的类型也必须是”null”</strong></p>
-<p>说明：当变量被赋值为”null”时，同时变量的类型也是”null”时，<a href="http://cpro.baidu.com/cpro/ui/uijs.php?rs=1&amp;u=http%3A%2F%2Fwww%2Eeducity%2Ecn%2Fdevelop%2F680748%2Ehtml&amp;p=baidu&amp;c=news&amp;n=10&amp;t=tpclicked3_hc&amp;q=67051059_cpr&amp;k=%BC%EC%B2%E2&amp;k0=%BC%EC%B2%E2&amp;kdi0=8&amp;k1=php&amp;kdi1=8&amp;sid=95c3a5281f8951a3&amp;ch=0&amp;tu=u1740074&amp;jk=c6dedb9c0c9fadfe&amp;cf=29&amp;fv=15&amp;stid=9&amp;urlid=0&amp;luki=1&amp;seller_id=1&amp;di=128" target="_blank" rel="external">检测</a>结果为true<br>注意1：在判断为”null”上，全等于和is_null的作用相同<br>注意2：变量未初始化时，程序将会报错</p>
-<p><strong>总结PHP中，”NULL” 和 “空” 是2个概念。</strong></p>
-<p>isset  主要用来判断变量是否被初始化过<br>empty  可以将值为 “假”、”空”、”0”、”NULL”、”未初始化” 的变量都判断为TRUE<br>is_null  仅把值为 “NULL” 的变量判断为TRUE<br>var == null  把值为 “假”、”空”、”0”、”NULL” 的变量都判断为TRUE<br>var === null  仅把值为 “NULL” 的变量判断为TRUE</p>
-<p>所以我们在判断一个变量是否真正为”NULL”时，大多使用 is_null，从而避免”false”、”0”等值的干扰。</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/11/03/e5-88-a4-e6-96-ad-e4-b8-80-e4-b8-aa-e5-8f-98-e9-87-8f-e4-b8-ba-e7-a9-ba-e6-9c-89-e5-93-aa-e4-ba-9b-e6-96-b9-e5-bc-8f-ef-bc-8c-e5-88-a4-e6-96-ad-e4-b8-80-e4-b8-aa-e6-95-b0-e7-bb-84-e4-b8-ba-e7-a9-ba/" data-id="cinsnz8qg0063ocpd987r6yi5" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/CURL_MULTI_检测URL有效性，返回HTTP状态码/" data-id="cipqlt2em006yhypdifc5l4il" class="article-share-link">Share</a>
       
       
     </footer>
@@ -594,7 +574,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a><span class="archive-list-count">23</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a><span class="archive-list-count">22</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">19</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a><span class="archive-list-count">23</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a><span class="archive-list-count">22</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">19</span></li></ul>
     </div>
   </div>
 
@@ -606,23 +586,23 @@
       <ul>
         
           <li>
-            <a href="/2016/03/28/golang-defer的使用/">golang defer的使用</a>
+            <a href="/a/Hello_World/">Hello World</a>
           </li>
         
           <li>
-            <a href="/2016/02/18/GO-lang的面向对象的理解/">GO-lang的面向对象的理解</a>
+            <a href="/a/读《Web前端黑客技术揭秘》思考/">读《Web前端黑客技术揭秘》思考</a>
           </li>
         
           <li>
-            <a href="/2016/02/16/GO-lang-的学习笔记/">GO lang 的学习笔记</a>
+            <a href="/a/听《Web安全分享》/">听《Web安全分享》</a>
           </li>
         
           <li>
-            <a href="/2016/02/16/hello-world/">Hello World</a>
+            <a href="/a/读《图解HTTP》/">读《图解HTTP》</a>
           </li>
         
           <li>
-            <a href="/2015/12/15/php-e5-a4-9a-e4-b8-aa-e5-80-bc-e7-9b-b8-e5-8a-a0-e6-98-af-e7-bb-99-e5-ae-9a-e7-9a-84-e4-b8-80-e4-b8-aa-e6-95-b0-ef-bc-8c-e6-b1-82-e5-a4-9a-e4-b8-aa-e5-80-bc-e7-9a-84-e7-bb-84-e5-90-88/">PHP 多个值相加是给定的一个数，求多个值的组合</a>
+            <a href="/a/golag_defer的使用/">golang defer的使用</a>
           </li>
         
       </ul>
@@ -637,7 +617,7 @@
   
   <div class="outer">
     <div id="footer-info" class="inner">
-      &copy; 2016 John Doe<br>
+      &copy; 2016 王桐<br>
       Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
