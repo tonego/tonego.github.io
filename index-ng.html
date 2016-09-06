@@ -21,7 +21,7 @@
 <script>
 var app = angular.module('myApp', []);
 app.controller('customersCtrl', function($scope, $http) {
-      $http.get("https://api.github.com/repos/wangtongphp/wangtongphp.github.io/contents/source/_posts?ref=hexo")
+      $http.get("https://api.github.com/repos/wangtongphp/wangtongphp.github.io/contents/source/_posts?ref=master")
         .success(function (response) {$scope.list= response;});
 });
 </script>
