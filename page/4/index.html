@@ -3,19 +3,19 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Hexo</title>
+  <title>王桐的技术博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description">
+  <meta name="description" content="王桐的技术博客，Web开发领域">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
-<meta property="og:url" content="http://yoursite.com/page/4/index.html">
-<meta property="og:site_name" content="Hexo">
-<meta property="og:description">
+<meta property="og:title" content="王桐的技术博客">
+<meta property="og:url" content="http://3wbuild.com/page/4/index.html">
+<meta property="og:site_name" content="王桐的技术博客">
+<meta property="og:description" content="王桐的技术博客，Web开发领域">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hexo">
-<meta name="twitter:description">
+<meta name="twitter:title" content="王桐的技术博客">
+<meta name="twitter:description" content="王桐的技术博客，Web开发领域">
   
-    <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
+    <link rel="alternative" href="/atom.xml" title="王桐的技术博客" type="application/atom+xml">
   
   
     <link rel="icon" href="/favicon.png">
@@ -33,8 +33,12 @@
   <div id="header-outer" class="outer">
     <div id="header-title" class="inner">
       <h1 id="logo-wrap">
-        <a href="/" id="logo">Hexo</a>
+        <a href="/" id="logo">王桐的技术博客</a>
       </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">技术博客，PHP, Go, Mysql, Linux, Redis</a>
+        </h2>
       
     </div>
     <div id="header-inner" class="inner">
@@ -53,7 +57,7 @@
         <a id="nav-search-btn" class="nav-icon" title="Search"></a>
       </nav>
       <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://3wbuild.com"></form>
       </div>
     </div>
   </div>
@@ -61,9 +65,156 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-e7-a7-bb-e5-8a-a8-e5-89-8d-e7-ab-af-e5-bc-80-e5-8f-91-e6-a1-86-e6-9e-b6-e9-80-89-e6-8b-a9" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-mysql_的线程和连接统计的状态_" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2015/01/08/e7-a7-bb-e5-8a-a8-e5-89-8d-e7-ab-af-e5-bc-80-e5-8f-91-e6-a1-86-e6-9e-b6-e9-80-89-e6-8b-a9/" class="article-date">
+    <a href="/a/mysql_的线程和连接统计的状态_/" class="article-date">
+  <time datetime="2015-01-22T12:24:25.000Z" itemprop="datePublished">2015-01-22</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/mysql/">mysql</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/a/mysql_的线程和连接统计的状态_/">mysql 的线程和连接统计的状态 </a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>mysql 的线程和连接统计的状态 可以看到 尝试的连接、退出的连接、网络流量、线程统计，对我司的68nav 统计如下：</p>
+<p>&nbsp;</p>
+<p>mysql&gt; show status like ‘%Connect%’;<br>+———————-+————+<br>| Variable_name | Value |<br>+———————-+————+<br>| Aborted_connects | 273249 |<br>| Connections | 2146159970 |<br>| Max_used_connections | 3001 |<br>| Threads_connected | 10 |<br>+———————-+————+</p>
+<p>&nbsp;</p>
+<p>mysql&gt; show status like ‘%Aborted%’;<br>+——————+——–+<br>| Variable_name | Value |<br>+——————+——–+<br>| Aborted_clients | 5564 |<br>| Aborted_connects | 273249 |<br>+——————+——–+<br>2 rows in set</p>
+<p>&nbsp;</p>
+<p>mysql&gt; show status like ‘%Bytes%’;’<br>+—————-+——-+<br>| Variable_name | Value |<br>+—————-+——-+<br>| Bytes_received | 339 |<br>| Bytes_sent | 1662 |<br>+—————-+——-+<br>2 rows in set</p>
+<p>&nbsp;</p>
+<p>mysql&gt; show status like ‘%threads%’;<br>+————————+——–+<br>| Variable_name | Value |<br>+————————+——–+<br>| Delayed_insert_threads | 0 |<br>| Slow_launch_threads | 0 |<br>| Threads_cached | 6 |<br>| Threads_connected | 10 |<br>| Threads_created | 727972 |<br>| Threads_running | 8 |<br>+————————+——–+<br>6 rows in set</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://3wbuild.com/a/mysql_的线程和连接统计的状态_/" data-id="cipqlt2de0049hypdxaxes6sg" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-mysql_常用配置项" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/a/mysql_常用配置项/" class="article-date">
+  <time datetime="2015-01-22T01:29:10.000Z" itemprop="datePublished">2015-01-22</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/mysql/">mysql</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/a/mysql_常用配置项/">mysql 常用配置项</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="For-advice-on-how-to-change-settings-please-see"><a href="#For-advice-on-how-to-change-settings-please-see" class="headerlink" title="For advice on how to change settings please see"></a>For advice on how to change settings please see</h1><h1 id="http-dev-mysql-com-doc-refman-5-6-en-server-configuration-defaults-html"><a href="#http-dev-mysql-com-doc-refman-5-6-en-server-configuration-defaults-html" class="headerlink" title="http://dev.mysql.com/doc/refman/5.6/en/server-configuration-defaults.html"></a><a href="http://dev.mysql.com/doc/refman/5.6/en/server-configuration-defaults.html" target="_blank" rel="external">http://dev.mysql.com/doc/refman/5.6/en/server-configuration-defaults.html</a></h1><h1 id="DO-NOT-EDIT-THIS-FILE-It’s-a-template-which-will-be-copied-to-the"><a href="#DO-NOT-EDIT-THIS-FILE-It’s-a-template-which-will-be-copied-to-the" class="headerlink" title="* DO NOT EDIT THIS FILE. It’s a template which will be copied to the"></a><em>*</em> DO NOT EDIT THIS FILE. It’s a template which will be copied to the</h1><h1 id="default-location-during-install-and-will-be-replaced-if-you"><a href="#default-location-during-install-and-will-be-replaced-if-you" class="headerlink" title="* default location during install, and will be replaced if you"></a><em>*</em> default location during install, and will be replaced if you</h1><h1 id="upgrade-to-a-newer-version-of-MySQL"><a href="#upgrade-to-a-newer-version-of-MySQL" class="headerlink" title="* upgrade to a newer version of MySQL."></a><em>*</em> upgrade to a newer version of MySQL.</h1><p>[mysqld]</p>
+<h1 id="Remove-leading-and-set-to-the-amount-of-RAM-for-the-most-important-data"><a href="#Remove-leading-and-set-to-the-amount-of-RAM-for-the-most-important-data" class="headerlink" title="Remove leading # and set to the amount of RAM for the most important data"></a>Remove leading # and set to the amount of RAM for the most important data</h1><h1 id="cache-in-MySQL-Start-at-70-of-total-RAM-for-dedicated-server-else-10"><a href="#cache-in-MySQL-Start-at-70-of-total-RAM-for-dedicated-server-else-10" class="headerlink" title="cache in MySQL. Start at 70% of total RAM for dedicated server, else 10%."></a>cache in MySQL. Start at 70% of total RAM for dedicated server, else 10%.</h1><h1 id="innodb-buffer-pool-size-128M"><a href="#innodb-buffer-pool-size-128M" class="headerlink" title="innodb_buffer_pool_size = 128M"></a>innodb_buffer_pool_size = 128M</h1><h1 id="Remove-leading-to-turn-on-a-very-important-data-integrity-option-logging"><a href="#Remove-leading-to-turn-on-a-very-important-data-integrity-option-logging" class="headerlink" title="Remove leading # to turn on a very important data integrity option: logging"></a>Remove leading # to turn on a very important data integrity option: logging</h1><h1 id="changes-to-the-binary-log-between-backups"><a href="#changes-to-the-binary-log-between-backups" class="headerlink" title="changes to the binary log between backups."></a>changes to the binary log between backups.</h1><h1 id="log-bin"><a href="#log-bin" class="headerlink" title="log_bin"></a>log_bin</h1><h1 id="These-are-commonly-set-remove-the-and-set-as-required"><a href="#These-are-commonly-set-remove-the-and-set-as-required" class="headerlink" title="These are commonly set, remove the # and set as required."></a>These are commonly set, remove the # and set as required.</h1><p>basedir = /usr/local/mysql<br>datadir = /data/mysql<br>port = 3306</p>
+<h1 id="server-id-…"><a href="#server-id-…" class="headerlink" title="server_id = ….."></a>server_id = …..</h1><p>#socket = /var/lib/mysql/mysql.sock<br>socket = /tmp/mysql.sock</p>
+<p>skip-external-locking<br>key_buffer_size = 512M<br>max_allowed_packet = 1M<br>table_open_cache = 2048<br>sort_buffer_size = 1M<br>read_buffer_size = 1M<br>read_rnd_buffer_size = 4M<br>myisam_sort_buffer_size = 64M<br>thread_cache_size = 128<br>query_cache_size= 16M</p>
+<h1 id="Try-number-of-CPU’s-2-for-thread-concurrency"><a href="#Try-number-of-CPU’s-2-for-thread-concurrency" class="headerlink" title="Try number of CPU’s*2 for thread_concurrency"></a>Try number of CPU’s*2 for thread_concurrency</h1><p>thread_concurrency = 8<br>max_connections = 3000</p>
+<p>&nbsp;</p>
+<h1 id="Remove-leading-to-set-options-mainly-useful-for-reporting-servers"><a href="#Remove-leading-to-set-options-mainly-useful-for-reporting-servers" class="headerlink" title="Remove leading # to set options mainly useful for reporting servers."></a>Remove leading # to set options mainly useful for reporting servers.</h1><h1 id="The-server-defaults-are-faster-for-transactions-and-fast-SELECTs"><a href="#The-server-defaults-are-faster-for-transactions-and-fast-SELECTs" class="headerlink" title="The server defaults are faster for transactions and fast SELECTs."></a>The server defaults are faster for transactions and fast SELECTs.</h1><h1 id="Adjust-sizes-as-needed-experiment-to-find-the-optimal-values"><a href="#Adjust-sizes-as-needed-experiment-to-find-the-optimal-values" class="headerlink" title="Adjust sizes as needed, experiment to find the optimal values."></a>Adjust sizes as needed, experiment to find the optimal values.</h1><h1 id="join-buffer-size-128M"><a href="#join-buffer-size-128M" class="headerlink" title="join_buffer_size = 128M"></a>join_buffer_size = 128M</h1><h1 id="sort-buffer-size-2M"><a href="#sort-buffer-size-2M" class="headerlink" title="sort_buffer_size = 2M"></a>sort_buffer_size = 2M</h1><h1 id="read-rnd-buffer-size-2M"><a href="#read-rnd-buffer-size-2M" class="headerlink" title="read_rnd_buffer_size = 2M"></a>read_rnd_buffer_size = 2M</h1><p>&nbsp;</p>
+<p>sql_mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES</p>
+<p>slow_query_log_file = /var/log/mysqld/mysql-slow.log<br>long_query_time = 2<br>slow_query_log = 1</p>
+<p>pid-file = /var/run/mysqld/mysqld.pid<br>log-error = /var/run/mysqld/mysqld.err</p>
+<p>[mysqldump]<br>quick<br>max_allowed_packet = 16M<br>[myisamchk]<br>key_buffer_size = 128M<br>sort_buffer_size = 128M<br>read_buffer = 2M<br>write_buffer = 2M<br>[mysqlhotcopy]<br>interactive-timeout</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://3wbuild.com/a/mysql_常用配置项/" data-id="cipqlt2dl004ohypdm5fdt6i6" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-mysql_查询缓存变量和状态的值" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/a/mysql_查询缓存变量和状态的值/" class="article-date">
+  <time datetime="2015-01-20T11:35:02.000Z" itemprop="datePublished">2015-01-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/mysql/">mysql</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/a/mysql_查询缓存变量和状态的值/">mysql 查询缓存变量和状态的值</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>&nbsp;</p>
+<p>我这里现有的mysql查询缓存相关变量和状态如下：</p>
+<p>mysql&gt; show status like ‘Qcache%’;<br>+————————-+———–+<br>| Variable_name | Value |<br>+————————-+———–+<br>| Qcache_free_blocks | 3977 |<br>| Qcache_free_memory | 18250096 |<br>| Qcache_hits | 283961322 |<br>| Qcache_inserts | 18428082 |<br>| Qcache_lowmem_prunes | 4356073 |<br>| Qcache_not_cached | 5546877 |<br>| Qcache_queries_in_cache | 7952 |<br>| Qcache_total_blocks | 21891 |<br>+————————-+———–+<br>8 rows in set (0.00 sec)</p>
+<p>mysql&gt; show status like ‘Qcache%’;<br>+————————-+———–+<br>| Variable_name | Value |<br>+————————-+———–+<br>| Qcache_free_blocks | 4084 |<br>| Qcache_free_memory | 18467768 |<br>| Qcache_hits | 283964884 |<br>| Qcache_inserts | 18428200 |<br>| Qcache_lowmem_prunes | 4356073 |<br>| Qcache_not_cached | 5546880 |<br>| Qcache_queries_in_cache | 7840 |<br>| Qcache_total_blocks | 21775 |<br>+————————-+———–+<br>8 rows in set (0.00 sec)</p>
+<p>mysql&gt; show variables like ‘query_cache%’;<br>+——————————+———-+<br>| Variable_name | Value |<br>+——————————+———-+<br>| query_cache_limit | 1048576 |<br>| query_cache_min_res_unit | 4096 |<br>| query_cache_size | 67108864 |<br>| query_cache_type | ON |<br>| query_cache_wlock_invalidate | OFF |<br>+——————————+———-+<br>5 rows in set (0.06 sec)</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://3wbuild.com/a/mysql_查询缓存变量和状态的值/" data-id="cipqlt2di004hhypds2q6ylhq" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-移动前端开发框架选择" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/a/移动前端开发框架选择/" class="article-date">
   <time datetime="2015-01-08T03:31:32.000Z" itemprop="datePublished">2015-01-08</time>
 </a>
     
@@ -79,7 +230,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/01/08/e7-a7-bb-e5-8a-a8-e5-89-8d-e7-ab-af-e5-bc-80-e5-8f-91-e6-a1-86-e6-9e-b6-e9-80-89-e6-8b-a9/">移动前端开发框架选择</a>
+      <a class="article-title" href="/a/移动前端开发框架选择/">移动前端开发框架选择</a>
     </h1>
   
 
@@ -103,7 +254,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/01/08/e7-a7-bb-e5-8a-a8-e5-89-8d-e7-ab-af-e5-bc-80-e5-8f-91-e6-a1-86-e6-9e-b6-e9-80-89-e6-8b-a9/" data-id="cinsnz8pq003yocpd0k0wdb2v" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/移动前端开发框架选择/" data-id="cipqlt2bx000ihypdqm13lkts" class="article-share-link">Share</a>
       
       
     </footer>
@@ -113,9 +264,9 @@
 
 
   
-    <article id="post-linux-e7-bb-9f-e8-ae-a1-e6-9f-90-e4-b8-aa-e6-96-87-e4-bb-b6-e5-86-85-e5-ae-b9-e7-9a-84-e6-af-8f-e4-b8-aa-e5-80-bc-e5-87-ba-e7-8e-b0-e7-9a-84-e6-ac-a1-e6-95-b0" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-liux统计某个文件内容的_每个值出现的次数" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2015/01/07/linux-e7-bb-9f-e8-ae-a1-e6-9f-90-e4-b8-aa-e6-96-87-e4-bb-b6-e5-86-85-e5-ae-b9-e7-9a-84-e6-af-8f-e4-b8-aa-e5-80-bc-e5-87-ba-e7-8e-b0-e7-9a-84-e6-ac-a1-e6-95-b0/" class="article-date">
+    <a href="/a/liux统计某个文件内容的_每个值出现的次数/" class="article-date">
   <time datetime="2015-01-07T08:48:33.000Z" itemprop="datePublished">2015-01-07</time>
 </a>
     
@@ -131,7 +282,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/01/07/linux-e7-bb-9f-e8-ae-a1-e6-9f-90-e4-b8-aa-e6-96-87-e4-bb-b6-e5-86-85-e5-ae-b9-e7-9a-84-e6-af-8f-e4-b8-aa-e5-80-bc-e5-87-ba-e7-8e-b0-e7-9a-84-e6-ac-a1-e6-95-b0/">linux统计某个文件内容的 每个值出现的次数</a>
+      <a class="article-title" href="/a/liux统计某个文件内容的_每个值出现的次数/">linux统计某个文件内容的 每个值出现的次数</a>
     </h1>
   
 
@@ -146,7 +297,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/01/07/linux-e7-bb-9f-e8-ae-a1-e6-9f-90-e4-b8-aa-e6-96-87-e4-bb-b6-e5-86-85-e5-ae-b9-e7-9a-84-e6-af-8f-e4-b8-aa-e5-80-bc-e5-87-ba-e7-8e-b0-e7-9a-84-e6-ac-a1-e6-95-b0/" data-id="cinsnz8pe0031ocpd0me0ay39" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/liux统计某个文件内容的_每个值出现的次数/" data-id="cipqlt2dw005ahypdfde3vtjc" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/小米面试题/">小米面试题</a></li></ul>
@@ -158,9 +309,9 @@
 
 
   
-    <article id="post-e5-b0-8f-e7-b1-b3-e8-b7-af-e7-94-b1-e5-99-a8-e6-8f-92-e4-bb-b6-e5-8e-9f-e7-90-86" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-小米路由器插件开发_关键步骤" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2015/01/06/e5-b0-8f-e7-b1-b3-e8-b7-af-e7-94-b1-e5-99-a8-e6-8f-92-e4-bb-b6-e5-8e-9f-e7-90-86/" class="article-date">
+    <a href="/a/小米路由器插件开发_关键步骤/" class="article-date">
   <time datetime="2015-01-06T12:25:03.000Z" itemprop="datePublished">2015-01-06</time>
 </a>
     
@@ -176,7 +327,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/01/06/e5-b0-8f-e7-b1-b3-e8-b7-af-e7-94-b1-e5-99-a8-e6-8f-92-e4-bb-b6-e5-8e-9f-e7-90-86/">小米路由器插件开发 关键步骤</a>
+      <a class="article-title" href="/a/小米路由器插件开发_关键步骤/">小米路由器插件开发 关键步骤</a>
     </h1>
   
 
@@ -196,7 +347,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/01/06/e5-b0-8f-e7-b1-b3-e8-b7-af-e7-94-b1-e5-99-a8-e6-8f-92-e4-bb-b6-e5-8e-9f-e7-90-86/" data-id="cinsnz8q5005bocpdwemnm48z" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/小米路由器插件开发_关键步骤/" data-id="cipqlt2cj0026hypdxp0qwnth" class="article-share-link">Share</a>
       
       
     </footer>
@@ -206,9 +357,9 @@
 
 
   
-    <article id="post-e6-8e-92-e5-ba-8f-e7-ae-97-e6-b3-95" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-排序算法" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2015/01/03/e6-8e-92-e5-ba-8f-e7-ae-97-e6-b3-95/" class="article-date">
+    <a href="/a/排序算法/" class="article-date">
   <time datetime="2015-01-03T10:37:16.000Z" itemprop="datePublished">2015-01-03</time>
 </a>
     
@@ -224,7 +375,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/01/03/e6-8e-92-e5-ba-8f-e7-ae-97-e6-b3-95/">排序算法</a>
+      <a class="article-title" href="/a/排序算法/">排序算法</a>
     </h1>
   
 
@@ -244,7 +395,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/01/03/e6-8e-92-e5-ba-8f-e7-ae-97-e6-b3-95/" data-id="cinsnz8q20052ocpdrpcqghbi" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/排序算法/" data-id="cipqlt2cf001whypd306j3ktm" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/小米面试题/">小米面试题</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/百度面试题/">百度面试题</a></li></ul>
@@ -256,9 +407,9 @@
 
 
   
-    <article id="post-e4-b8-8d-e5-90-8clinux-e6-9c-8d-e5-8a-a1-e5-99-a8-e4-b9-8b-e5-89-8d-e4-bc-a0-e8-be-93-e6-96-87-e4-bb-b6-e7-9a-84-e5-91-bd-e4-bb-a4" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-不同liux服务器之前传输文件的命令" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2015/01/03/e4-b8-8d-e5-90-8clinux-e6-9c-8d-e5-8a-a1-e5-99-a8-e4-b9-8b-e5-89-8d-e4-bc-a0-e8-be-93-e6-96-87-e4-bb-b6-e7-9a-84-e5-91-bd-e4-bb-a4/" class="article-date">
+    <a href="/a/不同liux服务器之前传输文件的命令/" class="article-date">
   <time datetime="2015-01-03T10:36:22.000Z" itemprop="datePublished">2015-01-03</time>
 </a>
     
@@ -274,7 +425,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/01/03/e4-b8-8d-e5-90-8clinux-e6-9c-8d-e5-8a-a1-e5-99-a8-e4-b9-8b-e5-89-8d-e4-bc-a0-e8-be-93-e6-96-87-e4-bb-b6-e7-9a-84-e5-91-bd-e4-bb-a4/">不同linux服务器之前传输文件的命令</a>
+      <a class="article-title" href="/a/不同liux服务器之前传输文件的命令/">不同linux服务器之前传输文件的命令</a>
     </h1>
   
 
@@ -294,7 +445,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/01/03/e4-b8-8d-e5-90-8clinux-e6-9c-8d-e5-8a-a1-e5-99-a8-e4-b9-8b-e5-89-8d-e4-bc-a0-e8-be-93-e6-96-87-e4-bb-b6-e7-9a-84-e5-91-bd-e4-bb-a4/" data-id="cinsnz8qk006eocpd64ohod3t" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/不同liux服务器之前传输文件的命令/" data-id="cipqlt2d2003bhypdw49sokyh" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/凤凰网面试题/">凤凰网面试题</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/百度面试题/">百度面试题</a></li></ul>
@@ -306,9 +457,9 @@
 
 
   
-    <article id="post-mysql-fetch-row-e4-b8-8e-mysql-fetch-array-e7-9a-84-e5-8c-ba-e5-88-ab" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-mysql_fetch_row_与_mysql_fetch_array_的区别" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2015/01/03/mysql-fetch-row-e4-b8-8e-mysql-fetch-array-e7-9a-84-e5-8c-ba-e5-88-ab/" class="article-date">
+    <a href="/a/mysql_fetch_row_与_mysql_fetch_array_的区别/" class="article-date">
   <time datetime="2015-01-03T04:01:46.000Z" itemprop="datePublished">2015-01-03</time>
 </a>
     
@@ -324,7 +475,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/01/03/mysql-fetch-row-e4-b8-8e-mysql-fetch-array-e7-9a-84-e5-8c-ba-e5-88-ab/">mysql_fetch_row 与 mysql_fetch_array 的区别</a>
+      <a class="article-title" href="/a/mysql_fetch_row_与_mysql_fetch_array_的区别/">mysql_fetch_row 与 mysql_fetch_array 的区别</a>
     </h1>
   
 
@@ -339,7 +490,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/01/03/mysql-fetch-row-e4-b8-8e-mysql-fetch-array-e7-9a-84-e5-8c-ba-e5-88-ab/" data-id="cinsnz8op001uocpdwqrbledy" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/mysql_fetch_row_与_mysql_fetch_array_的区别/" data-id="cipqlt2dq004yhypd2mpjvazs" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/凤凰网面试题/">凤凰网面试题</a></li></ul>
@@ -351,9 +502,9 @@
 
 
   
-    <article id="post-php-e4-b8-ad-e4-bc-a0-e5-80-bc-e4-b8-8e-e4-bc-a0-e5-bc-95-e7-94-a8-e7-9a-84-e5-8c-ba-e5-88-ab" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-PHP中传值与传引用的区别" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2015/01/03/php-e4-b8-ad-e4-bc-a0-e5-80-bc-e4-b8-8e-e4-bc-a0-e5-bc-95-e7-94-a8-e7-9a-84-e5-8c-ba-e5-88-ab/" class="article-date">
+    <a href="/a/PHP中传值与传引用的区别/" class="article-date">
   <time datetime="2015-01-03T04:00:57.000Z" itemprop="datePublished">2015-01-03</time>
 </a>
     
@@ -369,7 +520,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2015/01/03/php-e4-b8-ad-e4-bc-a0-e5-80-bc-e4-b8-8e-e4-bc-a0-e5-bc-95-e7-94-a8-e7-9a-84-e5-8c-ba-e5-88-ab/">PHP中传值与传引用的区别</a>
+      <a class="article-title" href="/a/PHP中传值与传引用的区别/">PHP中传值与传引用的区别</a>
     </h1>
   
 
@@ -383,151 +534,10 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/01/03/php-e4-b8-ad-e4-bc-a0-e5-80-bc-e4-b8-8e-e4-bc-a0-e5-bc-95-e7-94-a8-e7-9a-84-e5-8c-ba-e5-88-ab/" data-id="cinsnz8om001locpdynbga0zj" class="article-share-link">Share</a>
+      <a data-url="http://3wbuild.com/a/PHP中传值与传引用的区别/" data-id="cipqlt2ec006bhypd7cy7j2gn" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/凤凰网面试题/">凤凰网面试题</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-echo-print-print-r-e5-8c-ba-e5-88-ab" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/01/03/echo-print-print-r-e5-8c-ba-e5-88-ab/" class="article-date">
-  <time datetime="2015-01-03T03:59:49.000Z" itemprop="datePublished">2015-01-03</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/PHP笔试题/">PHP笔试题</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/01/03/echo-print-print-r-e5-8c-ba-e5-88-ab/">echo print print_r 区别</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>&nbsp;</p>
-<p>&nbsp;</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/01/03/echo-print-print-r-e5-8c-ba-e5-88-ab/" data-id="cinsnz8pk003iocpd105n5qnb" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/凤凰网面试题/">凤凰网面试题</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-php-e5-a6-82-e4-bd-95-e5-ae-9e-e7-8e-b0-e5-ad-97-e7-ac-a6-e4-b8-b2-e7-bf-bb-e8-bd-ac" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/01/03/php-e5-a6-82-e4-bd-95-e5-ae-9e-e7-8e-b0-e5-ad-97-e7-ac-a6-e4-b8-b2-e7-bf-bb-e8-bd-ac/" class="article-date">
-  <time datetime="2015-01-03T03:58:46.000Z" itemprop="datePublished">2015-01-03</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/PHP笔试题/">PHP笔试题</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/01/03/php-e5-a6-82-e4-bd-95-e5-ae-9e-e7-8e-b0-e5-ad-97-e7-ac-a6-e4-b8-b2-e7-bf-bb-e8-bd-ac/">PHP如何实现字符串翻转</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>&nbsp;</p>
-<p>php内置函数： strrev</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/01/03/php-e5-a6-82-e4-bd-95-e5-ae-9e-e7-8e-b0-e5-ad-97-e7-ac-a6-e4-b8-b2-e7-bf-bb-e8-bd-ac/" data-id="cinsnz8og0017ocpduyrrynof" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/凤凰网面试题/">凤凰网面试题</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-e5-95-86-e5-93-81-e6-af-8f-e5-88-86-e9-92-9f-e7-9a-84-e5-ba-93-e5-ad-98-e5-8f-98-e5-8c-96-e6-8a-a5-e8-a1-a8-e7-9a-84-e5-ae-9e-e7-8e-b0" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/01/03/e5-95-86-e5-93-81-e6-af-8f-e5-88-86-e9-92-9f-e7-9a-84-e5-ba-93-e5-ad-98-e5-8f-98-e5-8c-96-e6-8a-a5-e8-a1-a8-e7-9a-84-e5-ae-9e-e7-8e-b0/" class="article-date">
-  <time datetime="2015-01-03T03:50:35.000Z" itemprop="datePublished">2015-01-03</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/categories/PHP笔试题/">PHP笔试题</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/01/03/e5-95-86-e5-93-81-e6-af-8f-e5-88-86-e9-92-9f-e7-9a-84-e5-ba-93-e5-ad-98-e5-8f-98-e5-8c-96-e6-8a-a5-e8-a1-a8-e7-9a-84-e5-ae-9e-e7-8e-b0/">商品每分钟的库存变化报表的实现</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>原题如下：</p>
-<p>5000个商品goods_id，库存stock，在redis里面 。</p>
-<p>要做两个事情：</p>
-<p>①每分钟快照一次；</p>
-<p>②做报表，每个商品每分钟的库存变化折线图。</p>
-<p>注意的地方：</p>
-<p>存的时候注意数据量，要能存的下来；</p>
-<p>取的时候要足够快速，直接查db可能会存在问题；</p>
-<p>db的表结构或者其他存储的设计</p>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/01/03/e5-95-86-e5-93-81-e6-af-8f-e5-88-86-e9-92-9f-e7-9a-84-e5-ba-93-e5-ad-98-e5-8f-98-e5-8c-96-e6-8a-a5-e8-a1-a8-e7-9a-84-e5-ae-9e-e7-8e-b0/" data-id="cinsnz8qd005uocpdt78l0k9x" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/小米面试题/">小米面试题</a></li></ul>
 
     </footer>
   </div>
@@ -576,7 +586,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a><span class="archive-list-count">23</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a><span class="archive-list-count">22</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">19</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/05/">May 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/06/">June 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a><span class="archive-list-count">23</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a><span class="archive-list-count">22</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">19</span></li></ul>
     </div>
   </div>
 
@@ -588,23 +598,23 @@
       <ul>
         
           <li>
-            <a href="/2016/03/28/golang-defer的使用/">golang defer的使用</a>
+            <a href="/a/Hello_World/">Hello World</a>
           </li>
         
           <li>
-            <a href="/2016/02/18/GO-lang的面向对象的理解/">GO-lang的面向对象的理解</a>
+            <a href="/a/读《Web前端黑客技术揭秘》思考/">读《Web前端黑客技术揭秘》思考</a>
           </li>
         
           <li>
-            <a href="/2016/02/16/GO-lang-的学习笔记/">GO lang 的学习笔记</a>
+            <a href="/a/听《Web安全分享》/">听《Web安全分享》</a>
           </li>
         
           <li>
-            <a href="/2016/02/16/hello-world/">Hello World</a>
+            <a href="/a/读《图解HTTP》/">读《图解HTTP》</a>
           </li>
         
           <li>
-            <a href="/2015/12/15/php-e5-a4-9a-e4-b8-aa-e5-80-bc-e7-9b-b8-e5-8a-a0-e6-98-af-e7-bb-99-e5-ae-9a-e7-9a-84-e4-b8-80-e4-b8-aa-e6-95-b0-ef-bc-8c-e6-b1-82-e5-a4-9a-e4-b8-aa-e5-80-bc-e7-9a-84-e7-bb-84-e5-90-88/">PHP 多个值相加是给定的一个数，求多个值的组合</a>
+            <a href="/a/golag_defer的使用/">golang defer的使用</a>
           </li>
         
       </ul>
@@ -619,7 +629,7 @@
   
   <div class="outer">
     <div id="footer-info" class="inner">
-      &copy; 2016 John Doe<br>
+      &copy; 2016 王桐<br>
       Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
