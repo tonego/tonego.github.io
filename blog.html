@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>王桐的技术博客</title>
+<meta charset="utf-8">
+<script src="http://apps.bdimg.com/libs/angular.js/1.4.6/angular.min.js"></script>
+</head>
+<body>
+
+<div ng-app="myApp" ng-controller="customersCtrl"> 
+
+<ul>
+    <li ng-repeat="x in list">
+      <a href="{{x.download_url}}" target="_blank"> {{ x.name }} </a>
+      
+    </li>
+</ul>
+
+</div>
+
+<script>
+var app = angular.module('myApp', []);
+app.controller('customersCtrl', function($scope, $http) {
+      $http.get("https://api.github.com/repos/wangtongphp/wangtongphp.github.io/contents/source/_posts?ref=hexo")
+        .success(function (response) {$scope.list= response;});
+});
+</script>
