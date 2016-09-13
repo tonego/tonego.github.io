@@ -7,11 +7,9 @@ date: 2015-06-08 09:44:27
 tags:
 ---
 
-&nbsp;
 
 zend studio 12 破解/永久使用的方法
 
-&nbsp;
 
 linux:
 
@@ -19,6 +17,3 @@ linux:
 2、删除一个文件和两个目录：.zs（文件），.ZendStudio（目录）、.zend（目录）
 这样大功告成，当我们再次打开后，就又恢复到30天了。
 
-&nbsp;
-
-&nbsp;
