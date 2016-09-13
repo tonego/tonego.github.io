@@ -8,17 +8,22 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-utf8-base64/0.0.5/angular-utf8-base64.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/markdown.js/0.5.0/markdown.min.js"></script>
 <!--
-<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-base64/2.0.5/angular-base64.js"></script>
 -->
 <script type="text/javascript">
-angular.module('ngRouteExample', ['ngRoute','ab-base64'])
-.filter('base64_decode',function(){
-    return function(input){
-    }
-})
+angular.module('wangtongphp', ['ngRoute','ab-base64'])
 .filter('trustAsHtml',function($sce){
     return function(input){
         return $sce.trustAsHtml(input);
+    }
+})
+.filter('substr3',function(){
+    return function(input){
+        if(!!input){
+            return input.substr(0,input.length-3);
+        }
+        else{
+            return input; 
+        }
     }
 })
 .controller('HomeController', function ($scope,$http, $route) { 
@@ -50,27 +55,24 @@ angular.module('ngRouteExample', ['ngRoute','ab-base64'])
     });
 });
 </script>
-
-  
 </head>
 
-<body ng-app="ngRouteExample" class="ng-scope">
+<body ng-app="wangtongphp" class="ng-scope">
   <script type="text/ng-template" id="embedded.home.html">
     <h1> Home </h1>
     <ul>
-        <li ng-repeat="x in list" > <a href="#/info/{{x.name}}"> {{x.name}}</a> </li>
+        <li ng-repeat="x in list" > <a href="#/info/{{x.name}}"> {{x.name | substr3 }}</a> </li>
     </ul>
   </script>
 
   <script type="text/ng-template" id="embedded.info.html">
-      <h1> {{info.name}} </h1>
+      <h1> {{ info.name | substr3 }} </h1>
         <div id="content" ng-bind-html="info.content | trustAsHtml"></div>
   </script>
 
   <div> 
     <div id="navigation">  
       <a href="#/home">Home</a>
-      <a href="#/info:3">InfoTest</a>
     </div>
       
     <div ng-view="">
@@ -79,3 +81,6 @@ angular.module('ngRouteExample', ['ngRoute','ab-base64'])
 </body>
 </html>
 
+<!--
+框架介绍: http://3wbuild.com/index-ng.html#/info/github.io%E5%8D%9A%E5%AE%A2%E7%9A%84%E6%80%9D%E8%80%83.md
+-->
