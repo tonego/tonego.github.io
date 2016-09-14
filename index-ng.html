@@ -18,7 +18,7 @@ angular.module('wangtongphp', ['ngRoute','ab-base64'])
 })
 .filter('substr3',function(){
     return function(input){
-        if(!!input){
+        if(!!input && input.substr(input.length-3)=='.md'){
             return input.substr(0,input.length-3);
         }
         else{
@@ -28,13 +28,13 @@ angular.module('wangtongphp', ['ngRoute','ab-base64'])
 })
 .controller('HomeController', function ($scope,$http, $route) { 
     $scope.$route = $route;
-    $http.get("https://api.github.com/repos/wangtongphp/wangtongphp.github.io/contents/source/_posts?ref=master")
+    $http.get("https://api.github.com/repos/wangtongphp/wangtongphp.github.io/contents/source/?ref=master")
         .success(function (response) {$scope.list= response;});
 })
 .controller('InfoController', function ($scope, $http, $route, $routeParams, base64) { 
     $scope.$route = $route;
     console.log($routeParams);
-    $http.get('https://api.github.com/repos/wangtongphp/wangtongphp.github.io/contents/source/_posts/'+$routeParams.url)
+    $http.get('https://api.github.com/repos/wangtongphp/wangtongphp.github.io/contents/source/'+$routeParams.url)
         .success(function (response) {
             $scope.info = response;
             $scope.info.content = markdown.toHTML(base64.decode($scope.info.content), 'Maruku')

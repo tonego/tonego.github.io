@@ -183,3 +183,21 @@
     来源：http://www.php-internals.com/book/?p=chapt06/06-02-php-memory-manager
 
 
+#### 10G的access_log文件，找出访问最少的N个url
+
+    web 服务器的访问日志文件 ，有10G大小，找出访问最少的N个url。
+    结合分治、快速排序的思路来解决问题。
+
+#### 不同linux服务器之前传输文件的命令：
+
+    ftp
+    rcp
+    scp
+    wget
+    curl
+    rsync
+    linux 与window 传输用 ： sz与rz
+    Linux 上的常用文件传输方式介绍与比较:   http://www.ibm.com/developerworks/cn/linux/l-cn-filetransfer/
+
+
+
