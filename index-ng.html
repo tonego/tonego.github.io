@@ -26,15 +26,45 @@ angular.module('wangtongphp', ['ngRoute','ab-base64'])
         }
     }
 })
+.filter('pUrl',function(base64){
+    return function(input){
+        //$rootScope.url = input.url;
+        console.log('pUrl',input);
+        if(!!input && input.type=='dir'){
+            return '#/list/'+base64.encode(input.url);
+        }
+        else{
+            return '#/info/'+base64.encode(input.url);
+        }
+    }
+})
 .controller('HomeController', function ($scope,$http, $route) { 
     $scope.$route = $route;
-    $http.get("https://api.github.com/repos/wangtongphp/wangtongphp.github.io/contents/source/?ref=master")
-        .success(function (response) {$scope.list= response;});
+    $http.defaults.headers.common.Authorization = ' token daa4dd03a6efec74044fb3f472bf946a03c6194c';
+    //"https://api.github.com/repos/wangtongphp/wangtongphp.github.io/contents/source/?ref=master"
+    $http.get("https://api.github.com/repositories/51814842/contents/source")
+        .success(function (response) {
+            $scope.list= response;
+        });
+    //$rootScope.dir="";
+})
+.controller('ListController', function ($scope,$http, $route, $routeParams,base64) { 
+    $scope.$route = $route;
+    console.log($routeParams);
+    $http.defaults.headers.common.Authorization = ' token daa4dd03a6efec74044fb3f472bf946a03c6194c';
+    //"https://api.github.com/repos/wangtongphp/wangtongphp.github.io/contents/source/"+$routeParams.url+"?ref=master"
+    $http.get(base64.decode($routeParams.url))
+        .success(function (response) {
+            $scope.list= response;
+        });
+    //$rootScope.dir=$routeParams.url;
 })
 .controller('InfoController', function ($scope, $http, $route, $routeParams, base64) { 
     $scope.$route = $route;
-    console.log($routeParams);
-    $http.get('https://api.github.com/repos/wangtongphp/wangtongphp.github.io/contents/source/'+$routeParams.url)
+    console.log($routeParams,base64.decode($routeParams.url));
+    $http.defaults.headers.common.Authorization = ' token daa4dd03a6efec74044fb3f472bf946a03c6194c';
+    //'https://api.github.com/repos/wangtongphp/wangtongphp.github.io/contents/source/'+$routeParams.url
+    $http.get(base64.decode($routeParams.url))
         .success(function (response) {
             $scope.info = response;
             $scope.info.content = markdown.toHTML(base64.decode($scope.info.content), 'Maruku')
@@ -45,6 +75,10 @@ angular.module('wangtongphp', ['ngRoute','ab-base64'])
     when('/home', {
         templateUrl: 'embedded.home.html',
         controller: 'HomeController'
+    }).
+    when('/list/:url', {
+        templateUrl: 'embedded.list.html',
+        controller: 'ListController'
     }).
     when('/info/:url', {
         templateUrl: 'embedded.info.html',
@@ -61,7 +95,14 @@ angular.module('wangtongphp', ['ngRoute','ab-base64'])
   <script type="text/ng-template" id="embedded.home.html">
     <h1> Home </h1>
     <ul>
-        <li ng-repeat="x in list" > <a href="#/info/{{x.name}}"> {{x.name | substr3 }}</a> </li>
+        <li ng-repeat="x in list" > <a ng-href="{{x | pUrl}}"> {{x.name | substr3 }}</a> </li>
+    </ul>
+  </script>
+
+  <script type="text/ng-template" id="embedded.list.html">
+    <h1> List </h1>
+    <ul>
+        <li ng-repeat="x in list" > <a  ng-href="{{x | pUrl}}" > {{x.name | substr3 }}</a> </li>
     </ul>
   </script>
 
@@ -72,7 +113,7 @@ angular.module('wangtongphp', ['ngRoute','ab-base64'])
 
   <div> 
     <div id="navigation">  
-      <a href="#/home">Home</a>
+        <a href="#/home">Home</a>
     </div>
       
     <div ng-view="">
@@ -81,6 +122,11 @@ angular.module('wangtongphp', ['ngRoute','ab-base64'])
 </body>
 </html>
 
+
+
+
+
+
 <!--
-框架介绍: http://3wbuild.com/index-ng.html#/info/github.io%E5%8D%9A%E5%AE%A2%E7%9A%84%E6%80%9D%E8%80%83.md
+框架介绍: https://github.com/wangtongphp/wangtongphp.github.io/blob/master/source/PHP/github.io%E5%8D%9A%E5%AE%A2%E7%9A%84%E6%80%9D%E8%80%83.md 
 -->
