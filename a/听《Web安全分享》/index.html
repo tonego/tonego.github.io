@@ -93,7 +93,6 @@ xss 反射型漏洞案例：http://www.111.com.cn/search/search.action?keyWord=%
     <div class="article-entry" itemprop="articleBody">
       
         <p>最常用的两个工具: sqlmap / burp suite</p>
-<p>xss 反射型漏洞案例：<a href="http://www.111.com.cn/search/search.action?keyWord=%2522%257D;alert(document.cookie);var%2520a=%257Ba:%2522dd" target="_blank" rel="external">http://www.111.com.cn/search/search.action?keyWord=%2522%257D;alert(document.cookie);var%2520a=%257Ba:%2522dd</a></p>
 <p>方法：输入woca，源码中搜索woca，根据woca出现的位置来闭合标签实现xss，优先选择js通常更容易实现。</p>
 <p>关于sql inject，做到两点即可过滤%92的攻击，<br>    ①int型参数一定要int 转换，不然易构造1 union select 1,user(),3,version()的不含引号等特殊字符的注入。<br>    ②string型参数，转义单双引号即可防止构造闭合语句。</p>
 <p>关于xss，要做的地方比较多。<br>    主要注意数据解析到js和html中的特殊符号, 也要注意其他编码格式：\u0027，&amp;#39，%2527</p>
