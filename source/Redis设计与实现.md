@@ -1,5 +1,38 @@
-###### 7.压缩列表 ZIPLIST
 
+###### 4.字典
+```
+typedef struct dict {    
+    dictType *type;    
+    void *privdata;    
+    dictht ht[2];    
+    in trehashidx; /* rehashing not in progress if rehashidx == -1 */
+} dict;
+typedef struct dictht {    
+    dictEntry **table;    
+    unsigned long size;   
+    unsigned long sizemask;     //哈希表大小掩码，用于计算索引值 //总是等于size-1    
+    unsigned long used;           // 该哈希表已有节点的数量
+} dictht;
+typedef struct dictEntry {
+    void *key;
+    union{        
+        void *val;        
+        uint64_tu64;        
+        int64_ts64;    
+    } v;    
+    struct dictEntry *next;
+} dictEntry;
+```
+* Redis使用MurmurHash2算法来计算键的哈希值
+
+###### 7.压缩列表 ZIPLIST
+```
+zlbytes zltail zllen entry1 entry2{previous_entry_length encoding content} zlend
+```
+* 压缩列表是从表尾向表头遍历的，
+* previous_entry_length 1字节或5字节； 如果前一节点的长度大于等于254字节，那么previ-ous_entry_length属性的长度为5字节：其中属性的第一字节会被设置为0xFE（十进制值254），而之后的四个字节则用于保存前一节点的长度。
+* encoding 字节数组00开头1字节长，01 2， 10 5； 整数编码11开头1字节长
+* 连锁更新。有多个连续的长度介于250字节到253字节之间的节点e1-eN，这些都只需1字节长的previous_entry_length，若e1增加长度便会引发连锁更新。这时最坏复杂度为O(N²)，出现的几率可以忽略
 
 ###### 8.对象
 ```
