@@ -1,3 +1,15 @@
+###### 7.压缩列表 ZIPLIST
+
+
+###### 8.对象
+```
+STRING: INT EMBSTR RAW
+LIST: ZIPLIST LINKEDLIST
+HASH: ZIPLIST HT 
+SET: INTSET HT 
+ZSET: ZIPLIST SKIPLIST
+```
+
 ###### 18.发布与订阅
 ```
 struct redisServer { dict *pubsub_channels;  list *pubsub_patterns;};
