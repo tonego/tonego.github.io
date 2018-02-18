@@ -24,6 +24,13 @@ typedef struct dictEntry {
 } dictEntry;
 ```
 * Redis使用MurmurHash2算法来计算键的哈希值
+* rehash。 ht[1]的大小为第一个大于等于ht[0].used*2的2n（2的n次方幂）
+* 自动扩展： 未执行BGSAVE|BGREWRITEAOF负载因子大于等于1。正在执行BGSAVE命令或者BGREWRITEAOF命令，并且哈希表的负载因子大于等于5。
+* 负载因子= 哈希表已保存节点数量/ 哈希表大小。 load_factor = ht[0].used / ht[0].size
+* 哈希表的负载因子小于0.1时，程序自动开始对哈希表执行收缩操作。
+* 渐进式rehash：操作一个键的话，程序会先在ht[0]里面进行查找，如果没找到的话，就会继续到ht[1]里面进行查找
+* 在rehash进行期间，每次对字典执行添加、删除、查找或者更新操作时，程序除了执行指定的操作以外，还会顺带将ht[0]哈希表在rehashidx索引上的所有键值对rehash到ht[1]，当rehash工作完成之后，程序将rehashidx属性的值增一
+
 
 ###### 7.压缩列表 ZIPLIST
 ```
