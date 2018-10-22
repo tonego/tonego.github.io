@@ -1,4 +1,4 @@
-
+《Go语言学习笔记》- 雨痕
 ## 1. 概述
 多defer顺序为FILO
 使用ok-idiom获取值，x,ok:=map["a]
@@ -46,16 +46,23 @@ closure 是函数和引用环境的组合体
 defer延迟调用性能差5倍。Lock / (defer) Unlock()测试
 错误变量通常以err作为前缀，字符串全小写，无结束标点。 errors.New() fmt.Errorf()
 自定义错误类型以Error作为后缀
+defer 不能用在init()函数中， os.Exit(1)执行不到defer
 ## 5. 数据
 #### 5.1 字符串
 转换。字符串类型 []byte []rune与string转换, 可尝试用*(*string)(unsafe.Pointer(&bs))来做toString
+(gdb) b runtime.mapaccess2_faststr //在map访问函数上打断点
 性能。字符串连接方法， 优先使用 bytes.Buffer strings.Join, 少量使用 fmt.Sprintf text/template, 避免使用 +
 Unicode。r:='我'自动rune/int32类型，s:="我"自动string类型。 utf8.RuneCountInString返回字符数
+rune 专门存储Unicode码点，相当于UCS-4/UTF-32格式
+
+
 #### 5.2 数组
 第一维度允许使用 d:=[...]user{{"a"},{"b"}}
-指针。 指针数组 数组指针
+指针。 指针数组 数组指针. 数组指针可以直接操作元素
 复制。 可用指针或切片传参避免数据复制
 #### 5.3 切片
+切片是只读对象，类似数组指针的一种包装
+少元素，不适合用切片代替数组，切片底层数组可能在堆上分配内存， 小数组在栈上拷贝的消耗小于make代价
 reslice 新建切片依旧指向原底层数组， 修改对所有关联切片可见
 append 超出sli的cap则会新分配空间，不会改变原数组|Sli
 copy 根据原切片长度进行覆盖操作

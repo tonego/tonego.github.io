@@ -28,7 +28,7 @@ HTTP协议  SPDY协议 SMTP协议 HTTPS协议 FTP协议 TCP/IP协议
 <div></div>
 <div></div>
 <div></div>
-<div>PHP函数：get_headers() header() curl扩展 socket系列  file系列  stream_*系列</div>
+<div>PHP函数：get_headers() header() curl扩展 socket系列  file系列  stream_xxx系列</div>
 <div></div>
 <div>防灌水：IP限制、TOKEN和表单欺诈、验证码（短信验证）、人工审核、前端JS加密；</div>
 <div></div>

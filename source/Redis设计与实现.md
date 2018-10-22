@@ -1,30 +1,30 @@
 
 ###### 4.字典
 ```
-typedef struct dict {    
-    dictType *type;    
-    void *privdata;    
-    dictht ht[2];    
+typedef struct dict {
+    dictType *type;
+    void *privdata;
+    dictht ht[2];
     in trehashidx; /* rehashing not in progress if rehashidx == -1 */
 } dict;
-typedef struct dictht {    
-    dictEntry **table;    
-    unsigned long size;   
-    unsigned long sizemask;     //哈希表大小掩码，用于计算索引值 //总是等于size-1    
+typedef struct dictht {
+    dictEntry **table;
+    unsigned long size;
+    unsigned long sizemask;     //哈希表大小掩码，用于计算索引值 //总是等于size-1
     unsigned long used;           // 该哈希表已有节点的数量
 } dictht;
 typedef struct dictEntry {
     void *key;
-    union{        
-        void *val;        
-        uint64_tu64;        
-        int64_ts64;    
-    } v;    
+    union{
+        void *val;
+        uint64_tu64;
+        int64_ts64;
+    } v;
     struct dictEntry *next;
 } dictEntry;
 ```
 * Redis使用MurmurHash2算法来计算键的哈希值
-* rehash。 ht[1]的大小为第一个大于等于ht[0].used*2的2n（2的n次方幂）
+* rehash。 ht[1]的大小为第一个大于等于ht[0].used x 2的2n（2的n次方幂）
 * 自动扩展： 未执行BGSAVE|BGREWRITEAOF负载因子大于等于1。正在执行BGSAVE命令或者BGREWRITEAOF命令，并且哈希表的负载因子大于等于5。
 * 负载因子= 哈希表已保存节点数量/ 哈希表大小。 load_factor = ht[0].used / ht[0].size
 * 哈希表的负载因子小于0.1时，程序自动开始对哈希表执行收缩操作。
@@ -45,8 +45,8 @@ zlbytes zltail zllen entry1 entry2{previous_entry_length encoding content} zlend
 ```
 STRING: INT EMBSTR RAW
 LIST: ZIPLIST LINKEDLIST
-HASH: ZIPLIST HT 
-SET: INTSET HT 
+HASH: ZIPLIST HT
+SET: INTSET HT
 ZSET: ZIPLIST SKIPLIST
 ```
 
@@ -56,7 +56,7 @@ struct redisServer { dict *pubsub_channels;  list *pubsub_patterns;};
 ```
 * 服务器状态在pubsub_channels字典保存了所有频道的订阅关系：SUBSCRIBE命令负责将客户端和被订阅的频道关联到这个字典里面，而UNSUBSCRIBE命令则负责解除客户端和被退订频道之间的关联。
 * 服务器状态在pubsub_patterns链表保存了所有模式的订阅关系：PSUBSCRIBE命令负责将客户端和被订阅的模式记录到这个链表中，而PUNSUBSCRIBE命令则负责移除客户端和被退订模式在链表中的记录。
-* PUBLISH命令通过访问pubsub_channels字典来向频道的所有订阅者发送消息，通过访问pubsub_patterns链表来向所有匹配频道的模式的订阅者发送消息。   
+* PUBLISH命令通过访问pubsub_channels字典来向频道的所有订阅者发送消息，通过访问pubsub_patterns链表来向所有匹配频道的模式的订阅者发送消息。
 * PUBSUB命令的三个子命令都是通过读取pubsub_chan-nels字典和pubsub_patterns链表中的信息来实现的。
 
 ###### 19.事务
@@ -74,7 +74,7 @@ typedef struct redisDb {dict *watched_keys;}
 * ACID, 满足A,不支持回滚。 满足CI,不满足D
 
 ###### 24. 监视器
-* 客户端可以通过执行MONITOR命令，将客户端转换成监视器，接收并打印服务器处理的每个命令请求的相关信息。   
-* 当一个客户端从普通客户端变为监视器时，该客户端的REDIS_MONITOR标识会被打开。   
-* 服务器将所有监视器都记录在monitors链表中。   
+* 客户端可以通过执行MONITOR命令，将客户端转换成监视器，接收并打印服务器处理的每个命令请求的相关信息。
+* 当一个客户端从普通客户端变为监视器时，该客户端的REDIS_MONITOR标识会被打开。
+* 服务器将所有监视器都记录在monitors链表中。
 * 每次处理命令请求时，服务器都会遍历monitors链表，将相关信息发送给监视器。
