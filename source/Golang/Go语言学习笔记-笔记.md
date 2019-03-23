@@ -15,6 +15,7 @@
 uint8==byte int32==rune， 别名间赋值运算无需转换
 function interface map slice channel默认值为nil
 float32默认保存到小数点后六位, 0.123456==0.1234567
+str,ok:=interfaceVal.(string),针对interface的断言要用ok-idiom方式，否则会panic
 #### 2.5 引用类型
 reference type: map slice channel ,必须使用make() 创建, new()不能正确创建
 #### 2.6 类型转换
@@ -107,3 +108,4 @@ go list net/... //显示包路径列表
 名称首字母大写的为可导出成员在包外可视
 p:=(*struct{x int})(unsafe.Pointer(d)) //利用指针转换访问私有字段
 internal目录是内部包， 仅能被父目录下包访问
+go doc net/http.Serve 可用来查看方法的定义
