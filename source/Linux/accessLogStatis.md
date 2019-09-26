@@ -22,3 +22,6 @@ linux统计某个文件内容的 每个值出现的次数
 
 日志中统计每个URL的IP数
 > less access_160920.log | awk '{if($7 ~ /\.html/){print $0}}' | awk 'BEGIN {FS="\""}; {if($6 !~ /(spider|bot)/){ print $0}}' | awk '{print $1 $7}' |awk -F '/' '{ip[$2][$1] ++ }END{for(k in ip){ print asort(ip[k]),k}}' | sort -rn | head -3
+
+关联项目日志和nginx日志进行查询
+> grep error /data/projlogs/shop/_all/201711/05/21 | cut -d ',' -f 3 | cut -d ']' -f 1 | xargs -I {} grep {}  /data/nginxlogs/shop.gate.panda.tv/201711/05/access_21.log --color
