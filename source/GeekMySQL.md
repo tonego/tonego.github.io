@@ -170,7 +170,7 @@
   
   脏页比例M: Innodb_buffer_pool_pages_dirty/Innodb_buffer_pool_pages_total, <75%
   
-  
+  innodb_flush_neighbors=0(>8.0,SSD)
   
   
 #### 13. 表数据空间优化（数据删除空间不变）
