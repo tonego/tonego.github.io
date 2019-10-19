@@ -30,6 +30,8 @@
   逻辑归档日志binlog: server层, sync_binlog=1, 追加写
   
   exec: 2PC; 执行器先找引擎取值(内存中取或磁盘读入内存)->执行器改数->引擎层写内存+redo log->执行器binlog写磁盘->引擎层redo log commit
+  
+  _非update v=v+1, 为何要先取数再改数而不能直接改？引擎api不支持？_
 
 #### 3. 事务隔离级别现象和实现
 
@@ -61,7 +63,7 @@
   
   非主键索引也被称为二级索引（secondary index）
   
-  树高算法. 
+  树高3算法.  (Page16KB/(PK4B+Ptr6B+Oth6B=16B))^(No-leaf-High=2) *(16KB/100B=160) = 1.6亿
   
   索引维护. 页分裂; 数据页的利用率; 主键小普通索引就小; 无二级索引且值唯一的业务列可作主键; 
   
@@ -140,7 +142,9 @@
   
   merge过程: 磁盘读入内存; change buffer 记录应用; 写 redo log .  redo log包含了数据的变更和change buffer的变更
   
-  主键都是唯一索引也都用不到change buffer. 只有普通索引才会用到. * 那是每个索引一个change buffer?  多索引数据怎么一致性的呢？ *
+  主键都是唯一索引也都用不到change buffer. 只有普通索引才会用到.  _那是每个索引一个change buffer?  多索引数据怎么一致性的呢？_ 
+  
+  
 
 #### 10. 查询优化器 
 
@@ -152,7 +156,7 @@
   
   扫描行数&是否回表&避免排序 影响优化器;analyze; force index; "order by b limit 1” 改成 “order by b,a limit 1”; 修改索引
   
-  * 为何 order by a,b 不能用索引? *
+  _为何 order by a,b 不能用索引?_
   
 #### 11. 字符串索引
 
@@ -166,7 +170,7 @@
   
   因素: 脏页比例(innodb_max_dirty_pages_pct<=75%), 写盘速度(innodb_io_capacity).
   
-  策略: {max(F1(100*M/innodb_max_dirty_pages_pct),F2(write_pos-checkpoint))}%
+  策略: {max(F1(100*M/innodb_max_dirty_pages_pct),F2(write_pos-checkpoint))}% 的写盘速度
   
   脏页比例M: Innodb_buffer_pool_pages_dirty/Innodb_buffer_pool_pages_total, <75%
   
@@ -223,6 +227,10 @@
    
 #### 16 order by的执行逻辑
 
+  SELECT city,name,age WHERE city="x" ORDER BY name limit 1000; 
+    * idx(city)->pk(id)->sort_buffer(city name age)-> sort_buffer(全字段排序)->resp
+    * idx(city)->pk(id)->sort_buffer(name id)-> sort_buffer(order)->pk(rowid排序)->resp
+    
   sort_buffer_size 不够用使用外部排序是用的归并排序，比如num_of_tmp_files=12,sort_mode~=packed_additional_fields表示对varchar做紧凑处理
   
   SET optimizer_trace='enabled=on';
@@ -237,9 +245,6 @@
   
 #### 17 order by rand()
 
-  SELECT city,name,age WHERE city="x" ORDER BY rand(); 
-    * idx(city)->pk(id)->sort_buffer(city name age)-> sort_buffer(全字段排序)->resp
-    * idx(city)->pk(id)->sort_buffer(name id)-> sort_buffer(order)->pk(rowid排序)->resp
   SELECT word ORDER BY rand() LIMIT 3; count(*)=1w
   内存临时表 engine=Memory, rowid排序, tmp_table_size=16M, 
     * table(id,word)->内存临时表(R,W),1w扫描->sort_buffer(R,pos),1w扫描->rowid排序(R,pos)->映射内存临时表(R,W)->结果集(word),3扫描
@@ -271,7 +276,7 @@
 
   查询慢: undo log 过大;
   
-#### 20 幻读
+#### 20 幻读 ※
 
   WHERE d=5 for update; 当前读、
   
@@ -318,7 +323,9 @@
      开发阶段应set long_query_time=0查rows_examined是否预期， 查general log 
   5. IP白名单、user用户权限、query_rewrite 
      
-#### 23 binlog/relog可靠性
+#### 23 binlog/relog可靠性 ※
+  
+  事务执行过程中，先把日志写到binlog cache/redo log buffer, commit写文件; 保证一次性写入
   
   binlog cache(thread) ->write binlog files(fs page cache) -> fsync disk
   
@@ -332,7 +339,7 @@
   
   双1配置: redo log pre fsync, commit write; binlog fsync
   
-  group commit: LSN+=length, TPS, IOPS
+  group commit: LSN+=redo log length, TPS<2*IOPS. 联想到TCP的seq滑动窗口.
   
   redo log pre: write -> binlog: write -> redo log pre: fsync -> binlog: fsync -> redo log commit:write
   
@@ -444,7 +451,7 @@
   延迟复制备库(>5.6). CHANGE MASTER TO MASTER_DELAY = N
   
   预防： 账号权限； 先改表名加后缀（_to_be_deleted)，
-  
+ 
 #### 32. kill query/connection
 
   逻辑：killed=THD::KILL_QUERY; 信号给线程; 程序判断埋点进行终止.
@@ -457,13 +464,15 @@
   
   –quick 客户端快。 用mysql_use_result非mysql_store_result； 无表明补全； 无本地历史
   
-#### 33. buffer pool
+#### 33. buffer pool. 全表扫描对server和innodb的影响. 查大数据不会打爆内存 ※ 
 
-  流程：net_buffer;满了网络发; 清空重新写, 若socket send buffer满(EAGAIN或WSAEWOULDBLOCK)等后发
+  流程：mysql.data->mysql.net_buffer->server.socket send buffer->client.socket receive buffer
   
-  MySQL是“边读边发的”， (net_buffer_length=16k) /proc/sys/net/core/wmem_default Sending to client
+  net_buffer(net_buffer_length=16k)满 网络接口发; 清空重新写; 若socket send buffer(/proc/sys/net/core/wmem_default=256K)满(EAGAIN或WSAEWOULDBLOCK)等后发
   
-  查询的返回结果不会很多的话，我都建议你使用mysql_store_result这个接口，直接把查询结果保存到本地内存
+  MySQL是“边读边发的”; 联想到TCP.WWS; 
+  
+  建议mysql_store_result 结果保存到本地内存; mysql_use_result导致的State: Sending to client网络栈写满或客户端处理慢会导致长事务。
   
   “Sending data”是正在执行，从查询语句进入执行阶段后开始，非“正在发送数据”
   
@@ -471,17 +480,21 @@
   
   innodb_buffer_pool_size 可用物理内存的60%~80%; LRU; 
   
-  5:3=young:old(类全表扫描不影响young): 数据页新进old,时段外多次访问进young(innodb_old_blocks_time=1000)。
+  LRU 5:3=young:old(类全表扫描不影响young): 数据页新进old,时段外多次访问进young(innodb_old_blocks_time=1000)。
   
   由于一个数据页多个记录，故1s内会多次访问数据页，故要设定innodb_old_blocks_time
   
+  _ buffer pool 用于LRU的空间有多大呢? 因为有一半空间给了change buffer。_
+  
 #### 34. join
   
-  join性能更好；小表做驱动表；
+  join需小于3张表： 优化器使用动态规划和贪心算法； 考虑分库扩展性。完全禁止是政治的部门利益一刀切.
+  
+  join性能更好；小表做驱动表；被驱动表2logM(2索引树)
   
   join_buffer_size=256k
   
-  Index Nested-Loop Join 和 Block Nested-Loop Join 两个算法，没用Simple Nested-Loop Join
+  NLJ:Index Nested-Loop Join O(N+N*2*logM) / BNL:Block Nested-Loop Join 内存判断N*M,扫描N+((K=λ*N)*M) / 没用Simple Nested-Loop Join O(N*M)
   
   straight_join
   
@@ -496,12 +509,14 @@
   
   Batched Key Acess(BKA)(>5.6), 优化NLJ。 set optimizer_switch='mrr=on,mrr_cost_based=off,batched_key_access=on';
   
-  BNL大冷被驱动表影响Buffer Pool内存命中率
+  BNL大冷被驱动表影响Buffer Pool内存命中率/多次扫描被驱动表IO高/N*M内存判断CPU高
   
-  BNL转BKA优化、临时表方案、业务代码实现hash join优化
+  BNL转BKA优化: 被驱动表关联字段索引、临时表方案、业务代码实现hash join优化; 
   
   优化 select * from t1 join t2 on(t1.a=t2.a) join t3 on (t2.b=t3.b) where t1.c>=X and t2.c>=Y and t3.c>=Z;
   
+  _驱动表走索引就不会全表扫描了吧？ N应该会很小
+  _join_buffer是有序数组，为何内存判断是N*M呢? 不应该是N*M/2或LogN*M吗_
   
 #### 36. 临时表
 
