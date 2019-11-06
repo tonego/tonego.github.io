@@ -1,7 +1,8 @@
 -- 《数据结构与算法之美》 - 王争
  
  [原文](http://xujl.site/2019/05/24/数据结构与算法之美/) | 
- [code](https://github.com/wangzheng0822/algo)
+ [code](https://github.com/wangzheng0822/algo) | 
+ [转载](https://time.geekbang.org/column/intro/126)
 
 ##### 1. 为何学
 
@@ -20,7 +21,7 @@
   [时间复杂度](https://upload-images.jianshu.io/upload_images/1354448-d2f12e37539d8733.jpg)
 
 #### 4. 最x复杂度
-
+  
   best/worst/average/amortized case time complexity
   
 #### 5. 数组
@@ -36,9 +37,9 @@
   容器ArrayList。 封装了插入删除动态扩容
 
   从0编号: 0是偏移量； 历史原因沿用C语言
- 
+  
 #### 6. 链表
-
+  
   CPU缓存、数据库缓存、浏览器缓存
   
   先进先出策略FIFO（First In，First Out）、最少使用策略LFU（Least Frequently Used）、最近最少使用策略LRU（Least Recently Used）
@@ -357,8 +358,6 @@
   
   量化两个字符串的相似度。 Edit Distance. 莱文斯坦距离（Levenshtein distance）和最长公共子串长度（Longest common substring length）
   
-  
-  
 #### 43. 拓扑排序：如何确定代码源文件的编译依赖关系
 
   如何在这个有向无环图上，实现拓扑排序，Kahn算法和DFS深度优先搜索算法。
@@ -367,17 +366,37 @@
   
 #### 44. 最短路径：地图软件是如何计算出最优出行路径的
 
+  有向有权图中，求两个顶点间的最短路径
+  
+  单源最短路径算法（一个顶点到一个顶点）Dijkstra算法
+  
 #### 45. 位图&布隆过滤器：如何实现网页爬虫中的URL去重功能
 
+  降低冲突： 使用K个哈希函数，对同一个数字进行求哈希值。我们用K个二进制位，来表示一个数字的存在。
   
+  只会对存在的情况有误判，为true不一定，为false是一定的
+  
+  Java中的BitSet类就是一个位图，Redis也提供了BitMap位图类
   
 #### 46. 概率统计：如何利用朴素贝叶斯算法过滤垃圾短信
 
   P(A|B) = P(B|A)*P(A)/P(B)
   
 #### 47. 向量空间：如何实现一个简单的音乐推荐系统
+  
+  欧几里得距离（Euclidean distance）(高的差的平方+长差平方)的根号
+  
+  基于相似用户/歌曲做推荐
+  
+#### 50. 索引
 
-  欧几里得距离（Euclidean distance）
+  数据是/否格式化数据、静/动态数据、存在内存/硬盘、单值/区间查找、单/多关键词组合查找
+  
+  散列表、红黑树、跳表、位图、布隆过滤器、有序数组
+  
+#### 55. 剖析微服务接口鉴权限流背后的数据结构和算法
+
+  固定时间窗口限流算法、滑动时间窗口限流算法(循环队列，类LRU)、令牌桶算法、漏桶算法
   
 #### 56. 短网址
 

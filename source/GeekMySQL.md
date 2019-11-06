@@ -1,7 +1,9 @@
 -- 《MySQL实战45讲》 -丁奇
-
+ 
+ [原文](https://time.geekbang.org/column/intro/139) 
+ 
 #### 1. SQL查询执行过程
-
+ 
  连接器(权限、连接) - 查询缓存 - 分析器（词法、语法）- 优化器 - 执行器 - 引擎层 
  
 ###### 连接器
@@ -13,7 +15,7 @@
  * mysql_reset_connection (无需重连、权限验证)
  
 ###### 查询缓存
-  
+ 
  往往弊大于利
  * 失效频繁，一个更新，全表失效。 适用于静态配置表
  * SET query_cache_type=DEMAND; SELECT SQL_CACHE * FROM table;
@@ -113,7 +115,7 @@
   
   数据版本的可见性: row trx_id对比一致性视图; *为何用数组？因为read view是整库的，黄区存在已提交的快事务。*
   
-  当前读（current read）: 更新数据都是先读后写的，而这个读，只能读当前的值。
+  当前读（current read）: 更新数据都是先读后写的，而这个读，只能读当前的值。读锁（S锁，共享锁，lock in share mode) 、写锁（X锁，排他锁，for update）
 
   表结构不支持“可重复读”？这是因为表结构在frm, 没有对应的行数据，也没有row trx_id，因此只能遵循当前读的逻辑。
 
@@ -280,7 +282,7 @@
 
   查询慢: undo log 过大;
   
-#### 20 幻读 ※
+#### 20 幻读 ※ 
 
   WHERE d=5 for update; 当前读、
   
@@ -293,6 +295,8 @@
   假设对所有行加行锁. 由于不存在的行无法加锁，依旧存在单行加锁一样的问题。
   
   Gap间隙锁和行锁合称next-key lock,每个next-key lock是前开后闭区间, 执行先间隙锁再行锁。
+  
+  跟间隙锁存在冲突关系的，是“往这个间隙中插入一个记录”这个操作。间隙锁之间都不存在冲突关系。
   
   insert on duplicate key update 的事务实现，多个事务的间隙锁会造成死锁，间隙锁影响了并发度。
   
@@ -561,7 +565,7 @@
   普通插入一次性申请id
   
 #### 40. insert锁
-
+  
   insert select 若不锁statement下主备数据不一致；会记录+间隙锁
   
   insert t select t循环写入，用临时表
@@ -614,14 +618,27 @@
   
   thread_id. thread_id_counter，唯一数组存， 不会重复。
   
-## 阿里云监控台
+## 总结
+
+##### 日志
+  
+  * 错误日志：记录出错信息，也记录一些警告信息或者正确的信息。
+  * 查询日志：记录所有对数据库请求的信息，不论这些请求是否得到了正确的执行。
+  * 慢查询日志：设置一个阈值，将运行时间超过该值的所有SQL语句都记录到慢查询的日志文件中。
+  * 二进制日志：记录对数据库执行更改的所有操作。
+  * 中继日志：中继日志也是二进制日志，用来给slave 库恢复
+  * 事务日志：重做日志redo和回滚日志undo
+  
+##### 阿里云监控台
   
   https://rdsnext.console.aliyun.com/#/detail/rm-2ze3pb5rblpl094h7/diagnosis?region=cn-beijing
   
   _TPS为何比QPS小几倍? Com_select也是事务吧，为何不计入TPS?  QueryCache会记入Com_*吗？_
   
   QPS=(Questions() = (Com_select + Com_insert + Com_delete + Com_update + Oth(use/show/set...)) ) / Uptime ; 大;
+  
   TPS=( Com_insert + Com_delete + Com_update )/ Uptime ; 非(Com_commit(非隐式) + Com_rollback) 
+  
   show global status where variable_name in('com_select','com_insert','com_delete','com_update','com_commit','com_rollback','Questions');
   
   
