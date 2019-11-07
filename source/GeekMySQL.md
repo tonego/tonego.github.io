@@ -94,7 +94,7 @@
   从库mysqldump过程中主库alter表. START TRANSACTION  WITH CONSISTENT SNAPSHOT; SAVEPOINT sp;  show create table `t1`;SELECT * FROM `t1`;ROLLBACK TO SAVEPOINT sp;
   
 #### 7. 行锁
-
+  
   两阶段锁协议。事务提交后释放锁。 影响并发度的锁的申请时机尽量往后放, 影院余额扣减放最后
   
   死锁和死锁检测。 innodb_lock_wait_timeout=50s、innodb_deadlock_detect=on 
@@ -104,7 +104,7 @@
   假设有1000个并发线程要同时更新同一行，那么死锁检测操作就是100万这个量级的。
   
   案例: 一个连接中循环执行多次limit更新操作更友好
-
+  
 #### 8. 事务隔离 ※ 
 
   视图: view(create view...) / consistent read view(RC/RR). 
