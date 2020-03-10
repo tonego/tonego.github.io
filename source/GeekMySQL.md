@@ -33,7 +33,7 @@
   
   exec: 2PC; 执行器先找引擎取值(内存中取或磁盘读入内存)->执行器改数->引擎层写内存+redo log->执行器binlog写磁盘->引擎层redo log commit
   
-  _非update v=v+1, 为何要先取数再改数而不能直接改？引擎api不支持？_
+  _非update v=v+1为何要先取数再改数而不能直接改？引擎api不支持吗还是说undo log要写整行？ 大概update v=2无需先取，因为change buffer机制存在_
 
 #### 3. 事务隔离级别现象和实现
 
@@ -93,6 +93,8 @@
   
   从库mysqldump过程中主库alter表. START TRANSACTION  WITH CONSISTENT SNAPSHOT; SAVEPOINT sp;  show create table `t1`;SELECT * FROM `t1`;ROLLBACK TO SAVEPOINT sp;
   
+  _5.6不是已经有Online DDL了吗，为何还是MDL写锁呢，不应该是DML读锁吗？ 实际上有短暂的MDL写锁，数据拷贝过程已经降级为读锁_
+  
 #### 7. 行锁
   
   两阶段锁协议。事务提交后释放锁。 影响并发度的锁的申请时机尽量往后放, 影院余额扣减放最后
@@ -101,12 +103,12 @@
   
   检测吃CPU。关闭检测; 控制访问相同资源的并发事务量,对于相同行的更新，在进入引擎之前排队; 业务拆分处理，比如余额拆10个账户
   
-  假设有1000个并发线程要同时更新同一行，那么死锁检测操作就是100万这个量级的。
+  由热点行更新导致的性能问题：假设有1000个并发线程要同时更新同一行，那么死锁检测操作就是100万这个量级的。
   
   案例: 一个连接中循环执行多次limit更新操作更友好
   
 #### 8. 事务隔离 ※ 
-
+  
   视图: view(create view...) / consistent read view(RC/RR). 
   
   快照在MVCC: row trx_id=transaction id. 
@@ -121,6 +123,7 @@
 
   MVCC实现: DB_TRX_ID,DB_ROLL_PTR,DB_ROW_ID, undo log, Read View.undo log是链表，节点被purge线程清除。
   
+  _低水位有误导性，小于当前trx_id的分已未提交的两类更易理解_
   
 #### 9. 唯一索引  ※ 
   
@@ -146,10 +149,10 @@
   
   主键都是唯一索引也都用不到change buffer. 只有普通索引才会用到.  _那是每个索引一个change buffer?  多索引数据怎么一致性的呢？_ 
   
+  _先写的IBUFF后写的redo log pre吗？ commit或rollback再找到这个trx_id对应的记录进行操作？_
   
-
 #### 10. 查询优化器 
-
+  
   扫描行数. show index from t; cardinality; 
   
   采样. N个数据页的平均记录数*页面数. 数据行数超过1/M重新统计
@@ -167,7 +170,7 @@
   倒序。 hash列。
   
 #### 12. 刷脏页, 抖一下
-
+  
   场景: redo log 写满, 堵塞所有更新;  内存不足(常态); 系统空闲; 正常关闭shutdown
   
   因素: 脏页比例(innodb_max_dirty_pages_pct<=75%), 写盘速度(innodb_io_capacity).
@@ -178,6 +181,8 @@
   
   innodb_flush_neighbors=0(>8.0,SSD)
   
+  _刷脏页是刷的change buffer吗？_
+  
   
 #### 13. 表数据空间优化（数据删除空间不变）
 
@@ -185,11 +190,13 @@
   
   innodb_file_per_table OFF(系统共享表空间) 默认ON(.idb文件)
  
-  数据页的复用和记录的复用，
+  数据页的复用和记录的复用
   
   重建表 alter table A engine=InnoDB(<5.5,DDL非ONLINE)，Online DDL用row log实现
   
-  Online DDL读锁，有一定性能开销，gh-ost开源库方案
+  Online DDL: create tmp_file -> table B+tree to tmp_file -> store modify to row log -> row log to tmp_file -> tmp_file replace table
+  
+  Online DDL MDL读锁，有一定性能开销，gh-ost开源库方案
   
   Online和inplace
   
@@ -213,10 +220,10 @@
   
 #### 15 日志和索引一些问题
 
-  1. binlog完整, statement有COMMIT, row有XID event
+  1. binlog完整, statement有COMMIT, row有XID event. binlog-checksum参数
   2. redo log 和 binlog 通过XID关联
   3. redo log(pre)+binlog恢复。 binlog会被从库失败无法回滚，故只能提交redo log
-  4. 两阶段提交。事务持久性问题。 若提交redo log->提交binlog， 回滚redo log会覆盖其他事务更新
+  4. 两阶段提交。事务持久性问题。 若提交redo log->提交binlog，回滚redo log会回滚已提交事务导致覆盖其他事务更新, 若binlog后提交又成为二阶段了。
   5. binlog不支持崩溃恢复。 没能力恢复"数据页"
   6. binlog还用于归档，主从等，生态能力是需要的
   7. redo log 4*1G
@@ -226,7 +233,7 @@
   事务尽量先insert再update，避免行锁时间过长
   
   update set val=old_val, 0 rows affected 是真正去执行了的。
-   
+  
 #### 16 order by的执行逻辑
 
   SELECT city,name,age WHERE city="x" ORDER BY name limit 1000; 
@@ -302,6 +309,10 @@
   
   读提交、binlog=row, 无幻读问题
   
+  _为何MVCC解决不了幻读问题，新插入的行不属于这个版本的不能走回滚日志吗？ 答案：是走回滚日志的，幻读在“当前读”下才会出现_
+  _为何更新插入的行不能叫幻读之后又针对此情况进行了说明幻读的问题？我认为更新导致的也叫做幻读_
+  _我认为忽略低位分三种情况理解更容易_
+  
 #### 21  update的锁
 
 ###### 加锁总结
@@ -347,7 +358,7 @@
   
   双1配置: redo log pre fsync, commit write; binlog fsync
   
-  group commit: LSN+=redo log length, TPS<2*IOPS. 联想到TCP的seq滑动窗口.
+  group commit: LSN+=redo log length, TPS<2*IOPS. 联想到TCP的seq滑动窗口、ack累计确认.
   
   redo log pre: write -> binlog: write -> redo log pre: fsync -> binlog: fsync -> redo log commit:write
   
@@ -398,7 +409,6 @@
  
   主库单线程压力模型，从库设置WRITESET模式。因为无组提交commit_id每事务不同，其他模式都只能按序单线程
   
-  
 #### 27 主备切换
 
   位点。 MASTER_LOG_FILE/MASTER_LOG_POS, 
@@ -413,11 +423,10 @@
   
   GTID和Online DDL. 
   
- 
 #### 28 读写分离过期读
- 
+  
   客户端直连方案(基于zk/eted); proxy方案
- 
+  
   过期读。
   * 强制走主库方案；
   * sleep方案(由前端ajax延迟实现)；
@@ -427,9 +436,8 @@
   * 等GTID方案。select wait_for_executed_gtid_set(gtid_set, 1); master的GTID随事务返回(>=5.7.6);
   set session_track_gtids=OWN_GTID; mysql_session_track_get_first()
   
-   
 #### 29 健康检查
- 
+   
    把innodb_thread_concurrency设置为64~128之间的值
    
    在线程进入锁等待以后，并发线程的计数会减一，也就是说等行锁（也包括间隙锁）的线程是不算在128里面的。
@@ -472,7 +480,7 @@
   –quick 客户端快。 用mysql_use_result非mysql_store_result； 无表明补全； 无本地历史
   
 #### 33. buffer pool. 全表扫描对server和innodb的影响. 查大数据不会打爆内存 ※ 
-
+  
   流程：mysql.data->mysql.net_buffer->server.socket send buffer->client.socket receive buffer
   
   net_buffer(net_buffer_length=16k)满 网络接口发; 清空重新写; 若socket send buffer(/proc/sys/net/core/wmem_default=256K)满(EAGAIN或WSAEWOULDBLOCK)等后发
@@ -491,7 +499,7 @@
   
   由于一个数据页多个记录，故1s内会多次访问数据页，故要设定innodb_old_blocks_time
   
-  _ buffer pool 用于LRU的空间有多大呢? 因为有一半空间给了change buffer。_
+  _buffer pool 用于LRU的空间有多大呢? 因为有一半空间给了change buffer。_
   
 #### 34. join
   
@@ -545,6 +553,8 @@
   直接磁盘排序group。避免内存转磁盘临时表。sort_buffer有序数组获取每值出现次数，无Using temporary。select SQL_BIG_RESULT id%100 as m, count(*) as c from t1 group by m; 
   
   join_buffer是无序数组，sort_buffer是有序数组，临时表是二维表结构；
+  
+  _SQL_BIG_RESULT标识直接走sort_buffer本身不走磁盘？_
   
 #### 38. Memory引擎 
 
@@ -637,10 +647,16 @@
   
   QPS=(Questions() = (Com_select + Com_insert + Com_delete + Com_update + Oth(use/show/set...)) ) / Uptime ; 大;
   
-  TPS=( Com_insert + Com_delete + Com_update )/ Uptime ; 非(Com_commit(非隐式) + Com_rollback) 
+  TPS=( Com_insert + Com_delete + Com_update )/ Uptime ; 非(Com_commit(非隐式) + Com_rollback) ; handler_commit
   
   show global status where variable_name in('com_select','com_insert','com_delete','com_update','com_commit','com_rollback','Questions');
   
+## 练习
+  * 单机数据可靠性redo log  2, 15, 23。
+  * 事务  3, 8, 20。各隔离级别case,读视图,undo log,当前读,幻读W/H/Q。
+  * 锁  6, 7, 13, 19, 20, 21, 30, 39, 40
+  * index 4, 5, 9, 10, 11
+  * 多机(主从) 24, 25, 26, 27, 28, 29, 41
   
   
   

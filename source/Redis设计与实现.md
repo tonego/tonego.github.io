@@ -1,5 +1,9 @@
 
 ###### 4.字典
+业务必知： 我是用string还是hash呢？   -- 多数业务选hash
+  ziplist相比占内存空间更小，若10个field近一倍的内存差别
+  若不同field expire的需求强烈优string，不过也可通过field记录过期时间业务来判断
+  
 ```
 typedef struct dict {
     dictType *type;
@@ -49,6 +53,47 @@ HASH: ZIPLIST HT
 SET: INTSET HT
 ZSET: ZIPLIST SKIPLIST
 ```
+###### 10. rdb
+ saveparam/dirty/lastsave, serverCron()/per100ms , save(block)/bgsave(fork子进程)
+ 载入数据，优先aof，其次rdb。
+
+###### 11. aof持久化
+业务收益： 数据安全性评估（可能会丢2s数据）、堵塞场景(若)、内存暴涨的避免及内存评估（aof_rewrite_buf_blocks、fork子进程的数据）。
+aof_buf/ aof_rewrite_buf_blocks/ aof_fd 
+疑问：rewrite过程中， 新的aof文件是整库数据库读出来的，并不是基于正在跑的aof文件汇总的。  我有个问题，若目前的库有10G， 这10G是怎么不堵塞的进行快照的， 如何实现很快的从主进程拷到子进程，这时候整库的内存占用会达到20G吗， 好奇reids又没有mysql这种mvcc机制，是如何产生的快照数据呢。是通过cow和ref_count吗？ 
+rdb落盘时确实会是复制出同样大小的内存块的， 不过业务方比如要求10g，那实际上阿里云的宿主机会预留出来20g以上。 是宿主机给你预留的，和你申请的内存没有关系。
+比如我现在占用100G内存， 那bgrewriteaof fork子进程的时候拷数据过去，这时候应该是堵塞的吧， 100G内存拷贝需要几秒呢？ 就是为了防止出现你的说的情况， 咱们的单节点别说100g了，就是出现10g的也很少， 那10G内存拷贝， 大约堵塞毫秒级别。
+持久化阻塞：fork阻塞、aof刷盘、HugePage写操作(CopyOrRewrite)
+fork和cow。fork是指redis通过创建子进程来进行bgsave操作，cow指的是copy on write，子进程创建后，父子进程共享数据段，父进程继续提供读写服务，写脏的页面数据会逐渐和子进程分离开来
+https://redisbook.readthedocs.io/en/latest/internal/aof.html
+单机版建议 save 900 1 + aof
+集群主从版， 仅靠Master-Slave Replication 实现高可用性。 在Slave上可以只开启AOF, AOF重写的基础大小默认值64M改为5G. 防止误操作命令被rewrite无法回滚。
+疑问：有replica还需要用aof持久化吗。可以做误操作命令的回滚，那万一赶上rewrite怎么办？
+
+###### 16.Sentinel
+仅用于主从版。qodis未用。 大多用脚本实现主从切换，无需用sentinel
+min-slaves-to-write 1
+min-slaves-max-lag 10
+在脑裂场景下，最多就丢失10秒的数据.
+client需要做降级写队列。
+键分布模型16384 槽（slot） HASH_SLOT = CRC16(key) mod 16384
+键哈希标签（Keys hash tags）为了在集群稳定的情况下（没有在做碎片重组操作）允许某些多键操作
+CLUSTER NODES 命令
+Redis 集群是一个网状结构，每个节点都通过 TCP 连接跟其他每个节点连接。
+
+###### 17.集群
+一致性hash实现、slot实现
+slot实现的重点：一个node会有多个区间的slot， 所以类似一致性hash避免了太多数据的转移。
+强一致性. 异步复制 和 网络分区
+  在网络分裂出现期间， 客户端 Z1 可以向主节点 B 发送写命令的最大时间是有限制的， 这一时间限制称为节点超时时间（node timeout）
+gossip协议， 所有的集群节点都通过TCP连接（TCP bus？）和一个二进制协议（集群连接，cluster bus）建立通信
+客户端缓存键值和节点的映射的必要性, 客户端在接收到重定向错误（redirections errors） -MOVED 和 -ASK 的时候， 将命令重定向到其他节点。
+
+http://www.redis.cn/topics/cluster-tutorial.html
+http://www.redis.cn/topics/cluster-spec.html
+https://www.cnblogs.com/mengchunchen/p/10059436.html
+
+
 
 ###### 18.发布与订阅
 ```
@@ -78,3 +123,9 @@ typedef struct redisDb {dict *watched_keys;}
 * 当一个客户端从普通客户端变为监视器时，该客户端的REDIS_MONITOR标识会被打开。
 * 服务器将所有监视器都记录在monitors链表中。
 * 每次处理命令请求时，服务器都会遍历monitors链表，将相关信息发送给监视器。
+
+##### pipeline 与 multi 与 redis-lua 区别
+
+
+##### reference
+https://yq.aliyun.com/articles/531067

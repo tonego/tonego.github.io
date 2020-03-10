@@ -31,8 +31,6 @@
   广告网络 （ad Network，ADN）。以按点击付费（Cost per Click，CPC），中小互联网媒体
   交易终端（Trading Desk，TD）。实时竞价（Real Time Bidding，RTB）。广告交易平台（ad Exchange，ADX）。
   
-  
-  
 #### 第2章计算广告基础20
 而千次展示期望收入（expected Cost Per Mille，eCPM）
   2.1广告有效性原理21
@@ -290,3 +288,18 @@
   第四部分附录
   附录主要术语及缩写索引311
   参考文献317
+  
+  
+## 总结思考
+
+#### 第一部分
+  分类
+  * SEM做的竞价调价
+  * 百度网盟
+  * 淘宝侧橱窗
+  * feed流的广告卡片
+  * 门户banner或横幅广告
+  * 友情链接
+  * 看视频前的广告视频
+  
+  

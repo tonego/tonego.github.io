@@ -1,4 +1,12 @@
 ## Golang
+
+#### goroutine/channel
+https://mp.weixin.qq.com/s/40uxAPdubIk0lU321LmfRg
+https://reading.developerlearning.cn/reading/12-2018-08-02-goroutine-gpm/
+    M的状态是通过notesleep()方法变为unspin状态， 通过notewakeup()方法变为spin状态
+    Gdead状态通过newproc()变更为runnable状态
+
+
 #### 汇编
 * 
 * go:linkname/noescape/nosplit/nowritebarrierrec/yeswritebarrierrec/noinline/norace/notinheap/
@@ -21,7 +29,7 @@
 * 
 
 #### 静态检查
-* errcheck、
+* errcheck
 * structtag
 #### 参考资料
 * [Golang高级编程](https://chai2010.cn/advanced-go-programming-book/appendix/appendix-a-trap.html)
