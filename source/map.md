@@ -22,6 +22,7 @@ Golang use K/V
   在redis类似四叉树
   #define ZSKIPLIST_MAXLEVEL 32 /* Should be enough for 2^32 elements */
   #define ZSKIPLIST_P 0.25      /* Skiplist P = 1/4 */
+  bloom的动态生成multi layer bloom也类似这种分层思想，O(logN)
 
 #### skiplist vs 红黑树
  * sl 并发性能好， 锁住的节点更少

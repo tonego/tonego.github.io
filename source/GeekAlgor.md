@@ -262,9 +262,9 @@
 
 #### 29. 堆应用
   
-  优先级队列: 赫夫曼编码、图的最短路径、最小生成树算法。 Java的PriorityQueue，C++的priority_queue。 合并有序小文件(MySQL)、高性能定时器
+  优先级队列: 赫夫曼编码(http2)、图的最短路径、最小生成树算法。 Java的PriorityQueue，C++的priority_queue。 合并有序小文件(MySQL)、高性能定时器
   
-  求Top K： O(nlogK) 
+  求Top K： O(nlogK) , redis Tok-k算法使用减治法(先用随机选择（快排分大小区间）找到第k大的数，再进行一次partition)
   
   求中位数： 动态数据集合，维护大小顶堆。 求其他百分位的数据， 求接口的99%响应时间。
   
