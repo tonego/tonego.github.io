@@ -70,6 +70,14 @@ https://redisbook.readthedocs.io/en/latest/internal/aof.html
 集群主从版， 仅靠Master-Slave Replication 实现高可用性。 在Slave上可以只开启AOF, AOF重写的基础大小默认值64M改为5G. 防止误操作命令被rewrite无法回滚。
 疑问：有replica还需要用aof持久化吗。可以做误操作命令的回滚，那万一赶上rewrite怎么办？
 
+###### 15.复制
+业务须知：影响性能如主从节点的CPU、IO、带宽、线程堵塞, 影响数据安全如低版本的主从复制数据丢失
+cli->slave: slaveof masterip port, M发sync通知S进行bgsave, S发rdb, S发缓冲区数据。
+psync：offset(MS), runID(M), backlog(M); S发psync <runID> <offset>或PSYNC ? -1, M发+continue或+FULLRESYNC <runid><offset>, M找backlog队列里offset后的数据发给S
+repl-backlog-size=2*second*write_size_per_second
+详细步骤：SLAVEOF 127.0.0.1 6379; socket; PING->PONG|ERR|TIMEOUT; AUTH; S发REPLCONF listening-port <port-number>; PSYNC; M切为client写命令到S
+心跳检测：每秒一次REPLCONF ACK <replication_offset>。 INFO replication查lag;min-slaves-[to-write|max-lag];补发缺失数据
+
 ###### 16.Sentinel
 仅用于主从版。qodis未用。 大多用脚本实现主从切换，无需用sentinel
 min-slaves-to-write 1
@@ -85,15 +93,25 @@ Redis 集群是一个网状结构，每个节点都通过 TCP 连接跟其他每
 一致性hash实现、slot实现
 slot实现的重点：一个node会有多个区间的slot， 所以类似一致性hash避免了太多数据的转移。
 强一致性. 异步复制 和 网络分区
-  在网络分裂出现期间， 客户端 Z1 可以向主节点 B 发送写命令的最大时间是有限制的， 这一时间限制称为节点超时时间（node timeout）
+在网络分裂出现期间， 客户端 Z1 可以向主节点 B 发送写命令的最大时间是有限制的， 这一时间限制称为节点超时时间（node timeout）
 gossip协议， 所有的集群节点都通过TCP连接（TCP bus？）和一个二进制协议（集群连接，cluster bus）建立通信
 客户端缓存键值和节点的映射的必要性, 客户端在接收到重定向错误（redirections errors） -MOVED 和 -ASK 的时候， 将命令重定向到其他节点。
+CLUSTER REPLICATE <node_id>
+cluster-State.myself.slaveof = clusterState.nodes[nodeid]
+clusterState.my-self.flags = REDIS_NODE_SLAVE
+M.clusterNode{ numslaves; **slaves; }
+故障检测：每秒发PING 未PONG标PFAIL（probable fail）, clusterState.nodes[nodeid].flags=REDIS_NODE_PFAIL; 收到PONG的: clusterNode(下线的){ *fail_reports{*node(谁报告的); time;}; }; 若超过半数，flags=REDIS_NODE_FAIL并gossip
+故障转移：若S发现M下线，选M; S执行SLAVEOF no one; SLOT; gossip PONG; run; 
+选主：S发现M下线gossip CLUS-TERMSG_TYPE_FAILOVER_AUTH_REQUEST;  所有M回AUTH_ACK; 若过半票则当主。
+消息：MEET/PING（每秒随机5或>cluster-node-timeout/2）/PONG/FAIL/PUBLISH;  
+clusterMsg{tolen;type;count;epoch;sender[REDIS_CLUSTER_NAMELEN];myslots[REDIS_CLUSTER_SLOTS/8];port;flag;state;data}
+myslots[REDIS_CLUSTER_SLOTS/8]是为了gossip，slots是为了找对应的节点；
+
+
 
 http://www.redis.cn/topics/cluster-tutorial.html
 http://www.redis.cn/topics/cluster-spec.html
 https://www.cnblogs.com/mengchunchen/p/10059436.html
-
-
 
 ###### 18.发布与订阅
 ```
