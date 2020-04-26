@@ -3,30 +3,6 @@
 业务必知： 我是用string还是hash呢？   -- 多数业务选hash
   ziplist相比占内存空间更小，若10个field近一倍的内存差别
   若不同field expire的需求强烈优string，不过也可通过field记录过期时间业务来判断
-  
-```
-typedef struct dict {
-    dictType *type;
-    void *privdata;
-    dictht ht[2];
-    in trehashidx; /* rehashing not in progress if rehashidx == -1 */
-} dict;
-typedef struct dictht {
-    dictEntry **table;
-    unsigned long size;
-    unsigned long sizemask;     //哈希表大小掩码，用于计算索引值 //总是等于size-1
-    unsigned long used;           // 该哈希表已有节点的数量
-} dictht;
-typedef struct dictEntry {
-    void *key;
-    union{
-        void *val;
-        uint64_tu64;
-        int64_ts64;
-    } v;
-    struct dictEntry *next;
-} dictEntry;
-```
 * Redis使用MurmurHash2算法来计算键的哈希值
 * rehash。 ht[1]的大小为第一个大于等于ht[0].used x 2的2n（2的n次方幂）
 * 自动扩展： 未执行BGSAVE|BGREWRITEAOF负载因子大于等于1。正在执行BGSAVE命令或者BGREWRITEAOF命令，并且哈希表的负载因子大于等于5。
@@ -97,17 +73,14 @@ slot实现的重点：一个node会有多个区间的slot， 所以类似一致�
 gossip协议， 所有的集群节点都通过TCP连接（TCP bus？）和一个二进制协议（集群连接，cluster bus）建立通信
 客户端缓存键值和节点的映射的必要性, 客户端在接收到重定向错误（redirections errors） -MOVED 和 -ASK 的时候， 将命令重定向到其他节点。
 CLUSTER REPLICATE <node_id>
-cluster-State.myself.slaveof = clusterState.nodes[nodeid]
-clusterState.my-self.flags = REDIS_NODE_SLAVE
+clusterState.myself { slaveof = clusterState.nodes[nodeid]; flags = REDIS_NODE_SLAVE }
 M.clusterNode{ numslaves; **slaves; }
 故障检测：每秒发PING 未PONG标PFAIL（probable fail）, clusterState.nodes[nodeid].flags=REDIS_NODE_PFAIL; 收到PONG的: clusterNode(下线的){ *fail_reports{*node(谁报告的); time;}; }; 若超过半数，flags=REDIS_NODE_FAIL并gossip
-故障转移：若S发现M下线，选M; S执行SLAVEOF no one; SLOT; gossip PONG; run; 
-选主：S发现M下线gossip CLUS-TERMSG_TYPE_FAILOVER_AUTH_REQUEST;  所有M回AUTH_ACK; 若过半票则当主。
-消息：MEET/PING（每秒随机5或>cluster-node-timeout/2）/PONG/FAIL/PUBLISH;  
-clusterMsg{tolen;type;count;epoch;sender[REDIS_CLUSTER_NAMELEN];myslots[REDIS_CLUSTER_SLOTS/8];port;flag;state;data}
-myslots[REDIS_CLUSTER_SLOTS/8]是为了gossip，slots是为了找对应的节点；
-
-
+故障转移：若S发现M下线，选M; S执行SLAVEOF no one; SLOT; gossip PONG; run;  
+选主：S发现M下线gossip CLUSTERMSG_TYPE_FAILOVER_AUTH_REQUEST;  所有M回AUTH_ACK; 若过半票则当主。 
+消息：MEET/PING（每秒随机5或>cluster-node-timeout=15s/2）/PONG/FAIL/PUBLISH;  
+clusterMsg{tolen;type;count;epoch;sender[REDIS_CLUSTER_NAMELEN];myslots[REDIS_CLUSTER_SLOTS/8];port;flag;state;data}  
+myslots[REDIS_CLUSTER_SLOTS/8]是为了gossip，slots是为了找对应的节点； 
 
 http://www.redis.cn/topics/cluster-tutorial.html
 http://www.redis.cn/topics/cluster-spec.html
@@ -117,10 +90,10 @@ https://www.cnblogs.com/mengchunchen/p/10059436.html
 ```
 struct redisServer { dict *pubsub_channels;  list *pubsub_patterns;};
 ```
-* 服务器状态在pubsub_channels字典保存了所有频道的订阅关系：SUBSCRIBE命令负责将客户端和被订阅的频道关联到这个字典里面，而UNSUBSCRIBE命令则负责解除客户端和被退订频道之间的关联。
-* 服务器状态在pubsub_patterns链表保存了所有模式的订阅关系：PSUBSCRIBE命令负责将客户端和被订阅的模式记录到这个链表中，而PUNSUBSCRIBE命令则负责移除客户端和被退订模式在链表中的记录。
+* 服务器状态在pubsub_channels字典保存了所有频道的订阅关系：SUBSCRIBE 命令负责将客户端和被订阅的频道关联到这个字典里面，而UNSUBSCRIBE命令则负责解除客户端和被退订频道之间的关联。
+* 服务器状态在pubsub_patterns链表保存了所有模式的订阅关系：PSUBSCRIBE 命令负责将客户端和被订阅的模式记录到这个链表中，而PUNSUBSCRIBE命令则负责移除客户端和被退订模式在链表中的记录。
 * PUBLISH命令通过访问pubsub_channels字典来向频道的所有订阅者发送消息，通过访问pubsub_patterns链表来向所有匹配频道的模式的订阅者发送消息。
-* PUBSUB命令的三个子命令都是通过读取pubsub_chan-nels字典和pubsub_patterns链表中的信息来实现的。
+* PUBSUB命令的三个子命令都是通过读取pubsub_channels字典和pubsub_patterns链表中的信息来实现的。
 
 ###### 19.事务
 ```
@@ -144,6 +117,9 @@ typedef struct redisDb {dict *watched_keys;}
 
 ##### pipeline 与 multi 与 redis-lua 区别
 
+
+##### bloom实现
+* 
 
 ##### reference
 https://yq.aliyun.com/articles/531067
