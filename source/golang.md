@@ -12,10 +12,10 @@ https://reading.developerlearning.cn/reading/12-2018-08-02-goroutine-gpm/
 * go:linkname/noescape/nosplit/nowritebarrierrec/yeswritebarrierrec/noinline/norace/notinheap/
 
 #### 坑
-* map并发读写
-* goroutine方法的指针参数会被外层修改 go func(ctx)
+* race问题 - map并发读写
 * mutex 不能复制
 * 可变参数是空接口类型
+* goroutine方法的指针参数会被外层修改 go func(ctx)
 * 数组是值传递, for i,v:=range arr[:]
 * 切片append超过原数组将重新分配内存，不会修改原数组
 * map遍历是顺序不固定

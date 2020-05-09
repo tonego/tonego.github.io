@@ -191,7 +191,7 @@
   表结构定义在.frm或系统数据表(>8.0)
   
   innodb_file_per_table OFF(系统共享表空间) 默认ON(.idb文件)
- 
+  
   数据页的复用和记录的复用
   
   重建表 alter table A engine=InnoDB(<5.5,DDL非ONLINE)，Online DDL用row log实现
@@ -238,13 +238,15 @@
   
 #### 16 order by的执行逻辑
 
+  “Using filesort”表示的就是需要排序，MySQL会给每个线程分配一块内存用于排序，称为sort_buffer。
+
   SELECT city,name,age WHERE city="x" ORDER BY name limit 1000; 
     * idx(city)->pk(id)->sort_buffer(city name age)-> sort_buffer(全字段排序)->resp
     * idx(city)->pk(id)->sort_buffer(name id)-> sort_buffer(order)->pk(rowid排序)->resp
     
   sort_buffer用qsort，磁盘排序使用2路多路归并排序(同一文件偏移量区别分配，每MERGEBUFF (7)个分片做一个归并)，比如num_of_tmp_files=12
   
-  SET optimizer_trace='enabled=on';`
+  SET optimizer_trace='enabled=on'; SELECT * FROM `information_schema`.`OPTIMIZER_TRACE`.number_of_tmp_files
   
   SET max_length_for_sort_data = xxx;
   
@@ -265,8 +267,8 @@
     * table(id,word)->内存临时表(R,W),1w扫描->sort_buffer(R,pos),1w扫描->rowid排序(R,pos)->映射内存临时表(R,W)->结果集(word),3扫描
   磁盘临时表
     * internal_tmp_disk_storage_engine=InnoDB 
-    * tmp_table_size/sort_buffer_size/max_length_for_sort_data 
-    * 优先队列排序算法(>5.6) 
+    * tmp_table_size(16M,超过用磁盘)/sort_buffer_size(1MB,超过用磁盘)/max_length_for_sort_data(1024B,超过用rowid排序)
+    * 优先队列排序算法(>5.6): 最大堆 
     * OPTIMIZER_TRACE.filesort_priority_queue_optimization.chosen=true,num_of_tmp_files=0,set_mode=rowid
     ** 磁盘临时表的执行流程是怎样的呢 ** 
   随机法： 表行数>limit randn,1;  where id>randn limit 1;  
@@ -344,33 +346,38 @@
      开发阶段应set long_query_time=0查rows_examined是否预期， 查general log 
   5. IP白名单、user用户权限、query_rewrite 
      
-#### 23 binlog/relog可靠性 ※
+#### 23 binlog/relog可靠性。 怎么保证redo log和binlog是完整的 ※
   
   事务执行过程中，先把日志写到binlog cache/redo log buffer, commit写文件; 保证一次性写入
   
   binlog cache(thread) ->write binlog files(fs page cache) -> fsync disk
   
-  binlog_cache_size/sync_binlog=1(1fsync,500±400重启丢失,IOPS++)
+  binlog_cache_size/sync_binlog=1(fsync 0永不,1每次, 500±400重启丢失. IOPS++)
   
   redo log buffer -> write fs page cache -> fsync disk
   
-  innodb_flush_log_at_trx_commit=1(fsync), 
+  innodb_flush_log_at_trx_commit=1(fsync, 1disk 2pagecache 0buffer), 
    
-  未提交事务也会落盘: bg thread write&fsync/per 1s; buffer>=innodb_log_buffer_size/2; 并行事务提交顺带落盘;
+  未提交事务也会落盘: bg thread write&fsync/per 1s; redo log buffer>=innodb_log_buffer_size/2; 并行事务提交顺带落盘;
+  
+  redolog 在prepare阶段持久化. 由于per1s刷盘&崩溃恢复逻辑，在commit不fsync，只会write到文件系统的page cache中就够了。
   
   双1配置: redo log pre fsync, commit write; binlog fsync
   
-  group commit: LSN+=redo log length, TPS<2*IOPS. 联想到TCP的seq滑动窗口、ack累计确认.
+  group commit(IOPS<TPS*2): LSN+=redo log length, TPS<2*IOPS. 联想到TCP的seq滑动窗口、ack累计确认.
   
   redo log pre: write -> binlog: write -> redo log pre: fsync -> binlog: fsync -> redo log commit:write
   
-  binlog_group_commit_sync_delay / binlog_group_commit_sync_no_delay_count 增加语句响应时间
+  binlog_group_commit_sync_delay / binlog_group_commit_sync_no_delay_count 增加语句响应时间。 可作为临时提高性能使用。
   
-  WAL: 顺序写、组提交
+  WAL: redolog和binlog都是顺序写、组提交降低磁盘的IOPS
+  
+  优化IO瓶颈： 组提交延迟、sync_binlog几百、innodb_flush_log_at_trx_commit=2
   
   一些问题
   *  update语句完成，hexdump打印的idb文件看不到改变，原因是 仅保证写完了 redo log 和 内存，未写到磁盘
   *  binlog cache 每线程自己维护, redo log buffer 全局共用。 原因是 binlog不能被打断
+  *  虽然是顺序写，但MySQL的select查询也会争用磁盘吧？
  
 #### 24 主备
 
@@ -385,11 +392,13 @@
   
 #### 25 高可用
 
-  主备延迟: 从库配置低、备库压力大、大事务、大表DDL。 seconds_behind_master(show slave status)。
+  主备延迟: 从库配置低、备库压力大、大事务、delete太多行、大表DDL、备库并行复制能力不足、主库并发高、主库TPS高。 seconds_behind_master(show slave status)。
   
   可靠性优先。 等备库seconds_behind_master足够小 -> 主库readonly=true -> 等备库seconds_behind_master变为0 -> 备库readonly=false -> 业务请求到B
   
   可用性优先。row格式报错(比如 duplicate key error), mixed/statement数据悄悄的不一致了
+  
+  
   
 #### 26 备库并行复制
 
@@ -448,7 +457,7 @@
    
    考虑主备，外包统计判定慢，insert into mysql.health_check(id, t_modified) values (@@server_id, now()) on duplicate key update t_modified=now();
    
-   内部统计， 打开监控， mysql> update setup_instruments set ENABLED='YES', Timed='YES' where name like '%wait/io/file/innodb/innodb_log_file%';
+   内部统计， 打开监控(所有监控开性能损10%)， mysql> update setup_instruments set ENABLED='YES', Timed='YES' where name like '%wait/io/file/innodb/innodb_log_file%';
    
    查异常(皮秒)，mysql> select event_name,MAX_TIMER_WAIT  FROM performance_schema.file_summary_by_event_name 
      where event_name in ('wait/io/file/innodb/innodb_log_file','wait/io/file/sql/binlog') and MAX_TIMER_WAIT>200*1000000000;
@@ -471,11 +480,13 @@
  
 #### 32. kill query/connection
 
+  类Linux的Kill，非直接停止，而是发送信号
+
   逻辑：killed=THD::KILL_QUERY; 信号给线程; 程序判断埋点进行终止.
 
-  kill无效: 线程没有执行到判断线程状态的逻辑(埋点读信号); 终止逻辑耗时较长; 
+  kill无效: 线程没有执行到判断线程状态的逻辑(埋点读信号)、IO压力大; 终止逻辑耗时较长(大事务回滚的新数据版本回收、大查询回滚的临时文件、DDL最后阶段的临时文件); 
   
-  停等协议，客户端Ctrl+C自动有新连接kill query; 
+  停等协议，客户端Ctrl+C：自动新连接&kill query; 
   
   表多连接慢，是因为客户端在构建一个本地的哈希表并非连接慢（-A 关闭）
   
@@ -495,7 +506,7 @@
   
   innodb status -> Buffer pool hit rate > 99%
   
-  innodb_buffer_pool_size 可用物理内存的60%~80%; LRU; 
+  innodb_buffer_pool_size 可用物理内存的60%~80%; LRU;
   
   LRU 5:3=young:old(类全表扫描不影响young): 数据页新进old,时段外多次访问进young(innodb_old_blocks_time=1000)。
   
@@ -518,11 +529,11 @@
   BLN若多次扫冷表
   
   join explain Extra 默认NLJ
-  
+
   
 #### 35. join 优化
  
-  Multi-Range Read优化(MRR) 顺序读盘。read_rnd_buffer_size。 set optimizer_switch="mrr_cost_based=off"
+  Multi-Range Read优化(MRR), 通过二级索引可避免随机读聚簇索引，使顺序读盘。read_rnd_buffer_size。 set optimizer_switch="mrr_cost_based=off"。 explain.Extra: Using MRR.
   
   Batched Key Acess(BKA)(>5.6), 优化NLJ。 set optimizer_switch='mrr=on,mrr_cost_based=off,batched_key_access=on';
   
@@ -536,9 +547,9 @@
   
   _join_buffer是无序数组，若先排序，时间复杂度是 N*logN*M 反而更差？ 非N*M/2可能非唯一索引导致？_
   
-#### 36. 临时表
-
-  分库分表场景下常用、create temporary table， .frm，前缀是“#sql{进程id}_{线程id}_序列号”， 临时文件表空间(>5.7)
+#### 36. 临时表 
+  
+  分库分表场景的非聚合列查询(proxy聚合， 临时表异构解决)、create temporary table， .frm，前缀是“#sql{进程id}_{线程id}_序列号”， 临时文件表空间(>5.7)
   
   主备复制，row格式不记create， /* generated by server */代表语句被修改，
   
@@ -555,6 +566,8 @@
   直接磁盘排序group。避免内存转磁盘临时表。sort_buffer有序数组获取每值出现次数，无Using temporary。select SQL_BIG_RESULT id%100 as m, count(*) as c from t1 group by m; 
   
   join_buffer是无序数组，sort_buffer是有序数组，临时表是二维表结构；
+  
+  group注意: order by null, explain 无 Using temporary 和 Using filesort, 调大tmp_table_size, SQL_BIG_RESULT使用排序算法
   
   _SQL_BIG_RESULT标识直接走sort_buffer本身不走磁盘？_
   
@@ -590,7 +603,7 @@
 
   物理拷贝:最快，适合大表，数据表恢复， 登录服务器，源表和目标表都是使用InnoDB
   
-  mysqldump: 可用用where，不能用join
+  mysqldump: 可用where，不能用join
   
   用select … into outfile 支持所有的SQL写法。每次只能导出一张表的数据，而且表结构也需要另外的语句单独备份。
   
@@ -632,6 +645,35 @@
   
 ## 总结
 
+
+##### SQL性能提升
+  * 调试方法：  explain; show warnings; profile; processlist; optimizer_trace; slow log; 云监控页面; prometheus;
+  * explain: 索引; B+tree高; explain的extend衍生join/group算法分析; 
+    join_buffer_size改大使BNL的分段数变少使时间复杂度变低。
+    应用MRR/BKA减少随机扫描
+    超过1s的查询对BP产生持续性影响。
+  * 衍生SELECT及UPDATE执行流程: Query Cache; BP命中率; Change Buffer; WAL(redolog&binlog); semi-sync(repl); 
+  * 事务: 大事务的undolog过大 
+  * 锁: MDL、全局读锁、死锁检测、
+  * 业务设置: 超时、连接池、store_result
+
+##### 索引
+    前缀索引, 更小更快，但无法做ORDER/GROUP/覆盖扫描,选择性问题, SELECT COUNT(DISNINCT LEFT(field,5))/COUNT(\*)
+    多列索引, 顺序问题,选择性高的列放前， 单列多索引>v5.0索引合并策略(OR/AND)说明索引没建好, Extra(Using union(idx_x1,idx_x2))
+    聚簇索引，大小问题. 叶子页中. 若无主键会隐式创建, 主键顺序插入否则optimize table
+    非聚簇索引（二级索引）保存指针，需要二次查询, InnoDB二级索引保存主键值,虽大但避免了行移动/页分裂造成的二级索引维护工作
+    覆盖索引,Extra(Using index); 子查询覆盖索引优化limit问题
+    压缩索引，
+    冗余重复索引, 应该移除
+    自适应哈希索引
+    where urlcrc=crc32("http://xxx.com") and url="http://xxx.com"
+    crc32() FNV64()
+    全文索引、覆盖索引、分形树索引、
+    索引优点：扫描数量；避免排序临时表；顺序IO
+    查询条件中索引列不能运算
+    Extra(Using Where)说明存储引擎返回了结果后再做的过滤
+    string类型字段若select按照int查询用不到索引
+
 ##### 日志
   
   * 事务日志：重做日志redo和回滚日志undo
@@ -654,11 +696,12 @@
   show global status where variable_name in('com_select','com_insert','com_delete','com_update','com_commit','com_rollback','Questions');
   
 ## 练习
-  * 单机数据可靠性redo log  2, 15, 23。
+  * 单机数据可靠性 redo log  2, 15, 23。
   * 事务  3, 8, 20。各隔离级别case,读视图,undo log,当前读,幻读W/H/Q。
   * 锁  6, 7, 13, 19, 20, 21, 30, 39, 40
   * index 4, 5, 9, 10, 11
-  * 多机(主从) 24, 25, 26, 27, 28, 29, 41
+  * buffer 16, 17, 33, 34, 35, 36, 37, 38。 sort buffer, join buffer, tmp table
+  * 多机(主从) 24, 25, 26, 27, 28, 29, 41。 
   
   
 ##### 马士兵 https://ke.qq.com/webcourse/index.html#cid=399017&term_id=100475965&taid=8662656978654889
@@ -672,4 +715,4 @@
 零拷贝
     mmap让数据传输不需要经过user space
     
-    
+  
