@@ -264,16 +264,15 @@
 
   SELECT word ORDER BY rand() LIMIT 3; count(*)=1w
   内存临时表 engine=Memory, rowid排序, tmp_table_size=16M, 
-    * table(id,word)->内存临时表(R,W),1w扫描->sort_buffer(R,pos),1w扫描->rowid排序(R,pos)->映射内存临时表(R,W)->结果集(word),3扫描
-  磁盘临时表
-    * internal_tmp_disk_storage_engine=InnoDB 
-    * tmp_table_size(16M,超过用磁盘)/sort_buffer_size(1MB,超过用磁盘)/max_length_for_sort_data(1024B,超过用rowid排序)
-    * 优先队列排序算法(>5.6): 最大堆 
-    * OPTIMIZER_TRACE.filesort_priority_queue_optimization.chosen=true,num_of_tmp_files=0,set_mode=rowid
-    ** 磁盘临时表的执行流程是怎样的呢 ** 
-  随机法： 表行数>limit randn,1;  where id>randn limit 1;  
-  
-  ** 为何limit 10000,100 要改为 limit 10100 **
+   * table(id,word)->内存临时表(R,W),1w扫描->sort_buffer(R,pos),1w扫描->rowid排序(R,pos)->映射内存临时表(R,W)->结果集(word),3扫描磁盘临时表
+   * internal_tmp_disk_storage_engine=InnoDB 
+   * tmp_table_size(16M,超过用磁盘)/sort_buffer_size(1MB,超过用磁盘)/max_length_for_sort_data(1024B,超过用rowid排序)
+   * 优先队列排序算法(>5.6): 最大堆 
+   * OPTIMIZER_TRACE.filesort_priority_queue_optimization.chosen=true,num_of_tmp_files=0,set_mode=rowid
+   
+    * 磁盘临时表的执行流程是怎样的呢 
+    * 随机法： 表行数>limit randn,1;  where id>randn limit 1;  
+    * 为何limit 10000,100 要改为 limit 10100 **
   
 #### 18 SQL的列计算
 

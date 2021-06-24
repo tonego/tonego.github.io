@@ -68,6 +68,9 @@ Redis 集群是一个网状结构，每个节点都通过 TCP 连接跟其他每
 ###### 17.集群
 一致性hash实现、slot实现
 slot实现的重点：一个node会有多个区间的slot， 所以类似一致性hash避免了太多数据的转移。
+clusterState.slots_to_keys(zset. score:slot;member:key) 保存了所有key和slot的关系。
+clusterNode.slots[16384/8]是二进制数组记录了本节点负责的slot，用于一次性把节点负责的slot查出来&指派广播;
+clusterState.slots[16384]记录每个slot的*clusterNode，用==clusterState.mysql判断slot是否当前节点负责;
 强一致性. 异步复制 和 网络分区
 在网络分裂出现期间， 客户端 Z1 可以向主节点 B 发送写命令的最大时间是有限制的， 这一时间限制称为节点超时时间（node timeout）
 gossip协议， 所有的集群节点都通过TCP连接（TCP bus？）和一个二进制协议（集群连接，cluster bus）建立通信
@@ -75,10 +78,10 @@ gossip协议， 所有的集群节点都通过TCP连接（TCP bus？）和一个
 CLUSTER REPLICATE <node_id>
 clusterState.myself { slaveof = clusterState.nodes[nodeid]; flags = REDIS_NODE_SLAVE }
 M.clusterNode{ numslaves; **slaves; }
-故障检测：每秒发PING 未PONG标PFAIL（probable fail）, clusterState.nodes[nodeid].flags=REDIS_NODE_PFAIL; 收到PONG的: clusterNode(下线的){ *fail_reports{*node(谁报告的); time;}; }; 若超过半数，flags=REDIS_NODE_FAIL并gossip
-故障转移：若S发现M下线，选M; S执行SLAVEOF no one; SLOT; gossip PONG; run;  
-选主：S发现M下线gossip CLUSTERMSG_TYPE_FAILOVER_AUTH_REQUEST;  所有M回AUTH_ACK; 若过半票则当主。 
-消息：MEET/PING（每秒随机5或>cluster-node-timeout=15s/2）/PONG/FAIL/PUBLISH;  
+故障检测：每秒发PING 未PONG标PFAIL（probable fail）, clusterState.nodes[nodeid].flags=REDIS_NODE_PFAIL; 节点互通消息后: clusterNode(PFAIL的){ *fail_reports{*node(谁报告的); time;}; }; 若超过半数，flags=REDIS_NODE_FAIL并gossip
+故障转移：若S发现M下线，选M; S执行SLAVEOF no one; SLOT指派给自己; gossip PONG; run;  
+选主：S发现M下线gossip CLUSTERMSG_TYPE_FAILOVER_AUTH_REQUEST;  所有M回AUTH_ACK; 若过半票则当主。基于raft实现。 
+消息：MEET/PING（每秒随5选1节点或>cluster-node-timeout=15s/2）/PONG/FAIL/PUBLISH;  
 clusterMsg{tolen;type;count;epoch;sender[REDIS_CLUSTER_NAMELEN];myslots[REDIS_CLUSTER_SLOTS/8];port;flag;state;data}  
 myslots[REDIS_CLUSTER_SLOTS/8]是为了gossip，slots是为了找对应的节点； 
 
