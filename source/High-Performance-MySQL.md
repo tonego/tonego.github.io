@@ -16,3 +16,4 @@ crc32() FNV64()
 查询条件中索引列不能运算
 Extra(Using Where)说明存储引擎返回了结果后再做的过滤
 string类型字段若select按照int查询用不到索引
+index_merge导致死锁。死锁原因是，多个单列索引的锁范围过大容易导致主键索引加锁冲突。idx1->pk->idx2->pk
