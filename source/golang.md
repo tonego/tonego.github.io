@@ -6,6 +6,11 @@ https://reading.developerlearning.cn/reading/12-2018-08-02-goroutine-gpm/
     M的状态是通过notesleep()方法变为unspin状态， 通过notewakeup()方法变为spin状态
     Gdead状态通过newproc()变更为runnable状态
 
+#### interface
+eface(_type,data)
+iface(itab,data)
+    itab.hash = _type.hash用于断言。
+interface入参不会为nil    
 
 #### 汇编
 * 
