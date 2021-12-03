@@ -1,28 +1,28 @@
 -- 《etcd实战课》
  开篇词｜为什么你要学习etcd?
  我希望你能够用最低的学习成本，掌握etcd核心原理和最佳实践，让etcd为你所用。
- 
+
 ### 01 | etcd的前世今生：为什么Kubernetes使用etcd？
 https://blog.csdn.net/kuaipao19950507/article/details/119061784
  etcd 诞生背景， etcd v2 源自 CoreOS 团队遇到的服务协调问题。
  etcd 目标，我们通过实际业务场景分析，得到理想中的协调服务核心目标：高可用、数据一致性、Watch、良好的可维护性等。而在 CoreOS 团队看来，高可用、可维护性、适配云、简单的 API、良好的性能对他们而言是非常重要的，ZooKeeper 不支持通过 API 安全地变更成员，需要人工修改一个个节点的配置，并重启进程； java的部署繁琐；无法与curl互动。
  Paxos/ZAB/Raft.
  etcd为简单内存数、zk为ConcurrentHashMap.
- 
+
  v2 基于目录的层级数据模型（参考zk）和 API。
  etcd v2问题：
    * 功能局限性（分页、范围查找、多key事务）；
-   * Watch事件的可靠性（内存型、无key历史版本、事件丢失、触发client全量拉群出现雪崩）、
+   * Watch事件的可靠性（滑动窗口内存型、无key历史版本、事件丢失、触发client全量拉群出现雪崩）、
    * 性能（json序列化、http/1.x 轮询watch事件的大量长连接消耗server大量socket和内存资源、周期性刷新key的ttl）、
    * 内存开销。（数据量大、全量内存定时刷盘）
   etcd v3（16.06）解决：
    * 在内存开销、Watch 事件可靠性、功能局限上，它通过引入 B-tree、boltdb 实现一个 MVCC 数据库，数据模型从层次型目录结构改成扁平的 key-value，提供稳定可靠的事件通知，实现了事务，支持多 key 原子更新，同时基于 boltdb 的持久化存储，显著降低了 etcd 的内存占用、避免了 etcd v2 定期生成快照时的昂贵的资源开销。
    * 性能上， gRPC、protobuf、http/2.0多路复用、使用Lease优化TTL。
-   
+
  CoreOS 团队未雨绸缪，从问题萌芽时期就开始构建下一代 etcd v3 存储模型，分别从性能、稳定性、功能上等成功解决了 Kubernetes 发展过程中遇到的瓶颈，也捍卫住了作为 Kubernetes 存储组件的地位。
  希望通过今天的介绍， 让你对 etcd 为什么有 v2 和 v3 两个大版本，etcd 如何从 HTTP/1.x API 到 gRPC API、单版本数据库到多版本数据库、内存树到 boltdb、TTL 到 Lease、单 key 原子更新到支持多 key 事务的演进过程有个清晰了解。希望你能有所收获，在后续的课程中我会和你深入讨论各个模块的细节。
- 
-### 02 | 基础架构：etcd一个读请求是如何执行的？ 
+
+### 02 | 基础架构：etcd一个读请求是如何执行的？
 Client层。包括 client v2 和 v3 两个大版本 API 客户端库，提供了简洁易用的 API，同时支持负载均衡、节点间故障自动转移，可极大降低业务使用 etcd 复杂度，提升开发效率、服务可用性。
 API网络层。主要包括 client 访问 server 和 server 节点之间的通信协议。一方面，client 访问 etcd server 的 API 分为 v2 和 v3 两个大版本。v2 API 使用 HTTP/1.x 协议，v3 API 使用 gRPC 协议。同时 v3 通过 etcd grpc-gateway 组件也支持 HTTP/1.x 协议，便于各种语言的服务调用。另一方面，server 之间通信协议，是指节点间通过 Raft 算法实现数据复制和 Leader 选举等功能时使用的 HTTP 协议。
 Raft算法层。实现了 Leader 选举、日志复制、ReadIndex 等核心算法特性，用于保障 etcd 多个节点间的数据一致性、提升服务可用性等，是 etcd 的基石和亮点。
@@ -34,13 +34,13 @@ KVServer。
 MVCC。 从 treeIndex （b-tree）中获取 key hello 的版本号，再以版本号作为 boltdb 的 key，从 boltdb （b+tree）中获取其 value 信息。
 小结。一个读请求从 client 通过 Round-robin 负载均衡算法，选择一个 etcd server 节点，发出 gRPC 请求，经过 etcd server 的 KVServer 模块、线性读模块、MVCC 的 treeIndex 和 boltdb 模块紧密协作，完成了一个读请求。
 早期 etcd 线性读使用的 Raft log read，也就是说把读请求像写请求一样走一遍 Raft 的协议，基于 Raft 的日志的有序性，实现线性读。但此方案读涉及磁盘 IO 开销，性能较差，后来实现了 ReadIndex 读机制来提升读性能，满足了 Kubernetes 等业务的诉求。
- 
+
 ### 03 | 基础架构：etcd一个写请求是如何执行的？
- ###### quota 
+ ###### quota
  默认配额2G，建议最大8G。 "etcdserver: mvcc: database space exceeded"错误
  ###### preflight check
  如果 Raft 模块已提交的日志索引（committed index）比已应用到状态机的日志索引（applied index）超过了 5000，那么它就返回一个"etcdserver: too many requests"错误
- ###### propose 
+ ###### propose
  向 Raft 模块发起提案后，KVServer 模块会等待此 put 请求，等待写入结果通过消息通知 channel 返回或者超时。etcd 默认超时时间是 7 秒（5 秒磁盘 IO 延时 +2*1 秒竞选超时时间），如果一个请求超时未返回结果，则可能会出现你熟悉的 etcdserver: request timed out 错误。
  ###### boltdb
  版本号作为key顺序写入提高B+tree性能。
@@ -65,15 +65,21 @@ etcd Lessor 主循环每隔 500ms 执行一次撤销 Lease 检查（RevokeExpire
 Lease 的 checkpoint 机制，它是为了解决 Leader 异常情况下 TTL 自动被续期，可能导致 Lease 永不淘汰的问题而诞生。
 CheckPointScheduledLeases 定时将lease的ttl信息给follower节点
  Leader 节点收到 KeepAlive 请求的时候，它也会通过 checkpoint 机制把此 Lease 的剩余 TTL 重置，并同步给 Follower 节点，尽量确保续期后集群各个节点的 Lease 剩余 TTL 一致性。
- 
 
 ### 07 | MVCC：如何实现多版本并发控制？
 在一个度为 d 的 B-tree 中，节点保存的最大 key 数为 2d - 1，否则需要进行平衡、分裂操作。
 在 etcd treeIndex 模块中，创建的是最大度 32 的 B-tree，也就是一个叶子节点最多可以保存 63 个 key。
 
 ### 08 | Watch：如何高效获取数据变化通知？
-### 希望通过这节课，你能在实际业务中应用Watch特性，快速获取数据变更通知。
-
+应用场景： Kubernetes的 Deployment、StatefulSet、Job 等功能强大的 Workload。
+etcdv3 使用HTTP/2 ，通知模式也从 client 轮询优化成 server 流式推送，极大降低了 server 端 socket、内存等资源。
+Watch 特性被抽象成 Watch、Close、RequestProgress 三个简单 API。
+历史版本存储，滑动窗口到MVCC。
+内存环形队列EventHistory: EventQueue(1000)、StartIndex、LastIndex、rwl。
+推送核心实现模块watchableStore： 最新事件推送synced/历史事件推送unsynced/异常场景重试victim。
+victim: 接收 Watch 事件 channel 的 buffer 容量默认 1024(etcd v3.4.9)。若 client 与 server 端因网络波动、高负载等原因导致推送缓慢，buffer 满了会走victim。
+可监听 key 范围、key 前缀。 当产生一个事件时，etcd 首先需要从 map 查找是否有 watcher 监听了单 key，其次它还需要从区间树找出与此 key 相交的所有区间，然后从区间的值获取监听的 watcher 集合。
+```$ etcdctl watch hello -w=json --rev=1```
 ### 09 | 事务：如何安全地实现多key操作？
 ### 通过转账案例为你剖析etcd事务实现，让你了解etcd如何实现事务ACID特性，以及MVCC版本号在事务中的重要作用。
 
@@ -84,8 +90,19 @@ CheckPointScheduledLeases 定时将lease的ttl信息给follower节点
 ### 希望通过今天的这节课，能帮助你理解etcd压缩原理，在使用etcd过程中能根据自己的业务场景，选择适合的压缩策略。
 
 ### 12 | 一致性：为什么基于Raft实现的etcd还会出现数据不一致？
-### 希望通过这节课，帮助你搞懂为什么基于Raft实现的etcd有可能出现数据不一致，以及我们应该如何提前规避、预防类似问题。
-
+```$ etcdctl endpoint status --cluster -w json | python -m json.tool```
+一个请求在 Apply 或 MVCC 模块即便执行失败了，都依然会更新 raftAppliedIndex。
+revision 差异偏离标准值，恰好又说明异常 etcd 节点可能未成功应用日志条目到 MVCC 模块。
+MVCC 的相关 metrics（比如 etcd_mvcc_put_total），来排除请求是否到了 MVCC 模块。
+重启etcd时，最后一条鉴权相关名单未持久化consistent index，未实现幂等，导致重复执行修改鉴权版本号，最后导致MVCC数据不一致。这个 Bug 影响 etcd v3 所有版本长达 3 年之久。etcd v3.3.21 和 v3.4.8 后的版本已经修复此 Bug。
+可能存在 server 应用日志条目到状态机失败，进而导致各个节点出现数据不一致。但是这个不一致并非 Raft 模块导致的，它已超过 Raft 模块的功能界限。这种逻辑错误即便重试也无法解决，目前社区也没有彻底的根治方案，只能根据具体案例进行针对性的修复。注意Apply 日志条目失败的警告日志。
+升级 etcd 集群的时候，如果 etcd 3.3 版本收到了来自 3.2 版本的 RevokeLease 接口，就会导致因为没权限出现 Apply 失败，进而导致数据不一致，引发各种诡异现象。
+defrag 未正常结束时会生成 db.tmp 临时文件。这个文件可能包含部分上一次 defrag 写入的部分 key/value 数据，。而 etcd 下次 defrag 时并不会清理它，复用后就可能会出现各种异常场景，如重启后 key 增多、删除的用户数据 key 再次出现、删除 user/role 再次出现等。
+算法一致性不代表一个庞大的分布式系统工程实现中一定能保障一致性，工程实现上充满着各种挑战，从不可靠的网络环境到时钟、再到人为错误、各模块间的复杂交互等，几乎没有一个存储系统能保证任意分支逻辑能被测试用例 100% 覆盖。
+开启 etcd 的数据毁坏检测功能。experimental-initial-corrupt-check；定时检测通过Leader获取最新版本号，ReadIndex确认Leader，获取各节点revision、boltdb hash，若follower的revision大于leader，发送corrupt告警，触发corruption保护，拒绝读写。以后优化为DynamoDB的merkle增量hash检测功能。
+应用层的数据一致性检测。 各个节点key数(带上WithCountOnly参数)。
+定时数据备份。 开源的 etcd-operator 中的 backup-operator 去实现定时数据备份，它可以将 etcd 快照保存在各个公有云的对象存储服务里面。
+良好的运维规范（比如使用较新稳定版本、确保版本一致性、灰度变更）。
 ### 13 | db大小：为什么etcd社区建议db大小不超过8G？
 ### 我将通过一个大数据量的etcd集群为案例，为你剖析etcd db大小配额限制背后的设计思考和过大的db潜在隐患。
 
