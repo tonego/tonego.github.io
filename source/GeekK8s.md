@@ -578,13 +578,6 @@ Kubernetes 其实在每个 Pod 创建的时候，自动在它的 spec.volumes �
 这种把 Kubernetes 客户端以容器的方式运行在集群里，然后使用 default Service Account 自动授权的方式，被称作“InClusterConfig”，也是我最推荐的进行 Kubernetes API 编程的授权方式。
 
 Pod 的另一个重要的配置：容器健康检查和恢复机制。
-xx has a great/significant/far-reaching/negative impact/influence on xx
-xx account for 5% of the xx
-xx are on a steady rise/increase/fall/decline/decrease
-xx are on a modest/sharp upward/downward trend.
-a give rise to b
-
-
 
 ## 16. 编排其实很简单：谈谈“控制器”模型 
 ## 17. 经典PaaS的记忆：作业副本与水平扩展 
