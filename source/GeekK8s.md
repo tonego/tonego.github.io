@@ -578,11 +578,167 @@ Kubernetes 其实在每个 Pod 创建的时候，自动在它的 spec.volumes �
 这种把 Kubernetes 客户端以容器的方式运行在集群里，然后使用 default Service Account 自动授权的方式，被称作“InClusterConfig”，也是我最推荐的进行 Kubernetes API 编程的授权方式。
 
 Pod 的另一个重要的配置：容器健康检查和恢复机制。
+Pod 恢复机制，也叫 restartPolicy。它是 Pod 的 Spec 部分的一个标准字段（pod.spec.restartPolicy），默认值是 Always，即：任何时候这个容器发生了异常，它一定会被重新创建。
+宿主机宕机了，这个 Pod 也不会主动迁移到其他节点上去。除非这个绑定发生了变化（pod.spec.node）
+一个单 Pod 的 Deployment 与一个 Pod 最主要的区别。： 想让 Pod 重启后出现在其他的可用节点上，保证高可用。
+只要 Pod 的 restartPolicy 指定的策略允许重启异常的容器（比如：Always），那么这个 Pod 就会保持 Running 状态，并进行容器重启。否则，Pod 就会进入 Failed 状态 。
+对于包含多个容器的 Pod，只有它里面所有的容器都进入异常状态后，Pod 才会进入 Failed 状态。在此之前，Pod 都是 Running 状态。此时，Pod 的 READY 字段会显示正常容器的个数，比如：
+
+而如果这个 Pod 有多个容器，仅有一个容器异常退出，它就始终保持 Running 状态，哪怕即使 restartPolicy=Never。只有当所有容器也异常退出之后，这个 Pod 才会进入 Failed 状态。
+readinessProbe 检查结果的成功与否，决定的这个 Pod 是不是能被通过 Service 的方式访问到，而并不影响 Pod 的生命周期。
+livenessProbe 
+PodPreset 对象
+PodPreset 里定义的内容，只会在 Pod API 对象被创建之前追加在这个对象本身上，而不会影响任何 Pod 的控制器的定义。
+
 
 ## 16. 编排其实很简单：谈谈“控制器”模型 
+“控制器模式”（controller pattern）的设计方法，来统一地实现对各种不同的对象或者资源进行的编排操作。
+如 StatefulSet、DaemonSet 等等，它们无一例外地都有这样一个甚至多个控制器的存在，并遵循控制循环（control loop）的流程，完成各自的编排逻辑。
+这些控制循环最后的执行结果，要么就是创建、更新一些 Pod（或者其他的 API 对象、资源），要么就是删除一些已经存在的 Pod
+```
+$ cd kubernetes/pkg/controller/
+$ ls -d */              
+deployment/             job/                    podautoscaler/          
+cloud/                  disruption/             namespace/              
+replicaset/             serviceaccount/         volume/
+cronjob/                garbagecollector/       nodelifecycle/          replication/            statefulset/            daemon/
+...
+```
+它们都遵循 Kubernetes 项目中的一个通用编排模式，即：控制循环（control loop）。
+实际状态往往来自于 Kubernetes 集群本身。期望状态，一般来自于用户提交的 YAML 文件。
+调谐（Reconcile）。这个调谐的过程，则被称作“Reconcile Loop”（调谐循环）或者“Sync Loop”（同步循环）。
+像 Deployment 定义的 template 字段，在 Kubernetes 项目中有一个专有的名字，叫作 PodTemplate（Pod 模板）。
+类似 Deployment 这样的一个控制器，实际上都是由上半部分的控制器定义（包括期望状态），加上下半部分的被控制对象的模板组成的。
+在所有 API 对象的 Metadata 里，都有一个字段叫作 ownerReference，用于保存当前这个 API 对象的拥有者（Owner）的信息。
+
+
 ## 17. 经典PaaS的记忆：作业副本与水平扩展 
 Deployment 控制 ReplicaSet（版本），ReplicaSet 控制 Pod（副本数）。
+
+对于一个 Deployment 所管理的 Pod，它的 ownerReference 是ReplicaSet.
+$ kubectl scale deployment nginx-deployment --replicas=4
+deployment.apps/nginx-deployment scaled
+
+$ kubectl create -f nginx-deployment.yaml --record
+$ kubectl get deployments
+NAME               DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   AGE
+nginx-deployment   3         0         0            0           1s
+$ kubectl rollout status deployment/nginx-deployment
+Waiting for rollout to finish: 2 out of 3 new replicas have been updated...
+deployment.apps/nginx-deployment successfully rolled out
+$ kubectl get rs
+NAME                          DESIRED   CURRENT   READY   AGE
+nginx-deployment-3167673210   3         3         3       20s
+
+随机字符串叫作 pod-template-hash。 ReplicaSet 会把这个随机字符串加在它所控制的所有 Pod 的标签里
+
+$ kubectl edit deployment/nginx-deployment
+... 
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.9.1 # 1.7.9 -> 1.9.1
+        ports:
+        - containerPort: 80
+...
+deployment.extensions/nginx-deployment edited
+$ kubectl rollout status deployment/nginx-deployment
+Waiting for rollout to finish: 2 out of 3 new replicas have been updated...
+deployment.extensions/nginx-deployment successfully rolled out
+$ kubectl describe deployment nginx-deployment
+...
+Events:
+  Type    Reason             Age   From                   Message
+  ----    ------             ----  ----                   -------
+...
+  Normal  ScalingReplicaSet  24s   deployment-controller  Scaled up replica set nginx-deployment-1764197365 to 1
+  Normal  ScalingReplicaSet  22s   deployment-controller  Scaled down replica set nginx-deployment-3167673210 to 2
+  Normal  ScalingReplicaSet  22s   deployment-controller  Scaled up replica set nginx-deployment-1764197365 to 2
+  Normal  ScalingReplicaSet  19s   deployment-controller  Scaled down replica set nginx-deployment-3167673210 to 1
+  Normal  ScalingReplicaSet  19s   deployment-controller  Scaled up replica set nginx-deployment-1764197365 to 3
+  Normal  ScalingReplicaSet  14s   deployment-controller  Scaled down replica set nginx-deployment-3167673210 to 0
+
+将一个集群中正在运行的多个 Pod 版本，交替地逐一升级的过程，就是“滚动更新”。
+Deployment Controller 还会确保，在任何时间窗口内，只有指定比例的 Pod 处于离线和创建状态。这两个比例的值都是可以配置的，默认都是 DESIRED 值的 25%。
+有 3 个 Pod 副本，那么控制器在“滚动更新”的过程中永远都会确保至少有 2 个 Pod 处于可用状态，至多只有 4 个 Pod 同时存在于集群中。这个策略，是 Deployment 对象的一个字段，名叫 RollingUpdateStrategy
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+...
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+      # maxUnavailable=50%
+```
+“应用版本和 ReplicaSet 一一对应
+$ kubectl set image deployment/nginx-deployment nginx=nginx:1.91
+deployment.extensions/nginx-deployment image updated
+$ kubectl rollout undo deployment/nginx-deployment
+deployment.extensions/nginx-deployment
+
+kubectl rollout history 命令，查看每次 Deployment 变更对应的版本。
+$ kubectl rollout history deployment/nginx-deployment
+deployments "nginx-deployment"
+REVISION    CHANGE-CAUSE
+1           kubectl create -f nginx-deployment.yaml --record
+2           kubectl edit deployment/nginx-deployment
+3           kubectl set image deployment/nginx-deployment nginx=nginx:1.91
+
+$ kubectl rollout history deployment/nginx-deployment --revision=2
+$ kubectl rollout undo deployment/nginx-deployment --to-revision=2
+deployment.extensions/nginx-deployment
+
+// 防止触发滚动更新
+$ kubectl rollout pause deployment/nginx-deployment 
+deployment.extensions/nginx-deployment paused
+
+$ kubectl rollout resume deploy/nginx-deployment
+deployment.extensions/nginx-deployment resumed
+
+Deployment 对象有一个字段，叫作 spec.revisionHistoryLimit，就是 Kubernetes 为 Deployment 保留的“历史版本”个数。
+
+_为何要Deployment&replicaSet双层控制呢？_
 ## 18. 深入理解StatefulSet（一）：拓扑状态 
+实例对外部数据有依赖关系的应用，就被称为“有状态应用”（Stateful Application）。
+“无状态应用”（Stateless Application）
+拓扑状态。存储状态。
+StatefulSet 的核心功能，就是通过某种方式记录这些状态，然后在 Pod 被重新创建时，能够为新 Pod 恢复这些状态。
+Service 又是如何被访问的： 以 Service 的 VIP（Virtual IP，即：虚拟 IP）方式。以 Service 的 DNS 方式。
+Normal Service。 解析到Service 的 VIP。
+Headless Service。 解析到 某一个 Pod 的 IP 地址。
+Headless Service 不需要分配一个 VIP，而是可以直接以 DNS 记录的方式解析出被代理 Pod 的 IP 地址。
+    clusterIP 字段的值是：None，即：这个 Service，没有一个 VIP 作为“头”。 这个 Service 被创建后并不会被分配一个 VIP，而是会以 DNS 记录的方式暴露出它所代理的 Pod。
+    即：所有携带了 app=nginx 标签的 Pod，都会被这个 Service 代理起来。Label Selector 机制选择出来的，
+    为 Pod 分配的唯一的“可解析身份”（Resolvable Identity）。<pod-name>.<svc-name>.<namespace>.svc.cluster.local
+StatefulSet 又是如何使用这个 DNS 记录来维持 Pod 的拓扑状态的呢？
+    StatefulSet 的 YAML 文件比 nginx-deployment 多了一个 serviceName=nginx 字段。
+    执行控制循环（Control Loop）的时候，请使用 nginx 这个 Headless Service 来保证 Pod 的“可解析身份”。
+    
+$ kubectl get pods -w -l app=nginx
+NAME      READY     STATUS    RESTARTS   AGE
+web-0     0/1       Pending   0          0s
+
+$ kubectl exec web-0 -- sh -c 'hostname'
+web-0
+$ kubectl exec web-1 -- sh -c 'hostname'
+web-1
+
+$ kubectl run -i --tty --image busybox dns-test --restart=Never --rm /bin/sh 
+$ nslookup web-0.nginx
+
+$ kubectl delete pod -l app=nginx
+$ kubectl get pod -w -l app=nginx
+通过这种严格的对应规则，StatefulSet 就保证了 Pod 网络标识的稳定性。
+
+Kubernetes 就成功地将 Pod 的拓扑状态（比如：哪个节点先启动，哪个节点后启动），按照 Pod 的“名字 + 编号”的方式固定了下来。
+
 ## 19. 深入理解StatefulSet（二）：存储状态 
 ## 20. 深入理解StatefulSet（三）：有状态应用实践 
 ## 21. 容器化守护进程的意义：DaemonSet 
