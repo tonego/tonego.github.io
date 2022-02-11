@@ -345,6 +345,30 @@ void sort(int[] nums, int lo, int hi) {
 https://mp.weixin.qq.com/s/LJbpo49qppIeRs-FbgjsSQ
 652. 寻找重复的子树（中等）。 后序；序列化描述以该节点为根的二叉树；HashMap记录子树；
 
+### 二叉树的序列化，就那几个框架，枯燥至极
+https://mp.weixin.qq.com/s/DVX2A1ha4xSecEXLxW_UsA
+
+297. 二叉树的序列化和反序列化（困难）
+用前序、中序、后序遍历、迭代式的层级遍历的方式来序列化和反序列化二叉树
+
+```
+/* 辅助函数，通过 nodes 列表构造二叉树 */
+TreeNode deserialize(LinkedList<String> nodes) {
+    if (nodes.isEmpty()) return null;
+
+    /****** 前序遍历位置 ******/
+    // 列表最左侧就是根节点
+    String first = nodes.removeFirst();
+    if (first.equals(NULL)) return null;
+    TreeNode root = new TreeNode(Integer.parseInt(first));
+    /***********************/
+
+    root.left = deserialize(nodes);
+    root.right = deserialize(nodes);
+
+    return root;
+}
+```
 ### 回溯算法解题套路框架
 46. 全排列（中等）
 51. N皇后（困难）
