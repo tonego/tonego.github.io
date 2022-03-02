@@ -142,7 +142,7 @@
   _当被要求写快排时，Redis/MySQL/Go的排序实现？_
   
 #### 15. 二分查找
-
+  
   对数对应的就是指数。有一个非常著名的“阿基米德与国王下棋的故事”
   
   易错点： 循环退出条件应为low<=high; mid=(low+high)/2 改 low+(high-low)/2 改 low+((high-low)>>1); 
@@ -288,25 +288,25 @@
   DFS, Depth-First-Search: 回溯思想, prev、visited、found、print()
   
 #### 32. 字符串匹配
-
+  
   BF, Brute Force，暴力匹配算法，也叫朴素匹配算法。 主串和模式串. 最坏情况时间复杂度是O(n*m).  KISS（Keep it Simple and Stupid）设计原则
   
-  RK, Rabin-Karp算法, 对每个子串分别求哈希值, 时间复杂度是O(n).
+  RK, Rabin-Karp 算法, 对每个子串分别求哈希值, 时间复杂度是O(n)
   
-#### 33. BM字符串匹配, 
+#### 33. BM字符串匹配 
 
   BM（Boyer-Moore）算法, 是著名的KMP算法的3到4倍. 好后缀和坏字符规则
-
+  
 #### 34. KMP字符串匹配
 
-  Knuth Morris Pratt算法,
+  Knuth Morris Pratt 算法,
   
 #### 35. Trie树
 
   Trie树，也叫“字典树”, 查找前缀匹配的字符串
 
 #### 36. AC自动机：如何用多模式串匹配实现敏感词过滤功能
-
+  
   单模式: BF算法、RK算法、BM算法、KMP算法； 多模式: Trie树、AC自动机
   
   AC自动机, Aho-Corasick算法, 实际上就是在Trie树之上，加了类似KMP的next数组，只不过此处的next数组是构建在树上罢了

@@ -1,5 +1,6 @@
-# labuladong的算法秘籍V1.3.pdf
+# labuladong的算法
 labuladong.github.io
+labuladong的算法秘籍V1.3.pdf
 
 ### 学习数据结构和算法的框架思维 
 数据结构的存储方式只有两种：数组（顺序存储）和链表（链式存储）。
@@ -38,19 +39,6 @@ N叉树的递归遍历方式和链表的递归遍历方式相似.
 - 动归、回溯（DFS）、分治、BFS、
 - 比如 图论基础 和 环判断和拓扑排序 就用到了 DFS 算法；再比如 Dijkstra 算法模板，就是改造版 BFS 算法加上一个类似 dp table 的数组。
 - 本质都是穷举二（多）叉树，有机会的话通过剪枝或者备忘录的方式减少冗余计算。
-
-### 提高刷题幸福感的小技巧
-递归调试：
-``` 
- var recurCnt int
- func printIndent(n int){
- 	for i:=0;i<n;i++{
- 		fmt.Print("	")
- 	}
- }
-```
-在递归函数的开头，调用 recurCnt++; printIndent(recurCnt); fmt.Println(head.Val) 
-在return 语句之前调用 printIndent(recurCnt); recurCnt--; fmt.Println(last.Val) 
 
 ## 数组&链表
 
@@ -196,6 +184,85 @@ void slidingWindow(string s, string t) {
 
 寻找回文串是从中间向两端扩展，判断回文串是从两端向中间收缩。
 
+### 给我常数时间，我可以删除/查找数组中的任意元素
+380. 常数时间插入、删除和获取随机元素（中等）。 map无法随机； 数组+倒排索引； 
+710. 黑名单中的随机数（困难）。数组+倒排索引；待删除元素换到最后；
+
+## 队列/栈
+### 队列实现栈以及栈实现队列
+232. 用栈实现队列（简单）。 push/pop/peek/empty; 双栈实现。peek 操作从 s1 往 s2 搬移。均摊时间复杂度是 O(1)
+225. 用队列实现栈（简单）。 pop()循环处理，O(N)。
+
+### 如何解决括号相关的问题
+20. 有效的括号（简单）。 栈。
+921. 使括号有效的最小添加（中等）。 以左括号为基准，通过维护对右括号的需求数 need，来计算最小的插入次数。
+1541. 平衡括号串的最少插入（中等）
+
+### 单调栈结构解决三道算法题
+496. 下一个更大元素I（简单）。 暴力解O(n^2)。 单调栈O(n)。倒序处理。
+503. 下一个更大元素II（中等）。 环形数组，取余、数组长度翻倍。
+739. 每日温度（中等）。等到更暖和的天气需要几天。 
+
+单调栈用途不太广泛，只处理一种典型的问题，叫做 Next Greater Element
+
+``` 
+vector<int> nextGreaterElement(vector<int>& nums) {
+    vector<int> res(nums.size()); // 存放答案的数组
+    stack<int> s;
+    // 倒着往栈里放
+    for (int i = nums.size() - 1; i >= 0; i--) {
+        // 判定个子高矮
+        while (!s.empty() && s.top() <= nums[i]) {
+            // 矮个起开，反正也被挡着了。。。
+            s.pop();
+        }
+        // nums[i] 身后的 next great number
+        res[i] = s.empty() ? -1 : s.top();
+        s.push(nums[i]);
+    }
+    return res;
+}
+```
+
+### 单调队列结构解决滑动窗口问题
+239. 滑动窗口最大值（困难）。优于最大堆。O(N)，空间O(k)。
+队列中的元素全都是单调递增（或递减）的。可以解决滑动窗口相关的问题。
+
+每次MonotonicQueue的push通过遍历保证递减。push 方法依然在队尾添加元素，但是要把前面比自己小的元素都删掉。
+                              
+``` 
+/* 单调队列的实现 */
+class MonotonicQueue {
+    LinkedList<Integer> q = new LinkedList<>();
+    public void push(int n) {
+        // 将小于 n 的元素全部删除
+        while (!q.isEmpty() && q.getLast() < n) {
+            q.pollLast();
+        }
+        // 然后将 n 加入尾部
+        q.addLast(n);
+    }
+    
+    public int max() {
+        return q.getFirst();
+    }
+    
+    public void pop(int n) {
+        if (n == q.getFirst()) {
+            q.pollFirst();
+        }
+    }
+}
+```
+
+### 一道数组去重的算法题把我整不会了
+https://mp.weixin.qq.com/s/Yq49ZBEW3DJx6nXk1fMusw
+
+316. 去除重复字母（中等）。 inStack这个布尔数组做到栈stk中不存在重复元素，单调栈配合计数器count不断 pop 掉不符合最小字典序的字符； 
+1081. 不同字符的最小子序列（中等）
+
+
+## 设计
 ### 设计朋友圈时间线功能
 355. 设计推特（中等）
 合并多个有序链表的算法和面向对象设计（OO design）结合
@@ -221,6 +288,25 @@ LFUCache {
     // 记录 LFU 缓存的最大容量
     int cap;
 }
+
+### TWOSUM问题的核心思想
+1. 两数之和（简单）. 用哈希表； 若有序双指针
+170. 两数之和 III - 数据结构设计（简单）。 记录所有可能组成的和； 哈希集合
+
+
+### 一个方法团灭 NSUM 问题
+一个函数秒杀 2Sum 3Sum 4Sum 问题 https://mp.weixin.qq.com/s/fSyJVvggxHq28a0SdmZm6Q 
+
+15. 三数之和（中等）
+18. 四数之和（中等）
+
+排序，双指针。
+## 流
+### 一道求中位数的算法题把我整不会了
+https://mp.weixin.qq.com/s/oklQN_xjYy--_fbFkd9wMg
+295. 数据流的中位数（困难）。两个优先级队列。维护large堆的元素大小整体大于small堆的元素。
+
+## 二叉树
 
 ### 二叉堆详解实现优先级队列
 二叉堆是完全二叉树，存储在数组。
@@ -256,10 +342,10 @@ delMax : 删arr[1]； arr[1]=arr[N]； 删arr[N]； sink;
 ### 手把手带你刷二叉树（纲领篇）
 104. 二叉树的最大深度（简单）。 前序位置depth++, 后序位置depth--；
 543. 二叉树的直径（简单）。 任意两个结点之间的路径长度。 最大深度；后序位置
-144. 二叉树的前序遍历（简单）。上到下和左到右两层循环；用queue临时存储每层的节点
+144. 二叉树的前序遍历（简单）。
 节点层数。
 节点总数。
-层序遍历。
+层序遍历。上到下和左到右两层循环；用queue临时存储每层的节点。
 
 思维用到 动态规划， 回溯算法， 分治算法， 图论算法中
 单链表和数组可迭代可递归，二叉树无法迭代只能递归。
@@ -305,7 +391,7 @@ int maxDepth(TreeNode root) {
 BFS 算法框架 就是从二叉树的层序遍历扩展出来的，常用于求无权图的最短路径问题。
 
 ### 手把手带你刷二叉树（第一期）
-226. 翻转二叉树（简单）。
+226. 翻转二叉树（简单）。前序位置。
 114. 二叉树展开为链表（中等）。
 116. 填充每个节点的下一个右侧节点指针（中等）。两个参数。
 
@@ -334,7 +420,7 @@ void sort(int[] nums, int lo, int hi) {
 
 ### 手把手带你刷二叉树（第二期）
 构造二叉树系列。
-654. 最大二叉树（中等）。找到最大值；构造左右树。
+654. 最大二叉树（中等）。找到最大值；构造左右树。前序位置。
 105. 从前序与中序遍历序列构造二叉树（中等）。 head[0]为root；找到inorder中的idx；找到preorder的左右树边界。 build(int[] preorder, int preStart, int preEnd,  int[] inorder, int inStart, int inEnd) 
 106. 从中序与后序遍历序列构造二叉树（中等）
 889. 根据前序和后序遍历构造二叉树（中等）。通过前序中序，或者后序中序遍历结果可以确定一棵原始二叉树，但是通过前序后序遍历结果无法确定原始二叉树。根preorder[0]；preorder[1]左树根；postorder找左树根的idx；
@@ -369,19 +455,204 @@ TreeNode deserialize(LinkedList<String> nodes) {
     return root;
 }
 ```
+
 ### 回溯算法解题套路框架
-46. 全排列（中等）
-51. N皇后（困难）
+46. 全排列（中等）。track记录路径；递归选择列表（nums排除track）；O(N!)
+51. N皇后（困难）。NxN棋盘，N个皇后不能相互攻击。isValid 函数剪枝。最坏O(N^(N+1))。 解数独。
+
+回溯算法其实就是我们常说的 DFS 算法，本质上就是一种暴力穷举算法。
+解决一个回溯问题，实际上就是一个决策树的遍历过程。
+```
+result = []
+def backtrack(路径, 选择列表):
+    if 满足结束条件:
+        result.add(路径)
+        return
+    
+    for 选择 in 选择列表:
+        做选择
+        backtrack(路径, 选择列表)
+        撤销选择
+```        
+其核心就是 for 循环里面的递归，在递归调用之前「做选择」，在递归调用之后「撤销选择」，特别简单。
+写 backtrack 函数时，需要维护走过的「路径」和当前可以做的「选择列表」，当触发「结束条件」时，将「路径」记入结果集。
+动态规划的三个需要明确的点就是「状态」「选择」和「base case」，是不是就对应着走过的「路径」，当前的「选择列表」和「结束条件」？
+动态规划的暴力求解阶段就是回溯算法。只是有的问题具有重叠子问题性质，可以用 dp table 或者备忘录优化，将递归树大幅剪枝，这就变成了动态规划。
 
 ### BFS算法解题套路框架
-111. 二叉树的最小深度（简单）
-752. 打开转盘锁（中等）
+111. 二叉树的最小深度（简单）。
+752. 打开转盘锁（中等）。 双向BFS。
+
+BFS 算法都是用「队列」这种数据结构，每次将一个节点周围的所有节点加入队列。
+BFS 相对 DFS 的最主要的区别是：BFS 找到的路径一定是最短的，但代价就是空间复杂度可能比 DFS 大很多
+BFS最短路径： 走迷宫、单词替换字符、连连看。
+``` 
+// 计算从起点 start 到终点 target 的最近距离
+int BFS(Node start, Node target) {
+    Queue<Node> q; // 核心数据结构
+    Set<Node> visited; // 避免走回头路
+    
+    q.offer(start); // 将起点加入队列
+    visited.add(start);
+    int step = 0; // 记录扩散的步数
+    
+    while (q not empty) {
+        int sz = q.size();
+        /* 将当前队列中的所有节点向四周扩散 */
+        for (int i = 0; i < sz; i++) {
+            Node cur = q.poll();
+            /* 划重点：这里判断是否到达终点 */
+            if (cur is target)
+                return step;
+            /* 将 cur 的相邻节点加入队列 */
+            for (Node x : cur.adj()) {
+                if (x not in visited) {
+                    q.offer(x);
+                    visited.add(x);
+                }
+            }
+        }
+        /* 划重点：更新步数在这里 */
+        step++;
+    }
+}
+```
+DFS 是线，BFS 是面；DFS 是单打独斗，BFS 是集体行动。
+DFS 空间O(N)
+传统的 BFS 框架就是从起点开始向四周扩散，遇到终点时停止；而双向 BFS 则是从起点和终点同时开始扩散，当两边有交集的时候停止。
+双向BFS使用HashSet代替队列快速判断交集。
 
 ### 动态规划解题套路框架
-509. 斐波那契数（简单）
-322. 零钱兑换（中等）
+509. 斐波那契数（简单）。暴力递归；dptable去重；dp数组迭代递推解法；dptable改2；
+322. 零钱兑换（中等）。
 
-### 资料
+动态规划问题（Dynamic Programming）
+动态规划问题的一般形式就是求最值。动态规划其实是运筹学的一种最优化方法，只不过在计算机问题上应用比较多，比如说让你求最长递增子序列呀，最小编辑距离呀等等。
+求解动态规划的核心问题是穷举。存在「重叠子问题」，需要「备忘录」或者「DP table」来优化穷举过程。一定会具备「最优子结构」。列出正确的「状态转移方程」，才能正确地穷举。
+重叠子问题、最优子结构（子问题没有相互制约）、状态转移方程就是动态规划三要素。 
+明确 base case（终止条件） -> 明确「状态」（变量-参数）-> 明确「选择」 -> 定义 dp 数组/函数的含义。
+``` 
+# 初始化 base case
+dp[0][0][...] = base
+# 进行状态转移
+for 状态1 in 状态1的所有取值：
+    for 状态2 in 状态2的所有取值：
+        for ...
+            dp[状态1][状态2][...] = 求最值(选择1，选择2...)
+```
+
+常见的动态规划代码是「自底向上」进行「递推」求解。一般都脱离了递归，而是由循环迭代完成计算。
+
+### BASE CASE 和备忘录的初始值怎么定？
+
+
+
+### 最优子结构原理和 DP 数组遍历方向
+
+### 提高刷题幸福感的小技巧
+递归调试：
+``` 
+ var recurCnt int
+ func printIndent(n int){
+ 	for i:=0;i<n;i++{
+ 		fmt.Print("	")
+ 	}
+ }
+```
+在递归函数的开头，调用 recurCnt++; printIndent(recurCnt); fmt.Println(head.Val) 
+在return 语句之前调用 printIndent(recurCnt); recurCnt--; fmt.Println(last.Val) 
+
+
+### 如何寻找最长回文子串
+5. 最长回文子串（中等）。  O(N^2)
+``` 
+public String longestPalindrome(String s) {
+    String res = "";
+    for (int i = 0; i < s.length(); i++) {
+        // 以 s[i] 为中心的最长回文子串
+        String s1 = palindrome(s, i, i);
+        // 以 s[i] 和 s[i+1] 为中心的最长回文子串
+        String s2 = palindrome(s, i, i + 1);
+        // res = longest(res, s1, s2)
+        res = res.length() > s1.length() ? res : s1;
+        res = res.length() > s2.length() ? res : s2;
+    }
+    return res;
+}
+String palindrome(String s, int l, int r) {
+    // 防止索引越界
+    while (l >= 0 && r < s.length()
+            && s.charAt(l) == s.charAt(r)) {
+        // 向两边展开
+        l--; r++;
+    }
+    // 返回以 s[l] 和 s[r] 为中心的最长回文串
+    return s.substring(l + 1, r);
+    }
+```
+dp 空间复杂度至少要 O(N^2)， 这道题是少有的动态规划非最优解法的问题。
+Manacher’s Algorithm（马拉车算法） O(N)
+
+### 图论基础
+797. 所有可能的路径（中等）
+
+多叉树而已，适用于树的 DFS/BFS 遍历算法，全部适用于图。
+很少用这个 Vertex 类实现图，而是用常说的邻接表和邻接矩阵来实现。
+
+邻接表： 空间少、无法快速判断两个节点是否相邻
+邻接矩阵
+常规的算法题中，邻接表的使用会更频繁一些。
+度（degree）的概念，在无向图中，「度」就是每个节点相连的边的条数。入度、出度。
+有向无权图、加权图matrix[x][y]存储int值、无向图把matrix[x][y] 和 matrix[y][x] 都变成 true。
+比如 二分图判定， 环检测和拓扑排序（编译器循环引用检测就是类似的算法）， 最小生成树， Dijkstra 最短路径算法 等等
+
+``` 
+// 记录被遍历过的节点
+boolean[] visited;
+// 记录从起点到当前节点的路径
+boolean[] onPath;
+
+/* 图遍历框架 */
+void traverse(Graph graph, int s) {
+    if (visited[s]) return;
+    // 经过节点 s，标记为已遍历
+    visited[s] = true;
+    // 做选择：标记节点 s 在路径上
+    onPath[s] = true;
+    for (int neighbor : graph.neighbors(s)) {
+        traverse(graph, neighbor);
+    }
+    // 撤销选择：节点 s 离开路径
+    onPath[s] = false;
+}
+```
+
+### 一文秒杀所有岛屿题目
+200. 岛屿数量（中等）
+1254. 统计封闭岛屿的数目（中等）
+1020. 飞地的数量（中等）
+695. 岛屿的最大面积（中等）
+1905. 统计子岛屿（中等）
+694. 不同的岛屿数量（中等）
+
+岛屿系列题目的核心考点就是用 DFS/BFS 算法遍历二维数组。
+
+### 一个方法团灭 LEETCODE 股票买卖问题
+121. 买卖股票的最佳时机（简单）
+122. 买卖股票的最佳时机 II（简单）
+123. 买卖股票的最佳时机 III（困难）
+188. 买卖股票的最佳时机 IV（困难）
+309. 最佳买卖股票时机含冷冻期（中等）
+714. 买卖股票的最佳时机含手续费（中等）
+
+### 一个方法团灭 LEETCODE 打家劫舍问题
+https://mp.weixin.qq.com/s/z44hk0MW14_mAQd7988mfw
+
+198. 打家劫舍（简单）
+213. 打家劫舍II（中等）
+337. 打家劫舍III（中等）
+
+## 资料
 - https://labuladong.github.io/algo/1/3/
 
-
+todo: leetcode 1/2/3/5/206/15/25/46/146/42/70/31
