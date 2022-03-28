@@ -13,31 +13,6 @@ filesystem cache。 尽量让内存可以容纳所有的index segment file 索�
 
 document的模型设计
 分页性能优化
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ### 01 | 课程介绍
 ### 02 | 内容综述及学习建议
 ### 03 | Elasticsearch简介及其发展历史

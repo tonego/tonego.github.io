@@ -29,7 +29,6 @@ Golang use K/V
  * sl 实现简单
  * 参考 https://stackoverflow.com/questions/256511/skip-list-vs-binary-search-tree/28270537
  
- 
 #### reference
 https://github.com/developer-learning/night-reading-go/issues/393
 https://mp.weixin.qq.com/s/2CDpE5wfoiNXm1agMAq4wA

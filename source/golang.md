@@ -1,6 +1,7 @@
 ## Golang
 #### gc
 写屏障
+防止过程中的黑色引用白色操作导致白色被误删。
 插入屏障（Dijkstra）- 灰色赋值器：尚未被回收器扫描过或尽管已经扫描过，但仍需要重新扫描。
 
 黑色赋值器：已经由回收器扫描过，不会再次对其进行扫描。
@@ -47,10 +48,23 @@ interface入参不会为nil
 * 在循环内部执行defer语句， 实际在返回值时才defer调用
 * 切片会导致整个底层数组被锁定
 * 循环内值的指针使用。for i,v:=range arr{res=append(res,&v)}
-* 
+
 
 #### 静态检查
 * errcheck
 * structtag
 #### 参考资料
 * [Golang高级编程](https://chai2010.cn/advanced-go-programming-book/appendix/appendix-a-trap.html)
+
+#### slice
+空结构体 struct{} 实例不占据任何的内存空间。 用于map实现的set、空chan、空struct只有方法无属性
+rune 类型，代表一个 UTF-8 字符，当需要处理中文、日文或者其他复合字符时，则需要用到 rune 类型。rune 类型等价于 int32 类型。
+```
+  fmt.Printf("a=%v  \n", a) // a=&{1 微客鸟窝}  
+  fmt.Printf("a=%+v  \n", a) // a=&{id:1 name:微客鸟窝}  
+  fmt.Printf("a=%#v  \n", a) // a=&main.student{id:1, name:"微客鸟窝"}
+```
+Go 中两个 Nil 可能不相等。
+在 Go 语言中只存在值传递，要么是值的副本，要么是指针的副本。
+Go 的 JSON 标准库对 nil slice 和 空 slice 的处理是不一致. make([]int,0）和  []int{} 不一致。
+逃逸分析： 指针逃逸、栈空间不足、动态类型、闭包

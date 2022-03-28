@@ -155,7 +155,6 @@ typedef struct redisDb {dict *watched_keys;}
 * 服务器将所有监视器都记录在monitors链表中。
 * 每次处理命令请求时，服务器都会遍历monitors链表，将相关信息发送给监视器。
 
-
 ### 其他
 ##### pipeline 与 multi 与 redis-lua 区别
 
@@ -164,7 +163,6 @@ typedef struct redisDb {dict *watched_keys;}
 ##### hyperLogLog
 统计1亿个数据的基数值，大约需要内存100000000/8/1024/1024 ≈ 12M; 统计一个对象的基数值需要12M，如果统计10000个对象，就需要将近120G;
 https://www.yuque.com/abser/aboutme/nfx0a4
-
 
 ##### reference
 https://yq.aliyun.com/articles/531067

@@ -15,3 +15,7 @@
 * BASE (basic available / soft state / Eventually consistent )
 * Paxos 
 * Raft 
+
+
+#### 分布式
+* 
